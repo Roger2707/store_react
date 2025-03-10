@@ -1,0 +1,67 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Lớp tùy chỉnh cho TOAST */
+.Toastify__toast {
+    width: fit-content;
+}
+
+.custom-toast {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    font-size: 1rem;
+    height: 6vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;   
+
+    opacity: 0;
+
+    animation: hide 3s ease-in-out;
+}
+
+@keyframes hide {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+  
+.custom-toast-body {
+    font-size: 1.2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 1vh 1vw;
+    color: #fff;
+}
+
+.custom-icon {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-right: 8px;
+    
+    padding: 5px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.Toastify__toast--success {
+    background-color: green;
+}
+
+.Toastify__toast--error {
+    background-color: red;
+}
+  
