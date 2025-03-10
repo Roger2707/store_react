@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import agent from "../api/agent";
 import { OrderDTO } from "../models/Order";
 
@@ -42,8 +42,24 @@ export const orderSlice = createSlice({
     name: 'orders',
     initialState,
     reducers: {
-        setOrder: (state, action) => {
-            
+        updateOrderStatus: (state, action: PayloadAction<{orderId: number, status: number}>) => {
+            const order = state.orders?.find(order => order.id === action.payload.orderId);            
+            if (order) {
+                switch (action.payload.status) {
+                    case 0:
+                        order.status = 'Pending'
+                        break;
+                    case 1:
+                        order.status = 'Completed'
+                        break;
+                    case 2:
+                        order.status = 'Cancelled'
+                        break;
+                    case 3:
+                        order.status = 'Refunded'
+                        break;
+                }
+            }
         }
     },
     extraReducers: builder => {
@@ -75,4 +91,4 @@ export const orderSlice = createSlice({
     }
 });
 
-export const { setOrder } = orderSlice.actions;
+export const { updateOrderStatus } = orderSlice.actions;

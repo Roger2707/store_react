@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
-import { fetchOrdersAsync } from "../../../app/store/orderSlice";
+import { fetchOrdersAsync, updateOrderStatus } from "../../../app/store/orderSlice";
 import styled from "styled-components";
 import { OrderTable } from "../../components/Order/OrderTable";
 import { OrderDetail } from "../../components/Order/OrderDetail";
+import * as signalR from "@microsoft/signalr";
+import { HttpTransportType } from "@microsoft/signalr";
 
 export const Order = () => {
     const {isLoadOrders, orders, orderSelected} = useAppSelector(state => state.order);
@@ -12,6 +14,32 @@ export const Order = () => {
     useEffect(() => {      
         if(!isLoadOrders) dispatch(fetchOrdersAsync());
     }, [isLoadOrders, dispatch]);
+
+    useEffect(() => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:5110/orderHub", {
+                skipNegotiation: true,
+                transport: HttpTransportType.WebSockets
+            })
+            .withAutomaticReconnect()
+            .build();
+
+            connection.start()
+                .then(() => console.log("Connected to SignalR!"))
+                .catch(err => console.error("SignalR Error:", err));
+        
+
+        connection.on("ReceiveOrderUpdate", (orderId, status) => {
+            console.log(`Order ${orderId} status updated: ${status}`);
+
+            // Dispatch action update redux store
+            dispatch(updateOrderStatus({ orderId, status }));
+        });
+
+        return () => {
+            connection.stop();
+        };
+    }, [dispatch]);
 
     return (
         <Styled>
