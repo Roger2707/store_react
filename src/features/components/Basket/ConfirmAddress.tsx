@@ -27,7 +27,7 @@ export const ConfirmAddress = () => {
             {
                 userAddresses.length > 0 &&
                 <ul className="address-list" >
-                    <h3>Select Shipping Address</h3>
+                    <h3>Shipping Address</h3>
                     {
                         userAddresses.map(address => {
                             const addressInfo = `${address.streetAddress}, ${address.district}, ${address.ward}, ${address.city}`;
@@ -36,7 +36,6 @@ export const ConfirmAddress = () => {
                                     <input  type="radio" value={address.id} name="shippingAddress" 
                                             checked={selectedAddress === address.id}
                                             onChange={(e) => handleChooseAddress(address.id)} 
-                                            // disabled={selectedAddress !== 0}
                                     /> <span>{addressInfo}</span>
                                 </li>
                             )
@@ -44,7 +43,8 @@ export const ConfirmAddress = () => {
                     }
                 </ul>
             }
-            {selectedAddress > 0 && selectedItem > 0 &&
+            {
+                selectedAddress > 0 && selectedItem > 0 &&
                 (
                     <div className="btn-order-container" >                
                         <OrderProcessing userAddressId = {selectedAddress} />
@@ -64,11 +64,11 @@ const Style = styled.div`
 
     padding: 1vh 1vw;
     margin-top: 3vh;
+    background-color: #FDEBEC;
+    border-radius: 10px;
 
     .address-list {
-        list-style: none;
-        margin: 2vh 0;
-        
+        list-style: none;    
         h3 {
             font-size: 1.5rem;
             font-weight: 500;
