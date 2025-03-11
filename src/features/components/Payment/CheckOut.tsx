@@ -2,8 +2,6 @@ import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
-import { useAppDispatch } from "../../../app/store/configureStore";
-import { fetchOrdersAsync } from "../../../app/store/orderSlice";
 
 export const CheckOut = () => {
     const stripe = useStripe();
@@ -38,7 +36,7 @@ export const CheckOut = () => {
     useEffect(() => {
         if(message.includes('successfully')) {
             navigate('/orders');
-        }        
+        }
     }, [message, navigate]);
 
     return (

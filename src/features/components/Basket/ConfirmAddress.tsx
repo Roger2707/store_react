@@ -7,6 +7,9 @@ import { OrderProcessing } from "../Order/OrderProcessing";
 
 export const ConfirmAddress = () => {
     const {loadingUser, userAddresses} = useAppSelector(state => state.userAddress);
+    const {basket} = useAppSelector(state => state.basket);
+    const selectedItem = basket?.items?.filter(item => item.status === true)?.length || 0;
+
     const dispatch = useAppDispatch();
     const [selectedAddress, setSelectedAddress] = useState<number>(0);
 
@@ -33,7 +36,7 @@ export const ConfirmAddress = () => {
                                     <input  type="radio" value={address.id} name="shippingAddress" 
                                             checked={selectedAddress === address.id}
                                             onChange={(e) => handleChooseAddress(address.id)} 
-                                            disabled={selectedAddress !== 0}
+                                            // disabled={selectedAddress !== 0}
                                     /> <span>{addressInfo}</span>
                                 </li>
                             )
@@ -41,10 +44,12 @@ export const ConfirmAddress = () => {
                     }
                 </ul>
             }
-            {selectedAddress > 0 &&
-                <div className="btn-order-container" >                
-                    <OrderProcessing userAddressId = {selectedAddress} />
-                </div>
+            {selectedAddress > 0 && selectedItem > 0 &&
+                (
+                    <div className="btn-order-container" >                
+                        <OrderProcessing userAddressId = {selectedAddress} />
+                    </div>
+                )
             }
         </Style>
     )

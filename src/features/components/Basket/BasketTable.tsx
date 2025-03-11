@@ -64,6 +64,7 @@ const Table = styled.table`
     border: 1px solid #333;
     text-align: center;
     border-collapse: collapse;
+    height: fit-content;
 
     thead {
         tr {
@@ -87,7 +88,7 @@ const Table = styled.table`
 
         tr{
             td {
-                padding: 1vh 1vw;
+                padding: 1.5vh 1vw;
                 border-right: 1px solid #333;
                 border-top: 1px solid #333;
 
@@ -97,7 +98,7 @@ const Table = styled.table`
                 }
 
                 ul {
-                list-style: none;
+                    list-style: none;
                 }
             }
         }

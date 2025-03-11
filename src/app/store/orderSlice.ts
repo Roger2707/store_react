@@ -43,20 +43,21 @@ export const orderSlice = createSlice({
     initialState,
     reducers: {
         updateOrderStatus: (state, action: PayloadAction<{orderId: number, status: number}>) => {
-            const order = state.orders?.find(order => order.id === action.payload.orderId);            
-            if (order) {
+            if(!state.orders) return;
+            const index = state.orders.findIndex(order => order.id === action.payload.orderId);  
+            if (index !== -1) {
                 switch (action.payload.status) {
                     case 0:
-                        order.status = 'Pending'
+                        state.orders[index].status = 'Pending'
                         break;
                     case 1:
-                        order.status = 'Completed'
+                        state.orders[index].status = 'Completed'
                         break;
                     case 2:
-                        order.status = 'Cancelled'
+                        state.orders[index].status = 'Cancelled'
                         break;
                     case 3:
-                        order.status = 'Refunded'
+                        state.orders[index].status = 'Refunded'
                         break;
                 }
             }

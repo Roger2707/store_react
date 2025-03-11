@@ -30,36 +30,38 @@ export const OrderTable = ({orders}: Props) => {
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-            {
-                orders && orders.length > 0 &&
-                orders.map((order, index) => {
-                    return (
-                        <tr key={index} className={`${order.id === orderId && 'order-active'}`}>
-                            <td >{order.id}</td>
-                            <td>
-                                <span className="order-contact" >{order.email}</span>
-                                <span className="order-contact" >{order.phoneNumber}</span>
-                            </td>
-                            <td>{order.orderDate && order.orderDate.toString().split('T')[0]}</td>
-                            <td style={{ whiteSpace: "pre-line" }}>
-                                <span className="order-address" >{order.userAddress.streetAddress}</span>
-                                <span className="order-address">{order.userAddress.district}</span>
-                                <span className="order-address">{order.userAddress.ward}</span>
-                                <span className="order-address">{order.userAddress.city}</span>
-                            </td>
-                            <td>{order.grandTotal.toLocaleString('vi-VN')} VND</td>
-                            <td>
-                                <span className={`order-status order-status-${order.status.includes('Pending') ? 'pending' : order.status.includes('Completed') ? 'completed' : 'error'}`} >{order.status}</span>
-                            </td>
-                            <td>
-                                <button onClick={() => handleShowOrderDetail(order.id)}>Detail</button>
-                            </td>
-                        </tr>
-                    )
-                })
-            }
-        </tbody>
+        {
+            orders && orders.length > 0 &&
+            <tbody>
+                {
+                    orders.map((order: OrderDTO, index) => {
+                        return (
+                            <tr key={index} className={`${order.id === orderId && 'order-active'}`}>
+                                <td >{order.id}</td>
+                                <td>
+                                    <span className="order-contact" >{order.email}</span>
+                                    <span className="order-contact" >{order.phoneNumber}</span>
+                                </td>
+                                <td>{order.orderDate && order.orderDate.toString().split('T')[0]}</td>
+                                <td style={{ whiteSpace: "pre-line" }}>
+                                    <span className="order-address" >{order.userAddress.streetAddress}</span>
+                                    <span className="order-address">{order.userAddress.district}</span>
+                                    <span className="order-address">{order.userAddress.ward}</span>
+                                    <span className="order-address">{order.userAddress.city}</span>
+                                </td>
+                                <td>{order.grandTotal.toLocaleString('vi-VN')} VND</td>
+                                <td>
+                                    <span className={`order-status order-status-${order.status.includes('Pending') ? 'pending' : order.status.includes('Completed') ? 'completed' : 'error'}`} >{order.status}</span>
+                                </td>
+                                <td>
+                                    <button onClick={() => handleShowOrderDetail(order.id)}>Detail</button>
+                                </td>
+                            </tr>
+                        )
+                    })
+                }
+            </tbody>
+        }
         </OrderTableStyle>
     )
 }

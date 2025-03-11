@@ -38,7 +38,7 @@ export const upsertBasket = createAsyncThunk<BasketDTO, {productId: number, mode
     }
 );
 
-export const toggleStatusItem = createAsyncThunk<BasketDTO, number>(
+export const toggleStatusItem = createAsyncThunk<number, number>(
     'basket/toggle-status-item',
     async(basketItemId, thunkAPI) => {
         try {
@@ -81,7 +81,7 @@ export const basketSlice = createSlice({
 
         builder.addCase(upsertBasket.fulfilled, (state, action) => {
             state.loadingState = false;
-            state.basket = action.payload ? {...action.payload, items: action.payload.items ? [...action.payload.items] : []} : null;      
+            state.basket = action.payload;
         });
 
         builder.addCase(upsertBasket.rejected, (state, action) => {
@@ -89,19 +89,23 @@ export const basketSlice = createSlice({
             console.log('Executed Failed !');
         });
 
-        ///////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         builder.addCase(toggleStatusItem.pending, (state, action) => {
-            state.isLoadBasket = false;
-            console.log('Executing Toggle Basket Item');
+
         });
 
         builder.addCase(toggleStatusItem.fulfilled, (state, action) => {
-            state.isLoadBasket = true;  
+
+            if (!state.basket || !state.basket.items) return;
+            const index = state.basket?.items.findIndex(item => item.basketItemId === action.payload);
+
+            if(index !== undefined && index !== -1) {
+                state.basket.items[index].status = !state.basket?.items[index].status;
+            }
         });
 
         builder.addCase(toggleStatusItem.rejected, (state, action) => {
-            state.isLoadBasket = true;
             console.log('Executed Failed !');
         });
     }
