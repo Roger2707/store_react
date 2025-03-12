@@ -33,6 +33,7 @@ export interface ProductUpsert {
     created: string;
     categoryId: number;
     brandId: number;
+    imageProps: string;
 
     [key: string]: any;
 }

@@ -101,7 +101,7 @@ const getFormData = (data: any) => {
     for(const key in data)
     {
         if(key === 'imageUrl') {
-            data['imageUrl'].forEach((file: File) => {
+            data['imageUrl']?.forEach((file: File) => {
                 formData.append("imageUrl", file);
             })
         }

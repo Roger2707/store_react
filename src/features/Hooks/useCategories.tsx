@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import agent from "../../app/api/agent";
+import { Category } from "../../app/models/Category";
 
-const fetchCategories = async () => {
+const fetchCategories = async () : Promise<Category[]> => {
     try {
-        const data = agent.Categories.list();
-        return data;
+        const data = await agent.Categories.list();
+        return data as Category[];
     }
     catch(error) {
         console.error('Error fetching categories:', error);
@@ -13,7 +14,7 @@ const fetchCategories = async () => {
 };
   
 export const useCategories = () => {
-    return useQuery({
+    return useQuery<Category[]>({
         queryKey: ['categories'],
         queryFn: () => fetchCategories(),
         //keepPreviousData: true,

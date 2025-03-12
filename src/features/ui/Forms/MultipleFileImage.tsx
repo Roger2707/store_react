@@ -41,7 +41,7 @@ export const MultipleFileImage = ({value, onGetDataChange}: Props) => {
             <label htmlFor="imageUpload" >Uploads:</label>
             <div className="preview" >
                 {
-                (selectedFiles.length === 0 && value) ?
+                (selectedFiles.length === 0 && value !== '') ?
                 Array.from(value.split(',')).map((item, index) => (
                     <img 
                         key={index}
