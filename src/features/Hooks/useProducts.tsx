@@ -15,6 +15,7 @@ const fetchProductsAsync = async (params: ProductParams) : Promise<PaginationDat
 };
   
 export const useProducts = (params: ProductParams) => {
+    
     return useQuery<PaginationData<Product>>({
         queryKey: ['products', params],
         queryFn: () => fetchProductsAsync(params),

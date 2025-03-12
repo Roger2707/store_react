@@ -21,8 +21,8 @@ export const ProductItem = ({product} : Props) => {
                     </div>
                     <div className="product-desc">
                         <div className="product-prices" >
-                            <p className={`product-price ${discountPrice !== 0 && 'price-line'}`} >{price}$</p>
-                            {discountPrice !== 0 && <p className="product-discount">{discountPrice}$</p>}
+                            <p className={`product-price ${discountPrice !== 0 && 'price-line'}`} >{price.toLocaleString('vi-VN')}</p>
+                            {discountPrice !== 0 && <p className="product-discount">{discountPrice.toLocaleString('vi-VN')}</p>}
                         </div>
 
                         <div className="product-ratings" >
@@ -93,7 +93,8 @@ const ProductItemStyle = styled.div `
                 margin: 0.3rem 0;
 
                 .product-price {
-                    
+                    font-size: 0.8rem;
+                    color: #ccc;
                 }
     
                 .price-line {

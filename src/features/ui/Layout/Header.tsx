@@ -32,7 +32,7 @@ export const Header = () => {
 
 const Head = styled.header `
     width: 100vw;
-    height: 10vh;
+    padding: 2vh 0;
 
     background-color: #28282B;
     color: white;

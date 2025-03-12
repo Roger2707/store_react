@@ -44,8 +44,8 @@ export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
     )
 }
 
-const Style = styled.div`
-    background-color: #353935;
+const Style = styled.div ` 
+    background-color: #2c2c2c;
     width: 100%;
     padding: 10% 0;
 
@@ -54,6 +54,7 @@ const Style = styled.div`
         color: #fff;
         font-style: italic;
         margin: 0 10% 3% 10%;
+        text-decoration: underline;
     }
 
     .brands-list
@@ -61,24 +62,30 @@ const Style = styled.div`
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-top: 2vh;
 
         button {
             font-size: 1rem;
+            letter-spacing: 0.1vw;
             padding: 5px 10px;
-            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
             text-transform: capitalize;
-            color: goldenrod;
-            width: 80%;
-            border-radius: 5px;
+            color: #fff;
+            background-color: #2c2c2c;
+
+            width: 95%;
             border: none;
             outline: none;
             display: block;
             cursor: pointer;
-            margin-bottom: 3%;
+            margin-bottom: 1%;
+            &:hover {
+                background-color: rgba(255,255,255,0.2);
+            }
         }
 
         .selected {
-            background-color: #E2DFD2;
+            background-color: rgba(255,255,255,0.2);
         }
     }
 `

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ProductList } from "../../components/Products/ProductList";
 import { Pagination } from "../../ui/Common/Pagination";
-import { Container } from "../../ui/Layout/Container";
 import { Loading } from "../../ui/Common/Loading";
 import { SearchData } from "../../ui/Common/SearchData";
 import { SortData } from "../../ui/Common/SortData";
@@ -31,7 +30,7 @@ export const ProductPage = () => {
     }, [data]);
 
     return (
-        <Container>
+        <>
             <ProductsStyle ref={scrolltargetRef} >
                 <div className="products-filter-container" >
                     <CategoryFilter 
@@ -61,28 +60,30 @@ export const ProductPage = () => {
                     </div>
                     {
                         !isLoading ? 
-                        <>
+                        <div className="products-content" >
                             <ProductList products={data?.dataInCurrentPage} /> 
                             <Pagination totalPage={data?.totalPage || 0} params={productParams} onSetParams={setProductParams}/>
-                        </>            
+                        </div>            
                         : 
                         <Loading message="Loading Products ..."/>
                     }
                     {isError && <p>Error fetching products ❌</p>}
                 </div>
             </ProductsStyle>
-        </Container>
+        </>
     )
 }
 
 const ProductsStyle = styled.div `
     display: grid;
-    grid-template-columns: 2fr 8fr;
+    grid-template-columns: 1.5fr 8.5fr;
 
     .products-filter-container {
-        background-color: #343434;
+        background-color: #2c2c2c;
+        min-height: 90vh;
         width: 100%;
         height: 100%;
+        padding-left: 50%;
 
         display: flex;
         flex-direction: column;
@@ -91,14 +92,18 @@ const ProductsStyle = styled.div `
 
     .products-display {
         .products-head {
+            margin-top: 2vh;
             width: 100%;
-            height: 10vh;
-            background-color: #7393B3;
+            height: fit-content;
             padding: 0 5%;
 
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .products-content {
+            padding: 30px 100px 0 50px;
         }
     }
 `

@@ -30,7 +30,10 @@ const PaginationStyle = styled.div`
     justify-content: space-evenly;
     align-items: center;
     width: 100%;
-    height: 10vh;
+    height: fit-content;
+    padding-bottom: 2vh;
+    margin-top: 2vh;
+
     button {
         padding: 10px;
         font-size: 1.2rem;

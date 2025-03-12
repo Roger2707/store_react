@@ -46,6 +46,8 @@ const BrandName = styled.div`
         margin-left: 10px;
 
         text-transform: uppercase;
+        font-family: 'Courier New', Courier, monospace;
+        font-style: italic;
     }
 
     p:last-child {

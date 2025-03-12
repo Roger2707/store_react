@@ -28,9 +28,8 @@ export const ProductList = ({products} : Props) => {
 
 const ProductGridContainerStyle = styled.div`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-column-gap: 2vw;
     grid-row-gap: 3vh;
-
-    padding: 50px;
+    padding-bottom: 30px;
 `
