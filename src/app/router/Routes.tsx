@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../../App";
-import { Product } from "../../features/pages/Product/Product";
+import { ProductPage } from "../../features/pages/Product/ProductPage";
 import { ProductDetail } from "../../features/pages/Product/ProductDetail";
 import { Login } from "../../features/pages/Identity/Login";
 import { SignUp } from "../../features/pages/Identity/SignUp";
@@ -35,7 +35,7 @@ export const router = createBrowserRouter(([
         children: [
             
             // PUBLIC ROUTES
-            { path: 'products', element: <Product/> },
+            { path: 'products', element: <ProductPage/> },
             { path: 'products/:id', element: <ProductDetail/> },
             { path: 'about', element: <About/> },
             { path: 'news', element: <News/> },

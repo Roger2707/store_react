@@ -2,14 +2,12 @@ import styled from "styled-components"
 import { Product, ProductUpsert } from "../../../app/models/Product";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { productSelectors, setProductsAfterPost, setProductsAfterPut } from "../../../app/store/productSlice";
 import { Input } from "../../ui/Forms/Input";
 import { Textarea } from "../../ui/Forms/Textarea";
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
 import { productStatus } from "../../../app/utils/helper";
 import { Category } from "../../../app/models/Category";
 import { Brand } from "../../../app/models/Brand";
-import agent from "../../../app/api/agent";
 import { fetchCategoryAsync } from "../../../app/store/categorySlice";
 import { fetchBrandsAsync } from "../../../app/store/brandSlice";
 import { MultipleFileImage } from "../../ui/Forms/MultipleFileImage";
@@ -35,7 +33,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
         categoryId: 1,
         brandId: 1,
     });
-    const existedProduct = useAppSelector(state => productSelectors.selectById(state, id));
+    const existedProduct = null;
     
     const [categoriesDropdown, setCategoriesDropdown] = useState<DropdownData[]>([]);
     const [brandsDropdown, setBrandsDropdown] = useState<DropdownData[]>([]);
@@ -43,7 +41,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
     const {categories} = useAppSelector(state => state.category);
     const {brands} = useAppSelector(state => state.brand);
 
-        //#region Get api for select option
+    //#region Get api for select option
 
     useEffect(() => {     
         if(categories === null || categories.length === 0) {
@@ -78,15 +76,16 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
         if(existedProduct !== undefined) {           
             setProduct(prevState => {
                 return {
-                    name: existedProduct.name,
-                    price: existedProduct.price,
-                    description: existedProduct.description,
-                    imageUrl: null,
-                    quantityInStock: existedProduct.quantityInStock,
-                    productStatus: existedProduct.productStatus === 'In Stock' ? 1 : 2,
-                    created: existedProduct.created+ '',
-                    categoryId: existedProduct.categoryId,
-                    brandId: existedProduct.brandId,
+                    // name: existedProduct.name,
+                    // price: existedProduct.price,
+                    // description: existedProduct.description,
+                    // imageUrl: null,
+                    // quantityInStock: existedProduct.quantityInStock,
+                    // productStatus: existedProduct.productStatus === 'In Stock' ? 1 : 2,
+                    // created: existedProduct.created+ '',
+                    // categoryId: existedProduct.categoryId,
+                    // brandId: existedProduct.brandId,
+                    ...prevState
                 }
             })
         }
@@ -134,23 +133,23 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
 
         handleBeforeSubmit();
         
-        try {
-            let response: Product;
+        // try {
+        //     let response: Product;
 
-            if(existedProduct) {
-                response = await agent.Product.update(existedProduct.id, product);
-                dispatch(setProductsAfterPut(response));
-            }
-            else {
-                response = await agent.Product.create(product);
-                dispatch(setProductsAfterPost(response));
-            }
+        //     if(existedProduct) {
+        //         response = await agent.Product.update(existedProduct.id, product);
+        //         dispatch(setProductsAfterPut(response));
+        //     }
+        //     else {
+        //         response = await agent.Product.create(product);
+        //         dispatch(setProductsAfterPost(response));
+        //     }
             
-            handleCloseForm();
+        //     handleCloseForm();
 
-        } catch (error: any) {      
+        // } catch (error: any) {      
 
-        }
+        // }
     }
 
     //#endregion
@@ -176,7 +175,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
                                 onGetDataChange={e => handleGetDataChange(e, 'description')}
                     />
 
-                    <MultipleFileImage value={existedProduct?.imageUrl} onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}/>
+                    {/* <MultipleFileImage value={existedProduct?.imageUrl} onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}/> */}
                 </div>
                 
                 <div className="form_controls" >

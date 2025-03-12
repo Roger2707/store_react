@@ -198,3 +198,22 @@ export const icons = {
     'success': <FaCheck/>,
     'error': <FaX/>
 }
+
+export const sortOptions = [
+    {
+        title: '-- Choose --',
+        value: '',
+    },
+    {
+        title: 'Name DESC',
+        value: 'NameDesc',
+    },
+    {
+        title: 'Price ASC',
+        value: 'priceASC',
+    },
+    {
+        title: 'Price DESC',
+        value: 'priceDESC',
+    },
+];

@@ -1,40 +1,37 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components"
-import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { setProductParams } from "../../../app/store/productSlice";
-import { fetchCategoryAsync } from "../../../app/store/categorySlice";
+import { useCategories } from "../../Hooks/useCategories";
+import { Category } from "../../../app/models/Category";
+import { ProductParams } from "../../../app/models/Product";
 
-export const CategoryFilter = () => {
-    
-    const {categories, status} = useAppSelector(state => state.category);
+interface Props {
+    categoriesFilter: string;
+    onSetCategoriesFilter: Dispatch<SetStateAction<ProductParams>>;
+}
+
+export const CategoryFilter = ({categoriesFilter, onSetCategoriesFilter}: Props) => { 
+    const { data } = useCategories();
     const [categoriesSelected, setCategoriesSelected] = useState<number[]>([]);
-    const dispatch = useAppDispatch();
 
     const handleSelectedCategory = (id: number) => {
         setCategoriesSelected(prev => {
-            const current = [...prev];
-            
-            if(current.filter(c => c === id).length > 0) 
+            const current = [...prev];        
+            if(current.filter(c => c === id).length > 0)
                 return [...current.filter(c => c !== id)];
             return [...current, id];
         });
     }
 
     useEffect(() => {
-        if(!status) dispatch(fetchCategoryAsync());
-        // eslint-disable-next-line
-    }, [status]);
+        onSetCategoriesFilter(prev => ({...prev, filterByCategory: categoriesSelected.toString()}));
+    }, [categoriesSelected, onSetCategoriesFilter])
 
-    useEffect(() => {
-        dispatch(setProductParams({filterByCategory: categoriesSelected.toString()}))     
-    }, [dispatch, categoriesSelected]);
-    
     return(
         <Style className="filter_category-container" >
             <p>Category:</p>
             <div className="category-list" >
                 {
-                    categories.map(item => 
+                    data?.map((item: Category) => 
                         <button key={item.id} className={`${categoriesSelected.filter(c => c === item.id).length > 0 ? 'selected' : ''}`}
                             onClick={handleSelectedCategory.bind(null, item.id)}
                         >

@@ -1,22 +1,20 @@
 import styled from "styled-components"
-import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { setProductParams } from "../../../app/store/productSlice";
+import { ProductParams } from "../../../app/models/Product";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
     pageNumber: number;
+    params : ProductParams;
+    onSetParams: Dispatch<SetStateAction<ProductParams>>;
 }
 
-export const ButtonPagination = ({pageNumber} : Props) => {
-
-    const dispatch = useAppDispatch();
-    const {productParams} = useAppSelector(state => state.product)
-
+export const ButtonPagination = ({pageNumber, params, onSetParams} : Props) => {
     const handleSetPage = () => {
-        dispatch(setProductParams({currentPage: pageNumber}));
+        onSetParams({...params, currentPage: pageNumber});
     }
 
     return (
-        <Style onClick={handleSetPage} style={pageNumber === productParams.currentPage ? {background: '#333333c7', color: '#fff'} : {}} >
+        <Style onClick={handleSetPage} style={pageNumber === params.currentPage ? {background: '#333333c7', color: '#fff'} : {}} >
             {pageNumber}
         </Style>
     )

@@ -13,18 +13,16 @@ export const ProductDetail = () => {
     const  [product, setProduct] = useState<Product | null>(null);
     const {id} = useParams();
 
-    const fetchProductDetailAsync = async () => {
-        try {
-            const response = await agent.Product.details(Number(id));              
-            setProduct(prev => response);      
-        } catch (error: any) {
-            console.log(error);
+    useEffect(() => {       
+        const fetchProductDetailAsync = async () => {
+            try {
+                const response = await agent.Product.details(Number(id));              
+                setProduct(prev => response);      
+            } catch (error: any) {
+                console.log(error);
+            }
         }
-    }
-
-    useEffect(() => {
         fetchProductDetailAsync();
-        // eslint-disable-next-line
     }, [id]);
 
     return (

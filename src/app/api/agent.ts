@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import { router } from "../router/Routes";
-import { ProductUpsert } from "../models/Product";
+import { ProductParams, ProductUpsert } from "../models/Product";
 import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
@@ -82,7 +82,7 @@ axios.interceptors.response.use(async response => {
 })
 
 const requests = {
-    get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
+    get: (url: string, params?: any) => axios.get(url, {params}).then(responseBody),
     post: (url: string, body: object) => axios.post(url, body).then(responseBody),
     put: (url: string, body: object) => axios.put(url, body).then(responseBody),
     del: (url: string) => axios.delete(url).then(responseBody),
@@ -113,7 +113,7 @@ const getFormData = (data: any) => {
 }
 
 const Product = {
-    list: (params: URLSearchParams) => requests.get('products/get-products-page', params),
+    list: (params: ProductParams) => requests.get('products/get-products-page', params),
     details: (id: number) => requests.get(`products/get-product-detail?id=${id}`),
     technologies: (productId: number) => requests.get(`products/get-technologies?productId=${productId}`),
     

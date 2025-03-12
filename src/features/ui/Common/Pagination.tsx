@@ -1,11 +1,15 @@
 import styled from "styled-components";
 import { ButtonPagination } from "./ButtonPagination";
+import { ProductParams } from "../../../app/models/Product";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
     totalPage: number;
+    params: ProductParams;
+    onSetParams: Dispatch<SetStateAction<ProductParams>>;
 }
 
-export const Pagination = ({totalPage}: Props) => {
+export const Pagination = ({totalPage, params, onSetParams}: Props) => {
     const nums = totalPage > 0 ? Array.from({ length: totalPage }, (_, i) => i + 1) : [];
 
     return (
@@ -13,7 +17,7 @@ export const Pagination = ({totalPage}: Props) => {
            {
             nums.map(num => {
                 return (
-                    <ButtonPagination key={num} pageNumber={num} />
+                    <ButtonPagination key={num} pageNumber={num} params={params} onSetParams={onSetParams} />
                 )
             })
            }

@@ -1,27 +1,22 @@
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components"
+import { ProductParams } from "../../../app/models/Product";
 
 interface Props {
     placeholder: string;
     searchKey: string;
-    onSetSearchKey: Dispatch<SetStateAction<string>>;
-    onSubmitSearch: () => void;
+    onSetSearchKey: Dispatch<SetStateAction<ProductParams>>;
 }
 
-export const SearchData = ({searchKey, onSetSearchKey, onSubmitSearch, placeholder}: Props) => {
-
-    const handleSubmitSearch = (e: any) => {
-        e.preventDefault();
-        onSubmitSearch();  
-    }
-
+export const SearchData = ({searchKey, onSetSearchKey, placeholder}: Props) => {
     return(
         <Style>
-            <form onSubmit={handleSubmitSearch} >
-                <input name='search' placeholder={placeholder} 
-                    value={searchKey} 
-                    onChange={(e) => onSetSearchKey(e.target.value)} />
-            </form>
+            <input 
+                name='search' 
+                placeholder={placeholder} 
+                value={searchKey} 
+                onChange={(e) => onSetSearchKey(prev => ({...prev, searchBy: e.target.value}))} 
+            />
         </Style>
     )
 }

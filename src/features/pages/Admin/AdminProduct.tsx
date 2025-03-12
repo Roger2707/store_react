@@ -1,100 +1,46 @@
 import styled from "styled-components"
 import { FaPlus } from "react-icons/fa";
-import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { fetchProductsAsync, setProductParams, setProductsAfterPost } from "../../../app/store/productSlice";
+import { useState } from "react";
 import DataTable from "../../ui/Data/DataTable";
-import { Pagination } from "../../ui/Common/Pagination";
 import { Loading } from "../../ui/Common/Loading";
 import { EmptyData } from "../../ui/Layout/EmptyData";
-import { SearchData } from "../../ui/Common/SearchData";
-import { SortData } from "../../ui/Common/SortData";
 import { Modal } from "../../ui/Layout/Modal";
 import { ProductUpsertForm } from "../../components/Products/ProductUpsertForm";
 import agent from "../../../app/api/agent";
+import { useProducts } from "../../Hooks/useProducts";
+import { ProductParams } from "../../../app/models/Product";
+import { Pagination } from "../../ui/Common/Pagination";
+import { SearchData } from "../../ui/Common/SearchData";
+import { SortData } from "../../ui/Common/SortData";
+import { sortOptions } from "../../../app/utils/helper";
+import { columns } from "./AdminProductsHelper";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AdminProduct = () => {
+    const [productParams, setProductParams] = useState<ProductParams>({
+        currentPage: 1,
+        filterByBrand: '',
+        filterByCategory: '',
+        orderBy: '',
+        searchBy: ''
+    });
+    const {data, isLoading} = useProducts(productParams);
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [productId, setProductId] = useState<number>(0);
-
-    const [searchKey, setSearchKey] = useState<string>('');
-    const [selectedValue, setSelectedValue] = useState<string>('');
-    const sortOptions = [
-        {
-            title: '-- Choose --',
-            value: '',
-        },
-        {
-            title: 'Name DESC',
-            value: 'NameDesc',
-        },
-        {
-            title: 'Price ASC',
-            value: 'priceASC',
-        },
-        {
-            title: 'Price DESC',
-            value: 'priceDESC',
-        },
-    ];
-
-    const dispatch = useAppDispatch();
-    const {productsPageLoaded, productsLoaded, productParams, totalPage} = useAppSelector(state => state.product);
-
-    const columns = [
-        { key: 'id', title: 'Id'}, 
-        { key: 'name', title: 'Name'}, 
-        { key: 'price', title: 'Price'}, 
-        { key: 'discountPrice', title: 'Discount Price'}, 
-        { 
-            key: 'imageUrl',
-            title: 'Photo', 
-            render: (link: string | number | Date) => {
-                let src = link.toString().split(',')[0];
-                return <img width={50} height={50} src={String(src)} alt="img" /> as ReactNode;
-            }
-        }, 
-        { key: 'quantityInStock', title: 'Quantity'}, 
-        { key: 'productStatus', title: 'Status'}, 
-        { 
-            key: 'created',
-            title: 'Created',
-            render: (value: string | number | Date) => {
-                const dateValue = new Date(value);
-                return <p>{dateValue.toLocaleDateString('vi-VN')}</p> as ReactNode
-            }
-        }, 
-        { key: 'categoryName', title: 'Category'},
-        { key: 'brandName', title: 'Brand'},
-        { key: 'brandCountry', title: 'Origin'},
-    ];
-
-    useEffect(() => {
-        if(!productsLoaded) {
-            dispatch(fetchProductsAsync());
-        }
-    }, [dispatch, productsLoaded]);
-
-    const handleSetSearchParams = () => {
-        dispatch(setProductParams({searchBy: searchKey}));
-    }
-
-    const handleSetSortParams = useCallback(() => {
-        dispatch(setProductParams({orderBy: selectedValue}));
-    }, [dispatch, selectedValue]);
-
+    const queryClient = useQueryClient();
+    
     const handleOpenCreateForm = () => {
         setOpenForm(true);
         setProductId(0);
     }
-    
-    const handleDeleteProduct = (id: number) => {
+
+    const handleDeleteProduct = async (id: number) => {
         try {
-            agent.Product.changeStatus(id);      
-            dispatch(setProductsAfterPost(undefined));
+            await agent.Product.changeStatus(id);
+            queryClient.invalidateQueries({queryKey: ['products']}); 
         }
         catch(error: any) {
-
+            console.error('Error in Changing Product Status ❌');
         }
     }
 
@@ -114,36 +60,34 @@ export const AdminProduct = () => {
                 </button>
 
                 <SearchData 
-                    searchKey={searchKey} 
-                    onSetSearchKey={setSearchKey} 
-                    onSubmitSearch={handleSetSearchParams} 
+                    searchKey={productParams.searchBy} 
+                    onSetSearchKey={setProductParams} 
                     placeholder="Type to search products..."
                 />
 
                 <SortData
-                    selectedValue = {selectedValue}
-                    onSetSelectedValue = {setSelectedValue}
-                    onSubmitSort={handleSetSortParams}
+                    selectedValue = {productParams.orderBy}
+                    onSetSelectedValue = {setProductParams}
                     sortOptions = {sortOptions}
                 />
             </div>
 
             {
-                !productsLoaded ?
-                <Loading message="Loading..."/>
+                isLoading ?
+                <Loading message="Loading Products..."/>
                 :
                 (
-                    productsPageLoaded.find(o => o.currentPage === productParams.currentPage)?.dataInCurrentPage ?          
+                    data?.dataInCurrentPage ? 
                     <>
                         <DataTable 
-                            data={productsPageLoaded.find(o => o.currentPage === productParams.currentPage)?.dataInCurrentPage} 
+                            data={data.dataInCurrentPage} 
                             columns={columns} 
 
                             onSetCurrentId={setProductId} 
                             onSetOpenForm={setOpenForm}
                             onDeleteItem={handleDeleteProduct}
                         />
-                        <Pagination totalPage={totalPage}/>
+                        <Pagination totalPage={data.totalPage} params={productParams} onSetParams={setProductParams}/>
                     </>
                         :
                     <EmptyData message="Can not find Products 😥 Try again !" />

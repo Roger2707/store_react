@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useEffect } from "react"
+import { Dispatch, SetStateAction } from "react"
 import styled from "styled-components"
+import { ProductParams } from "../../../app/models/Product";
 
 interface SortOption {
     title: string;
@@ -8,19 +9,15 @@ interface SortOption {
 
 interface Props {
     selectedValue : string;
-    onSetSelectedValue : Dispatch<SetStateAction<string>>;
-    onSubmitSort : () => void;
+    onSetSelectedValue : Dispatch<SetStateAction<ProductParams>>;
     sortOptions : SortOption[];
 }
 
-export const SortData = ({selectedValue, onSetSelectedValue, onSubmitSort, sortOptions}: Props) => {
+export const SortData = ({selectedValue, onSetSelectedValue, sortOptions}: Props) => {
+    
     const handleSubmit = (e: any) => {
-        onSetSelectedValue(e.target.value);
+        onSetSelectedValue(prev => ({...prev, orderBy: e.target.value}));
     }
-
-    useEffect(() => {
-        onSubmitSort();
-    }, [onSubmitSort, selectedValue]);
 
     return (
         <Style>

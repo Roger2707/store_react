@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components"
-import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { setProductParams } from "../../../app/store/productSlice";
-import { fetchBrandsAsync } from "../../../app/store/brandSlice";
+import { ProductParams } from "../../../app/models/Product";
+import { useBrands } from "../../Hooks/useBrands";
+import { Brand } from "../../../app/models/Brand";
 
-export const BrandsFilter = () => {
-    const {brands, status} = useAppSelector(state => state.brand);
+interface Props {
+    brandsFilter: string;
+    onSetBrandsFilter: Dispatch<SetStateAction<ProductParams>>;
+}
+
+export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
+    const {data} = useBrands();
+    
     const [brandsSelected, setBrandsSelected] = useState<number[]>([]);
-    const dispatch = useAppDispatch();
 
     const handleSelectedBrands = (id: number) => {
         setBrandsSelected(prev => {
-            const current = [...prev];
-            
+            const current = [...prev];    
             if(current.filter(c => c === id).length > 0) 
                 return [...current.filter(c => c !== id)];
             return [...current, id];
@@ -20,20 +24,15 @@ export const BrandsFilter = () => {
     }
 
     useEffect(() => {
-        if(!status) dispatch(fetchBrandsAsync());
-        // eslint-disable-next-line
-    }, [status])
-
-    useEffect(() => {
-        dispatch(setProductParams({filterByBrand: brandsSelected.toString()})) 
-    }, [dispatch, brandsSelected])
+        onSetBrandsFilter(prev => ({...prev, filterByBrand: brandsSelected.toString()}))
+    }, [brandsSelected, onSetBrandsFilter])
     
     return (
         <Style className="filter_brands-container" >
             <p>Brands:</p>
             <div className="brands-list" >
                 {
-                    brands.map(item => 
+                    data?.map((item: Brand) => 
                         <button key={item.id} className={`${brandsSelected.filter(c => c === item.id).length > 0 ? 'selected' : ''}`}
                             onClick={handleSelectedBrands.bind(null, item.id)}
                         >
