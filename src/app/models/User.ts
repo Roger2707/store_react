@@ -61,3 +61,7 @@ export interface UserCookie {
     Email: string;
     Token: string;
 }
+
+export interface GoogleAuthRequest  {
+    authCode: string;
+}

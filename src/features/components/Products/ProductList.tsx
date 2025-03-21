@@ -8,6 +8,8 @@ interface Props {
 }
 
 export const ProductList = ({products} : Props) => {    
+    console.log(products);
+    
     return (
         <>
         {

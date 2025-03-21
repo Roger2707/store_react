@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { Category } from "../models/Category";
 import { Brand } from "../models/Brand";
 import { PromotionUpsert } from "../models/Promotion";
-import { ChangePasswordDTO, ForgetPasswordDTO, ResetPasswordDTO, SignInRequest, SignUpRequest, UserAddressDTO, UserProfileUpdate } from "../models/User";
+import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserAddressDTO, UserProfileUpdate } from "../models/User";
 import { store } from "../store/configureStore";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
@@ -154,6 +154,7 @@ const Account = {
     signUp: (request: SignUpRequest) => requests.post(`users/sign-up`, request),
     logOut: () => requests.post(`users/log-out`, {}),
     currentUser: () => requests.get(`users/current-user`),
+    oAuthLogin: (request: GoogleAuthRequest) => requests.post(`users/external-login`, request),
 
     ////////////////////////////////////////////////////////////////////////////////
     forgetPassword: (request: ForgetPasswordDTO) => requests.post(`users/forget-password`, request),
