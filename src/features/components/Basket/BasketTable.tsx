@@ -34,7 +34,9 @@ export const BasketTable = ({basket} : Props) => {
                                 </td>
                                 <td>
                                     <ul style={{padding: '0 1vw'}} >
-                                        <li style={{textAlign: 'left'}}>Name : {basketItem.productName}</li>
+                                        <li style={{textAlign: 'left'}}>
+                                            <p>{basketItem.productName}</p>
+                                        </li>
                                         <li style={{textAlign: 'left'}}>Origin Price: {basketItem.originPrice.toLocaleString("vi-VN")}</li>
                                         <li style={{textAlign: 'left'}}>Discount: {basketItem.discountPercent} %</li>
                                         <li style={{textAlign: 'left'}}>Discount Price: {basketItem.discountPrice.toLocaleString("vi-VN")}</li>
@@ -94,7 +96,7 @@ const Table = styled.table`
 
                 img {
                     width: 5vw;
-                    height: 10%;
+                    height: 80%;
                 }
 
                 ul {

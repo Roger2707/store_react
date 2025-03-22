@@ -12,7 +12,7 @@ export const AdminPage = () => {
     return (
         <AdminStyle>
             <Sidebar onSetPage = {setPage} page={page} sidebars={adminSidebars} />
-            <div style={{background: '#E6E6FA', padding: '2vh 2vw', width: '100%'}} >
+            <div style={{background: '#E6E6FA', padding: '2vh 2vw', overflowX: 'scroll'}} >
                 {
                     location.pathname === '/admin' ?
                         <Dashboard/>

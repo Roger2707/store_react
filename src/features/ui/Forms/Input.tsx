@@ -9,7 +9,7 @@ interface Props {
     errors?: string[];
 }
 
-export const Input = ({id, value, placeholder, type, onGetDataChange, errors} : Props) => {   
+export const Input = ({id, value, placeholder, type, onGetDataChange}: Props) => {   
     
     return (
         <Style className="input_container" >

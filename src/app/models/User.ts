@@ -7,6 +7,7 @@ export interface User {
     dob: Date | null | undefined;
     phoneNumber: string;
     imageUrl: string;
+    basketId?: number;
 }
 
 export interface UserProfileUpdate {

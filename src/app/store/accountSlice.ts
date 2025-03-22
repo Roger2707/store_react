@@ -246,6 +246,8 @@ export const accountSlice = createSlice({
 
             // set user -> updated user
             state.user = action.payload;
+            console.log(action.payload);
+            
         });
 
         builder.addCase(updateUserProfile.rejected, (state, action) => {

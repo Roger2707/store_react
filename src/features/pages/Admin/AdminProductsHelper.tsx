@@ -1,10 +1,25 @@
 import { ReactNode } from "react";
+import { formatPrice } from "../../../app/utils/helper";
 
 export const columns = [
     { key: 'id', title: 'Id'}, 
     { key: 'name', title: 'Name'}, 
-    { key: 'price', title: 'Price'}, 
-    { key: 'discountPrice', title: 'Discount Price'}, 
+    { 
+        key: 'price', title: 'Price'
+        , render: (value: string | number | Date) => {
+            if(typeof value === 'string' || typeof value === 'number') {
+                return <p>{formatPrice(value)}</p> as ReactNode
+            }
+        }
+    }, 
+    { 
+        key: 'discountPrice', title: 'Discount Price'
+        , render: (value: string | number | Date) => {
+            if(typeof value === 'string' || typeof value === 'number') {
+                return <p>{formatPrice(value)}</p> as ReactNode
+            }
+        }
+    }, 
     { 
         key: 'imageUrl',
         title: 'Photo', 

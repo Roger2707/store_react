@@ -51,9 +51,6 @@ const Style = styled.div`
         left: 50%;
         transform: translate(-50%, -50%);
 
-        min-width: 50vw;
-        min-height: 50vh;
-
         border-radius: 10px;
         overflow: hidden;
 
@@ -88,8 +85,7 @@ const Style = styled.div`
         }
         
         .modal_content {
-            margin-top: 10px;
-            
+            margin-top: 3vh;
         }
 
         .modal_footer {

@@ -34,16 +34,11 @@ axios.interceptors.response.use(async response => {
     const {data, status} = error.response as AxiosResponse;
     switch (status) {
         case 400:
-            if(data.title) {  
-                toast.error(data.title, {icon: icons.error});
-            }
-            else {
-                // Handle Input Validations
-                const validationErrors = convertKeysToLowerCase(data);
-                            
+            // Validation Inputs
+            if(data.errors) {
+                const validationErrors = convertKeysToLowerCase(data.errors);              
                 Object.keys(validationErrors).forEach(field => {
-                    const errorMessage = validationErrors[field][0]; // get first error in array
-                    
+                    const errorMessage = validationErrors[field][0]; // get first error in array              
                     // get input has error by Id
                     const inputElement = document.getElementById(field);
                     
@@ -61,6 +56,9 @@ axios.interceptors.response.use(async response => {
                       }
                     }
                 });
+            }
+            else if(data.title) {  
+                toast.error(data.title, {icon: icons.error});
             }
             break;
         case 401:

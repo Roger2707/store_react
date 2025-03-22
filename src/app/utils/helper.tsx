@@ -217,3 +217,8 @@ export const sortOptions = [
         value: 'priceDESC',
     },
 ];
+
+export const formatPrice = (value: string | number) => {
+    const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.]/g, '')) : value;
+    return !isNaN(numericValue) ? numericValue.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '';
+};

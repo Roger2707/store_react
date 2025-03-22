@@ -132,7 +132,6 @@ const Style = styled.div`
         }
     }
 
-
     .datatable_container {
         margin-top: 20px;
     }  
