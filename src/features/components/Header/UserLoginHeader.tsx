@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { logOutAsync } from "../../../app/store/accountSlice";
 import { Link } from "react-router-dom";
+import { setBasket } from "../../../app/store/basketSlice";
 
 interface Props {
     fullname : string;
@@ -11,6 +12,11 @@ interface Props {
 export const UserLoginHeader = ({fullname}: Props) => {
     const [displaySubMenu, setDisplaySubmenu] = useState<boolean>(false);
     const dispatch = useAppDispatch();
+
+    const handleLogOut = () => {
+        dispatch(logOutAsync())
+        dispatch(setBasket(null));
+    }
 
     return (
         <Style >
@@ -22,7 +28,7 @@ export const UserLoginHeader = ({fullname}: Props) => {
                     <li>
                         <Link to='/profile' onClick={() => setDisplaySubmenu(false)} >View Profile</Link>
                     </li>
-                    <li onClick={() => dispatch(logOutAsync())} >Log - Out</li>
+                    <li onClick={() => handleLogOut()} >Log - Out</li>
                 </ul>         
             }
         </Style>

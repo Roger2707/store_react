@@ -133,7 +133,8 @@ export const accountSlice = createSlice({
             localStorage.setItem('user', JSON.stringify(action.payload));
             router.navigate('/');
         },
-        signOut: (state, action) => {
+
+        ssignOut: (state, action) => {
             state.user = null;
             localStorage.removeItem('user');
             router.navigate('/');
@@ -183,8 +184,6 @@ export const accountSlice = createSlice({
                 const decodedPayload = atob(payloadBase64);
                 var role = JSON.parse(decodedPayload)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
                 state.user = {...action.payload, role};
-
-                //console.log({...state.user});
             }   
         });
 
@@ -271,4 +270,4 @@ export const accountSlice = createSlice({
 });
 
 
-export const {signOut, setUser} = accountSlice.actions;
+export const {ssignOut, setUser} = accountSlice.actions;

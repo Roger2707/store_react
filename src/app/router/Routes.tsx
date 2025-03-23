@@ -24,10 +24,8 @@ import { UpdateProfile } from "../../features/pages/Accounts/UpdateProfile";
 import { ChangePassword } from "../../features/pages/Accounts/ChangePassword";
 import { OrdersInfo } from "../../features/pages/Accounts/OrdersInfo";
 import { UserAddressList } from "../../features/pages/Accounts/UserAddressList";
-import { OAuthLoginSuccess } from "../../features/pages/Identity/OAuthLoginSuccess";
 import { BasketPage } from "../../features/pages/Cart/BasketPage";
 import { Order } from "../../features/pages/Orders/Order";
-import { OAuthPopup } from "../../features/pages/Identity/OAuthPopup";
 
 export const router = createBrowserRouter(([
     {
@@ -43,11 +41,8 @@ export const router = createBrowserRouter(([
             { path: 'contact', element: <Contact/> },
             { path: 'login', element: <Login/> },
             { path: 'signup', element: <SignUp/> },
-            { path: 'callback', element: <OAuthLoginSuccess/> },
             { path: 'forgot-password', element: <ForgotPassword/> },
             { path: 'get-reset-password', element: <ResetPassword/> },
-            
-            { path: 'oauth-popup', element: <OAuthPopup/> },
 
             // ERROR ROUTES
             { path: '*', element: <NotfoundPage/> },

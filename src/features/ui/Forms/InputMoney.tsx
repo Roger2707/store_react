@@ -11,8 +11,6 @@ interface Props {
     errors?: string[];
 }
 
-
-
 export const InputMoney = ({id, value, placeholder, type, onGetDataChange}: Props) => {   
     const [inputValue, setInputValue] = useState<string>(formatPrice(value));
 

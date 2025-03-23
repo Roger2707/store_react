@@ -2,24 +2,29 @@ import styled from 'styled-components';
 import { Header } from './features/ui/Layout/Header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Home } from './features/pages/Home/Home';
-import { useAppDispatch } from './app/store/configureStore';
+import { useAppDispatch, useAppSelector } from './app/store/configureStore';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchCurrentUser } from './app/store/accountSlice';
 import { Loading } from './features/ui/Common/Loading';
 import React from 'react';
+import { getBasket } from './app/store/basketSlice';
 
 function App() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [loadingApp, setLoadingApp] = useState<boolean>(true);
+  const {user} = useAppSelector(state => state.account);
 
   const initApp = useCallback(async () => {
     try {
       await dispatch(fetchCurrentUser());
+      if(user && user?.basketId) {
+        await dispatch(getBasket());
+      }
     } catch (error) {
       console.log(error);
     }
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   useEffect(() => {
       initApp().then(() => setLoadingApp(false));

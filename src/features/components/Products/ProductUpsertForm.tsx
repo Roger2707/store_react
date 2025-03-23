@@ -106,13 +106,11 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
             setProduct(prev => {
                 return {...prev, [key]: +e.target.value };
             });
-        }
-        else if(key === 'price') {
+        } else if(key === 'price') {
             setProduct(prev => {
                 return {...prev, [key]: e };
             });
-        }
-        else {       
+        } else {       
             setProduct(prev => {
                 return {...prev, [key]: e.target.value };
             });
