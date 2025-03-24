@@ -103,21 +103,8 @@ const getFormData = (data: any) => {
                 formData.append("imageUrl", file);
             })
         }
-        else if(key === 'productDetails') {
-            
-            data['productDetails'].forEach((detail: any, index: number) => {
-                formData.append(`productDetails[${index}].productId`, detail.productId);
-                formData.append(`productDetails[${index}].price`, detail.price);
-                formData.append(`productDetails[${index}].color`, detail.color);
-                formData.append(`productDetails[${index}].quantityInStock`, detail.quantityInStock);
-                formData.append(`productDetails[${index}].extraName`, detail.extraName);
-            });
-        }
         else formData.append(key, data[key]);
     }
-
-    console.log(formData);
-    
     return formData;
 }
 
@@ -126,8 +113,8 @@ const Product = {
     details: (id: string) => requests.get(`products/get-product-detail?id=${id}`),
     technologies: (productId: string) => requests.get(`products/get-technologies?productId=${productId}`),
     
-    create: (product: ProductUpsert) => requests.postForm('products/create', getFormData(product)),
-    update: (product: ProductUpsert) => requests.putForm(`products/update`, getFormData(product)),
+    create: (product: ProductUpsert) => requests.post('products/create', product),
+    update: (product: ProductUpsert) => requests.put(`products/update`, product),
     delete: (id: string) => requests.del(`products/?id=${id}`),
     changeStatus: (id: string) => requests.post(`products/change-status?id=${id}`, {})
 }

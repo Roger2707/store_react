@@ -7,12 +7,15 @@ import { Dispatch, SetStateAction } from "react";
 interface Props {
     productDetail : ProductUpsertDetail;
     onSetProduct: Dispatch<SetStateAction<ProductUpsert>>;
+    indexRow: number;
+    onAddRow: (index: number) => void;
+    onRemoveRow: (index: number) => void;
 }
 
-export const ProductDetailRow = ({productDetail, onSetProduct}: Props) => {
+export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRow, onRemoveRow}: Props) => {
 
     const handleGetDataChange = (e: any, key: string) => {
-        const newValue = e.target.value;
+        const newValue = key === 'price' ? e : e.target.value;
 
         const updatedProductDetail = { 
             ...productDetail, 
@@ -34,8 +37,8 @@ export const ProductDetailRow = ({productDetail, onSetProduct}: Props) => {
     return (
         <Row>
             <div className="handle-row-action" >
-                <button>+</button>
-                <button>-</button>
+                <button type="button" onClick={() => onAddRow(indexRow)} >+</button>
+                <button type="button" onClick={() => onRemoveRow(indexRow)}>-</button>
             </div>
             <InputMoney id='price' value={productDetail.price} placeholder="Price..." type="text"
                 onGetDataChange={(e) => handleGetDataChange(e, 'price')} 
@@ -68,8 +71,8 @@ const Row = styled.div`
         text-align: center;
         button {
             display: inline-block;
-            padding: 0px 2px;
-            min-width: 15px;
+            padding: 0px 1px;
+            min-width: 12px;
             cursor: pointer;
 
             &:last-child {

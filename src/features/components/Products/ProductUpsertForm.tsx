@@ -35,7 +35,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
         created: new Date().toISOString(),
         categoryId: 1,
         brandId: 1,
-        productDetails: []
+        productDetails: [{color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: '', extraName: ''}]
     });
 
     const [categoriesDropdown, setCategoriesDropdown] = useState<DropdownData[]>([]);
@@ -101,8 +101,6 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
         }
         // If id !== 0 -> Update -> Fetch Existed Product data
         if(id !== '') fetchProductDetailAsync();
-        console.log(id);
-        
     }, [id]);
 
     //#endregion
@@ -110,9 +108,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
     //#region Change Events
 
     const handleGetDataChange = (e: any, key: string) => {    
-        if (key === 'imageUrl') {
-            console.log(e);
-            
+        if (key === 'imageUrl') {  
             setProduct(prev => {
                 return {...prev, [key]: e };
             });   
@@ -125,6 +121,49 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
                 return {...prev, [key]: e.target.value };
             });
         }
+    }
+
+    //#endregion
+
+    //#region Add/Remove Row
+
+    const handleAddRow = (indexRow: number) => {
+        setProduct(prev => {
+            if(prev.productDetails.length === 99) return {...prev};
+
+            const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: '', extraName: ''};
+            let updatedProductDetails = [
+                ...prev.productDetails.slice(0, indexRow + 1), 
+                newDetail, 
+                ...prev.productDetails.slice(indexRow + 1) 
+            ];
+
+            return {
+                ...prev,
+                productDetails: updatedProductDetails
+            }
+        })
+    }
+
+    const handleRemoveRow = (indexRow: number) => {
+        setProduct(prev => {
+            if(prev.productDetails.length === 1) {
+                const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: '', extraName: ''};
+                return {
+                    ...prev,
+                    productDetails: [newDetail]
+                }
+            }
+
+            let updatedProductDetails = [
+                ...prev.productDetails.slice(0, indexRow),
+                ...prev.productDetails.slice(indexRow + 1)
+            ];
+            return {
+                ...prev,
+                productDetails: updatedProductDetails
+            }
+        })
     }
 
     //#endregion
@@ -145,8 +184,9 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
         handleBeforeSubmit();
         
         try { 
-            if(id !== '') 
+            if(id.toString() !== '') {
                 await agent.Product.update(product);
+            }
             else 
                 await agent.Product.create(product);
 
@@ -182,13 +222,21 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
                     <h3>Color</h3>
                     <h3>Extra</h3>
                 </div>
-                <>
-                    {product.productDetails.map((d, i) => <ProductDetailRow key={i} productDetail={d} onSetProduct={setProduct} />)}       
-                </>
+                <div className="rows-container" >
+                    {product.productDetails.map((d, i) => 
+                        <ProductDetailRow 
+                            key={d.id} 
+                            productDetail={d} 
+                            onSetProduct={setProduct} 
+                            indexRow={i} 
+                            onAddRow={handleAddRow} onRemoveRow={handleRemoveRow} 
+                        />)
+                    } 
+                </div>
             </div>
         
             <div className="form_controls" >
-                <button>{id === '' ? 'Create' : 'Update'}</button>
+                <input type="submit" value={id === '' ? 'Create' : 'Update'}/>
             </div>
         </ProductUpsertStyle>
     )
@@ -196,8 +244,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
 
 const ProductUpsertStyle = styled.form`   
     height: fit-content;
-    min-width: 50vw;
-    min-height: 60vh;
+    min-width: 55vw;
 
     .product-header-container {
         display: grid;
@@ -209,10 +256,10 @@ const ProductUpsertStyle = styled.form`
 
     .product-detail-container {
         width: 100%;
-        height: 20vh;
+        height: 25vh;
         padding: 0vh 0vw 1vh .1vw;
-        overflow-y: scroll;
         background-color: #EADDCA;
+        margin-top: 2vh;
 
         .label-details-container {
             display: grid;
@@ -235,6 +282,12 @@ const ProductUpsertStyle = styled.form`
                     color: transparent;
                 }
             }
+        }
+
+        .rows-container {
+            padding: 1vh 0;
+            height: 100%;
+            overflow-y: scroll;
         }
     }
 

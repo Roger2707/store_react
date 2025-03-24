@@ -42,21 +42,22 @@ export const MultipleFileImage = ({value, onGetDataChange}: Props) => {
             <div className="preview" >
                 {
                 (selectedFiles.length === 0 && value !== '') ?
-                Array.from(value.split(',')).map((item, index) => (
-                    <img 
-                        key={index}
-                        src={item}
-                        alt={`Preview ${index}`}
-                    />
-                ))
+                    Array.from(value.split(',')).map((item, index) => (
+                        <img 
+                            key={index}
+                            src={item}
+                            alt={`Preview ${index}`}
+                        />
+                    ))
                 :
-                selectedFiles.map((item, index) => (
-                    <img
-                        key={index}
-                        src={item.preview}
-                        alt={`Preview ${index}`}
-                    />
-                ))}
+                    selectedFiles.map((item, index) => (
+                        <img
+                            key={index}
+                            src={item.preview}
+                            alt={`Preview ${index}`}
+                        />
+                    ))
+                }
             </div>
         </Style>
     )
@@ -80,16 +81,16 @@ const Style = styled.div `
         margin-top: 1vh;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-row-gap: 5px;
         column-gap: 5px;
-        row-gap: 5px;
-        height: 80%;
+        height: fit-content;
         background-color: #ccc;
         border: 2px solid darkgray;
 
         img {
+            display: inline-block;
             width: 100%;
-            height: 100%;
+            height: 100px;
         }
     }
 `
