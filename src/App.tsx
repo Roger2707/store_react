@@ -18,13 +18,17 @@ function App() {
   const initApp = useCallback(async () => {
     try {
       await dispatch(fetchCurrentUser());
-      if(user && user?.basketId) {
-        await dispatch(getBasket());
-      }
     } catch (error) {
       console.log(error);
     }
-  }, [dispatch, user]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user?.basketId) {
+      dispatch(getBasket());
+    }
+  }, [user, dispatch]);
+  
 
   useEffect(() => {
       initApp().then(() => setLoadingApp(false));

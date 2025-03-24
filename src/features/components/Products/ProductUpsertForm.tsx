@@ -85,7 +85,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
                     productDetails: response.details.map(d => {
                         return {
                             id: d.id,
-                            productid: d.productid,
+                            productid: id,
                             color: d.color,
                             extraName: d.extraName,
                             price: d.price,
@@ -142,7 +142,7 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        //handleBeforeSubmit();
+        handleBeforeSubmit();
         
         try { 
             if(id !== '') 

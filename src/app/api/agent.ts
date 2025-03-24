@@ -103,10 +103,21 @@ const getFormData = (data: any) => {
                 formData.append("imageUrl", file);
             })
         }
-        else
-            formData.append(key, data[key]);
+        else if(key === 'productDetails') {
+            
+            data['productDetails'].forEach((detail: any, index: number) => {
+                formData.append(`productDetails[${index}].productId`, detail.productId);
+                formData.append(`productDetails[${index}].price`, detail.price);
+                formData.append(`productDetails[${index}].color`, detail.color);
+                formData.append(`productDetails[${index}].quantityInStock`, detail.quantityInStock);
+                formData.append(`productDetails[${index}].extraName`, detail.extraName);
+            });
+        }
+        else formData.append(key, data[key]);
     }
 
+    console.log(formData);
+    
     return formData;
 }
 
