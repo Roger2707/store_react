@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const ProductItem = ({product} : Props) => {
-    const {id, name, price, discountPrice, imageUrl} = product;
+    const {id, name, imageUrl, details} = product;
 
     return (
         <ProductItemStyle>
@@ -17,12 +17,12 @@ export const ProductItem = ({product} : Props) => {
                 <div className="product-item-detail" >
                     <div className="product-heading">
                         <p>{name}</p>
-                        <span>Sku: #{id.toString().padStart(6, '0')}</span>
+                        <span>Id: #{id.toString().padStart(6, '0')}</span>
                     </div>
                     <div className="product-desc">
                         <div className="product-prices" >
-                            <p className={`product-price ${discountPrice !== 0 && 'price-line'}`} >{price.toLocaleString('vi-VN')}</p>
-                            {discountPrice !== 0 && <p className="product-discount">{discountPrice.toLocaleString('vi-VN')}</p>}
+                            <p className={`product-price ${details[0].price !== 0 && 'price-line'}`} >{details[0].price.toLocaleString('vi-VN')}</p>
+                            {details[0].discountPrice !== 0 && <p className="product-discount">{details[0].discountPrice.toLocaleString('vi-VN')}</p>}
                         </div>
 
                         <div className="product-ratings" >

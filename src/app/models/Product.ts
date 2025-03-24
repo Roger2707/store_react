@@ -1,11 +1,8 @@
 export interface Product {
-    id: number;
+    id: string;
     name: string;
-    price: number;
-    discountPrice: number;
     description: string;
     imageUrl: string;
-    quantityInStock: number;
     productStatus: string;
     created: Date;
     categoryId: number;
@@ -13,6 +10,7 @@ export interface Product {
     brandId: number;
     brandName: string;
     brandCountry: string;
+    details: ProductDetail[],
 }
 
 export interface ProductParams {
@@ -23,12 +21,21 @@ export interface ProductParams {
     currentPage: number,
 }
 
-export interface ProductUpsert {
-    name: string;
+export interface ProductDetail {
+    id: string;
+    productid: string;
     price: number;
+    discountPrice: number;
+    quantityInStock: number;
+    color: string;
+    extraName: string;
+}
+
+export interface ProductUpsert {
+    id?: string;
+    name: string;
     description: string;
     imageUrl: File[] | undefined | null;
-    quantityInStock: number;
     productStatus: number;
     created: string;
     categoryId: number;
@@ -36,6 +43,18 @@ export interface ProductUpsert {
     imageProps: string;
 
     [key: string]: any;
+
+    // Detail
+    productDetails: ProductUpsertDetail[];
+}
+
+export interface ProductUpsertDetail {
+    id: string;
+    productid: string;
+    price: number;
+    quantityInStock: number;
+    color: string;
+    extraName: string;
 }
 
 export interface ProductTechnology {

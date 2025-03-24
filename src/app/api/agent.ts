@@ -112,13 +112,13 @@ const getFormData = (data: any) => {
 
 const Product = {
     list: (params: ProductParams) => requests.get('products/get-products-page', params),
-    details: (id: number) => requests.get(`products/get-product-detail?id=${id}`),
-    technologies: (productId: number) => requests.get(`products/get-technologies?productId=${productId}`),
+    details: (id: string) => requests.get(`products/get-product-detail?id=${id}`),
+    technologies: (productId: string) => requests.get(`products/get-technologies?productId=${productId}`),
     
     create: (product: ProductUpsert) => requests.postForm('products/create', getFormData(product)),
-    update: (id: number, product: ProductUpsert) => requests.putForm(`products/update?id=${id}`, getFormData(product)),
-    delete: (id: number) => requests.del(`products/?id=${id}`),
-    changeStatus: (id: number) => requests.post(`products/change-status?id=${id}`, {})
+    update: (product: ProductUpsert) => requests.putForm(`products/update`, getFormData(product)),
+    delete: (id: string) => requests.del(`products/?id=${id}`),
+    changeStatus: (id: string) => requests.post(`products/change-status?id=${id}`, {})
 }
 
 const Categories = {
@@ -176,7 +176,7 @@ const Location = {
 
 const Basket = {
     get: () => requests.get(`baskets/get-basket`),
-    upsert : (productId: number, mode: number) => requests.post(`baskets/upsert-basket?productId=${productId}&mode=${mode}`, {}),
+    upsert : (productId: string, mode: number) => requests.post(`baskets/upsert-basket?productId=${productId}&mode=${mode}`, {}),
     toggleStatusItem : (itemId: number) => requests.post(`baskets/toggle-status-item?itemId=${itemId}`, {}),
 }
 

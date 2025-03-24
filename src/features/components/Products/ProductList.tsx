@@ -7,9 +7,7 @@ interface Props {
     products: Product[] | undefined;
 }
 
-export const ProductList = ({products} : Props) => {    
-    console.log(products);
-    
+export const ProductList = ({products} : Props) => {     
     return (
         <>
         {

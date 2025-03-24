@@ -4,7 +4,7 @@ import { ProductTechnology } from "../../../app/models/Product";
 import agent from "../../../app/api/agent";
 
 interface Props {
-    productId : number;
+    productId : string;
 }
 
 export const ProductTech = ({productId}: Props) => {

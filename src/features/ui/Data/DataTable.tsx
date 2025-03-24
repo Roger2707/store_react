@@ -12,16 +12,16 @@ interface Column<T> {
 interface Props<T> {
     data: T[] | undefined;
     columns: Column<T>[];
-    onSetCurrentId: (id: number) => void;
+    onSetCurrentId: (id: any) => void;
     onSetOpenForm: (value: boolean) => void;
-    onDeleteItem: (id: number) => void;
+    onDeleteItem: (id: any) => void;
 }
 
 export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem} : Props<T>) {   
     
     const handleUpdate = (row: T) => {
         // Set Current Id is Id of Selected Row
-        onSetCurrentId(+row['id' as keyof T]);
+        onSetCurrentId(row['id' as keyof T]);
 
         // Set Open Form
         onSetOpenForm(true);

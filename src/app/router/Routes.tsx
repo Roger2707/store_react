@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../../App";
 import { ProductPage } from "../../features/pages/Product/ProductPage";
-import { ProductDetail } from "../../features/pages/Product/ProductDetail";
+import { ProductDetailPage } from "../../features/pages/Product/ProductDetailPage";
 import { Login } from "../../features/pages/Identity/Login";
 import { SignUp } from "../../features/pages/Identity/SignUp";
 import { NotfoundPage } from "../middleware/NotfoundPage";
@@ -35,7 +35,7 @@ export const router = createBrowserRouter(([
             
             // PUBLIC ROUTES
             { path: 'products', element: <ProductPage/> },
-            { path: 'products/:id', element: <ProductDetail/> },
+            { path: 'products/:id', element: <ProductDetailPage/> },
             { path: 'about', element: <About/> },
             { path: 'news', element: <News/> },
             { path: 'contact', element: <Contact/> },

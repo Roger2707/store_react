@@ -7,7 +7,7 @@ export interface Basket {
 export interface BasketItem {
     id: number,
     basketId: number,
-    productId: number,
+    productId: string,
     quantity: number,
     status: boolean
 }
@@ -23,7 +23,7 @@ export interface BasketDTO {
 
 interface BasketItemDTO {
     basketItemId: number,
-    productId: number,
+    productId: string,
     productName: string,
     productFirstImage: string,
     quantity: number,

@@ -26,7 +26,7 @@ export const getBasket = createAsyncThunk<BasketDTO>(
     }
 );
 
-export const upsertBasket = createAsyncThunk<BasketDTO, {productId: number, mode: number}>(
+export const upsertBasket = createAsyncThunk<BasketDTO, {productId: string, mode: number}>(
     'basket/upsert-basket',
     async({productId, mode}, thunkAPI) => {
         try {

@@ -26,15 +26,15 @@ export const AdminProduct = () => {
     });
     const {data, isLoading} = useProducts(productParams);
     const [openForm, setOpenForm] = useState<boolean>(false);
-    const [productId, setProductId] = useState<number>(0);
+    const [productId, setProductId] = useState<string>('');
     const queryClient = useQueryClient();
     
     const handleOpenCreateForm = () => {
         setOpenForm(true);
-        setProductId(0);
+        setProductId('');
     }
 
-    const handleDeleteProduct = async (id: number) => {
+    const handleDeleteProduct = async (id: string) => {
         try {
             await agent.Product.changeStatus(id);
             queryClient.invalidateQueries({queryKey: ['products']}); 
@@ -47,7 +47,7 @@ export const AdminProduct = () => {
     return (
         <Style>
             {openForm &&
-                <Modal title={productId === 0 ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
+                <Modal title={productId === '' ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
                     <ProductUpsertForm id={productId} onSetOpenForm={setOpenForm} onSetProductId={setProductId} />
                 </Modal>
             }

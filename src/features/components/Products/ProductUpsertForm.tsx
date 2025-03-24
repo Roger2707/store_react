@@ -12,12 +12,12 @@ import { useCategories } from "../../Hooks/useCategories";
 import { useBrands } from "../../Hooks/useBrands";
 import agent from "../../../app/api/agent";
 import { useQueryClient } from "@tanstack/react-query";
-import { InputMoney } from "../../ui/Forms/InputMoney";
+import { ProductDetailRow } from "./ProductDetailRow";
 
 interface Props {
-    id: number;
+    id: string;
     onSetOpenForm: (e: boolean) => void;
-    onSetProductId: Dispatch<SetStateAction<number>>;
+    onSetProductId: Dispatch<SetStateAction<string>>;
 }
 
 export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) => {
@@ -28,15 +28,14 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
     //#region Get / Init Data Component
     const [product, setProduct] = useState<ProductUpsert>({
         name: '',
-        price: 0,
         description: '',
         imageUrl: null,
         imageProps: '',
-        quantityInStock: 0,
         productStatus: 1,
         created: new Date().toISOString(),
         categoryId: 1,
         brandId: 1,
+        productDetails: []
     });
 
     const [categoriesDropdown, setCategoriesDropdown] = useState<DropdownData[]>([]);
@@ -68,18 +67,31 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
     useEffect(() => {
         const fetchProductDetailAsync = async () => {
             try {
-                const response : Product = await agent.Product.details(Number(id));
+                if(id === null || id === '') return;
+
+                const response : Product = await agent.Product.details(id);
                 const productUpsert : ProductUpsert = {
+                    id: id,
                     name: response.name,
-                    price: response.price,
                     description: response.description,
                     imageUrl: null,
                     imageProps: response.imageUrl,
-                    quantityInStock: response.quantityInStock,
                     productStatus: response.productStatus === 'In Stock' ? 1 : 2,
                     created: response.created.toString(),
                     categoryId: response.categoryId,
                     brandId: response.brandId,
+
+                    // details
+                    productDetails: response.details.map(d => {
+                        return {
+                            id: d.id,
+                            productid: d.productid,
+                            color: d.color,
+                            extraName: d.extraName,
+                            price: d.price,
+                            quantityInStock: d.quantityInStock
+                        }
+                    })
                 }
                 //////////////////////////////////////////////////////////////////////////
                 setProduct(productUpsert);
@@ -88,7 +100,9 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
             }
         }
         // If id !== 0 -> Update -> Fetch Existed Product data
-        if(id !== 0) fetchProductDetailAsync();
+        if(id !== '') fetchProductDetailAsync();
+        console.log(id);
+        
     }, [id]);
 
     //#endregion
@@ -106,10 +120,6 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
             setProduct(prev => {
                 return {...prev, [key]: +e.target.value };
             });
-        } else if(key === 'price') {
-            setProduct(prev => {
-                return {...prev, [key]: e };
-            });
         } else {       
             setProduct(prev => {
                 return {...prev, [key]: e.target.value };
@@ -122,21 +132,21 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
     //#region Submit Form
 
     const handleBeforeSubmit = () => {
-
+        console.log(product);
     }
 
     const handleCloseForm = () => {
         onSetOpenForm(false);
-        onSetProductId(0);
+        onSetProductId('');
     }
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        handleBeforeSubmit();
+        //handleBeforeSubmit();
         
         try { 
-            if(id !== 0) 
-                await agent.Product.update(id, product);
+            if(id !== '') 
+                await agent.Product.update(product);
             else 
                 await agent.Product.create(product);
 
@@ -152,30 +162,33 @@ export const ProductUpsertForm = ({id, onSetOpenForm, onSetProductId}: Props) =>
 
     return (
         <ProductUpsertStyle onSubmit={handleSubmit}>
-            <div className="form_inputs" >
+            <div className="product-header-container" >
                 <Input id='name' value={product.name} placeholder="Name..." type="text" 
                         onGetDataChange={(e) => handleGetDataChange(e, 'name')} 
                 />
-
-                <InputMoney id='price' value={product.price} placeholder="Price..." type="text"
-                        onGetDataChange={(e) => handleGetDataChange(e, 'price')} 
-                />
-                <Input id='quantityInStock' value={product.quantityInStock} placeholder="Quantity..." type="number" 
-                        onGetDataChange={(e) => handleGetDataChange(e, 'quantityInStock')} 
-                />
-
                 <Dropdown field="productStatus" data={productStatus} currentSelectedValue={product.productStatus} onGetDataChange={e => handleGetDataChange(e, 'productStatus')} />
                 <Dropdown field="category" data={categoriesDropdown} currentSelectedValue={product.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
                 <Dropdown field="brand" data={brandsDropdown} currentSelectedValue={product.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
                 <Textarea id='description' value={product.description} placeholder="Description..." 
                             onGetDataChange={e => handleGetDataChange(e, 'description')}
                 />
-
                 <MultipleFileImage value={product.imageProps || ''} onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}/>
+            </div>
+            <div className="product-detail-container" >
+                <div className="label-details-container" >
+                    <h3>a</h3>
+                    <h3>Price</h3>
+                    <h3>Quantity</h3>
+                    <h3>Color</h3>
+                    <h3>Extra</h3>
+                </div>
+                <>
+                    {product.productDetails.map((d, i) => <ProductDetailRow key={i} productDetail={d} onSetProduct={setProduct} />)}       
+                </>
             </div>
         
             <div className="form_controls" >
-                <button>{id === 0 ? 'Create' : 'Update'}</button>
+                <button>{id === '' ? 'Create' : 'Update'}</button>
             </div>
         </ProductUpsertStyle>
     )
@@ -186,13 +199,43 @@ const ProductUpsertStyle = styled.form`
     min-width: 50vw;
     min-height: 60vh;
 
-
-    .form_inputs {
+    .product-header-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-column-gap: 10%;   
         grid-row-gap: 1.5vh;
-        height: fit-content;
+        height: fit-content;    
+    }
+
+    .product-detail-container {
+        width: 100%;
+        height: 20vh;
+        padding: 0vh 0vw 1vh .1vw;
+        overflow-y: scroll;
+        background-color: #EADDCA;
+
+        .label-details-container {
+            display: grid;
+            grid-template-columns: 4% 23.5% 23.5% 23.5% 23.5%;
+            grid-column-gap: .2vw;
+            align-items: center;
+            margin-bottom: .5vh;
+
+            h3 {
+                text-align: center;
+                background-color: #E1C16E;
+                color: white;
+                font-weight: 500;
+                font-style: italic;
+                letter-spacing: 1px;
+                padding: 0.3vh 0vw;
+
+                &:first-child {
+                    background-color: transparent;
+                    color: transparent;
+                }
+            }
+        }
     }
 
     .form_controls {

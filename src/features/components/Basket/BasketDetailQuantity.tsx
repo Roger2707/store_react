@@ -6,7 +6,7 @@ import { upsertBasket } from "../../../app/store/basketSlice";
 
 interface Props {
     quantity: number;
-    productId: number;
+    productId: string;
 }
 
 export const BasketDetailQuantity = ({quantity, productId}: Props) => {

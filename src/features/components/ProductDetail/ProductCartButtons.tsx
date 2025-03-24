@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/store/configureStor
 import { getBasket, upsertBasket } from "../../../app/store/basketSlice";
 
 interface Props {
-    productId: number;
+    productId: string;
 }
 
 export const ProductCartButtons = ({productId}: Props) => {
