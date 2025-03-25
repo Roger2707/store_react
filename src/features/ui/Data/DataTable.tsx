@@ -15,9 +15,10 @@ interface Props<T> {
     onSetCurrentId: (id: any) => void;
     onSetOpenForm: (value: boolean) => void;
     onDeleteItem: (id: any) => void;
+    onSetIsCreateMode?: (value: boolean) => void;
 }
 
-export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem} : Props<T>) {   
+export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode} : Props<T>) {   
     
     const handleUpdate = (row: T) => {
         // Set Current Id is Id of Selected Row
@@ -25,6 +26,11 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
 
         // Set Open Form
         onSetOpenForm(true);
+
+        // SetIsCreateMode
+        if(onSetIsCreateMode){
+            onSetIsCreateMode(false);
+        }
     }
 
     const handleDelete = (row: T) => {

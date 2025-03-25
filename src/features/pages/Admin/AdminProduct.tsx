@@ -25,13 +25,16 @@ export const AdminProduct = () => {
         searchBy: ''
     });
     const {data, isLoading} = useProducts(productParams);
-    const [openForm, setOpenForm] = useState<boolean>(false);
-    const [productId, setProductId] = useState<string>('');
     const queryClient = useQueryClient();
+
+    const [productId, setProductId] = useState<string>('');
+    const [openForm, setOpenForm] = useState<boolean>(false);
+    const [isCreateMode, setIsCreateMode] = useState<boolean>(true);
     
     const handleOpenCreateForm = () => {
         setOpenForm(true);
-        setProductId('');
+        setProductId(crypto.randomUUID());
+        setIsCreateMode(true);
     }
 
     const handleDeleteProduct = async (id: string) => {
@@ -47,8 +50,8 @@ export const AdminProduct = () => {
     return (
         <Style>
             {openForm &&
-                <Modal title={productId === '' ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
-                    <ProductUpsertForm id={productId} onSetOpenForm={setOpenForm} onSetProductId={setProductId} />
+                <Modal title={isCreateMode ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
+                    <ProductUpsertForm productId={productId} onSetOpenForm={setOpenForm} isCreateMode={isCreateMode} />
                 </Modal>
             }
 
@@ -83,9 +86,10 @@ export const AdminProduct = () => {
                             data={data.dataInCurrentPage} 
                             columns={columns} 
 
-                            onSetCurrentId={setProductId} 
+                            onSetCurrentId={setProductId}
                             onSetOpenForm={setOpenForm}
                             onDeleteItem={handleDeleteProduct}
+                            onSetIsCreateMode={setIsCreateMode}
                         />
                         <Pagination totalPage={data.totalPage} params={productParams} onSetParams={setProductParams}/>
                     </>

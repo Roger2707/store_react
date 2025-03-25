@@ -2,7 +2,10 @@ export interface Product {
     id: string;
     name: string;
     description: string;
+
     imageUrl: string;
+    publicId: string;
+
     productStatus: string;
     created: Date;
     categoryId: number;
@@ -32,17 +35,17 @@ export interface ProductDetail {
 }
 
 export interface ProductUpsert {
-    id?: string;
+    id: string;
     name: string;
     description: string;
-    imageUrl: File[] | undefined | null;
+
+    imageUrl: string;
+    publicId: string;
+
     productStatus: number;
     created: string;
     categoryId: number;
     brandId: number;
-    imageProps: string;
-
-    [key: string]: any;
 
     // Detail
     productDetails: ProductUpsertDetail[];

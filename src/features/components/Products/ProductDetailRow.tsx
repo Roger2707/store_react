@@ -15,8 +15,18 @@ interface Props {
 export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRow, onRemoveRow}: Props) => {
 
     const handleGetDataChange = (e: any, key: string) => {
-        const newValue = key === 'price' ? e : e.target.value;
-
+        let newValue;
+        switch (key) {
+            case 'price':
+                newValue = e;
+                break;
+            case 'quantityInStock':
+                newValue = +e.target.value;
+                break;
+            default:
+                newValue = e.target.value;
+        }
+        
         const updatedProductDetail = { 
             ...productDetail, 
             [key]: newValue 

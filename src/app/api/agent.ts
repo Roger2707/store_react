@@ -8,6 +8,7 @@ import { Brand } from "../models/Brand";
 import { PromotionUpsert } from "../models/Promotion";
 import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserAddressDTO, UserProfileUpdate } from "../models/User";
 import { store } from "../store/configureStore";
+import { ImageUploadDTO } from "../models/ImageUpload";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
@@ -21,7 +22,7 @@ axios.interceptors.request.use(config => {
     const token = store.getState().account.user?.token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
-})
+});
 
 axios.interceptors.response.use(async response => {
     await sleep();
@@ -77,12 +78,12 @@ axios.interceptors.response.use(async response => {
             break;
     }
     return Promise.reject(error.response);
-})
+});
 
 const requests = {
     get: (url: string, params?: any) => axios.get(url, {params}).then(responseBody),
     post: (url: string, body: object) => axios.post(url, body).then(responseBody),
-    put: (url: string, body: object) => axios.put(url, body).then(responseBody),
+    put: (url: string, body: object) =>  axios.put(url, body).then(responseBody),
     del: (url: string) => axios.delete(url).then(responseBody),
 
     postForm: (url: string, data: FormData) => axios.post(url, data, {
@@ -98,14 +99,18 @@ const getFormData = (data: any) => {
     const formData = new FormData();    
     for(const key in data)
     {
-        if(key === 'imageUrl') {
-            data['imageUrl']?.forEach((file: File) => {
-                formData.append("imageUrl", file);
+        if(key === 'files') {
+            data['files']?.forEach((file: File) => {
+                formData.append("files", file);
             })
         }
         else formData.append(key, data[key]);
     }
     return formData;
+}
+
+const Upload = {
+    upload: (params: ImageUploadDTO) => requests.postForm('uploads/upload-images', getFormData(params))
 }
 
 const Product = {
@@ -185,6 +190,7 @@ const Order = {
 }
 
 const agent = {
+    Upload,
     Product,
     Categories,
     Brands,
