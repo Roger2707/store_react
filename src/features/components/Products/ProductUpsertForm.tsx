@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { Product, ProductUpsert } from "../../../app/models/Product";
-import { useEffect, useState } from "react";
+import { Product, ProductUpsert, ProductUpsertDetail } from "../../../app/models/Product";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "../../ui/Forms/Input";
 import { Textarea } from "../../ui/Forms/Textarea";
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
@@ -25,7 +25,11 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     const {data: categories} = useCategories();
     const {data: brands} = useBrands();
     const queryClient = useQueryClient();
-    const [isSave, setIsSave] = useState<boolean>(false);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isClearMode, setIsClearMode] = useState<boolean>(false);
+    const colorRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const [error, setError] = useState<string>('');
 
     // State Origin -> use when clear form
     const [originState, setOriginState] = useState<ProductUpsert>({
@@ -39,6 +43,13 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         categoryId: 1,
         brandId: 1,
         productDetails: [{color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: ''}]
+    });
+
+    const [originUpload, setOriginUpload] = useState<ImageUploadDTO>({
+        files: null,
+        folderPath: '',
+        publicIds: '',
+        imageDisplay: ''
     });
 
     //#region Get / Init Data Component
@@ -92,7 +103,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         const fetchProductDetailAsync = async () => {
             try {
                 if(isCreateMode) return;
-                setIsSave(true);
+                setIsLoading(true);
                 const response : Product = await agent.Product.details(productId);
                 const productUpsert : ProductUpsert = {
                     id: productId,
@@ -125,17 +136,26 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                         , folderPath: `products/${productUpsert.name.trim().toLowerCase()}`
                         , publicIds: productUpsert.publicId
                         // reference for UploadComponent
-                        , imageDisplay: productUpsert.imageUrl    
+                        , imageDisplay: productUpsert.imageUrl
                     }
                 });
 
                 // Set State Origin
                 setOriginState(productUpsert);
+                setOriginUpload(prev => {
+                    return {
+                        ...prev
+                        , folderPath: `products/${productUpsert.name.trim().toLowerCase()}`
+                        , publicIds: productUpsert.publicId
+                        // reference for UploadComponent
+                        , imageDisplay: productUpsert.imageUrl
+                    }
+                });
             } catch (error: any) {
                 
             }
             finally {
-                setIsSave(false);
+                setIsLoading(false);
             }
         }
         // If id !== 0 -> Update -> Fetch Existed Product data
@@ -207,65 +227,124 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     }
 
     const handleClearData = () => {
+        setIsClearMode(true);
         setProduct(originState);
+        setUpload(originUpload);
     }
 
     //#endregion
 
     //#region Submit Form
 
-    const handleBeforeSubmit = () => {
-        // console.log(upload);      
-        console.log(product);
-    }
-
     const handleCloseForm = () => {
         onSetOpenForm(false);
     }
 
+    const validateData = () => {
+        if(!checkRequired()) return false;
+        if(!checkDuplicateColor()) return false;
+        return true;
+    }
+
+    const checkRequired = () => {
+        for(let i = 0; i < product.productDetails.length; i ++) {
+            const currentRow : ProductUpsertDetail = product.productDetails[i];
+            if(isEmptyRow(currentRow)) continue;
+
+            const currentPrice = +currentRow.price;
+            const currentQuantity = +currentRow.quantityInStock;
+            if(currentPrice === 0) {
+                setError(`Row index ${i} has empty price`);
+                return false;
+            }
+            if(currentQuantity === 0) {
+                setError(`Row index ${i} has empty quantity`);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const checkDuplicateColor = () => {
+        for(let i = 0; i < product.productDetails.length; i ++) {
+            const currentRow : ProductUpsertDetail = product.productDetails[i];
+            const currentColor = currentRow.color;
+
+            // CurrentRow is Empty Row => Next Row
+            if(isEmptyRow(currentRow)) continue;
+
+            for(let j = 0; j < product.productDetails.length; j ++) {
+                if(j === i) continue;
+                const compareLoopRow : ProductUpsertDetail = product.productDetails[j];
+                const compareLoopColor = compareLoopRow.color;
+                if(isEmptyRow(compareLoopRow)) continue;
+
+                if(compareLoopColor === currentColor) {
+                    setError(`Duplicate Color at row_index: ${j}, value: ${compareLoopColor}`);
+                    
+                    // Focus vào input bị lỗi
+                    setTimeout(() => {
+                        colorRefs.current[j]?.focus();
+                    }, 0);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    const isEmptyRow = (currentRow: ProductUpsertDetail) => {
+        if(+currentRow.price !== 0) return false;
+        if(+currentRow.quantityInStock !== 0) return false;
+        if(currentRow.color !== '') return false;
+        if(currentRow.extraName !== '') return false;
+
+        return true;
+    }
+
+    useEffect(() => {
+        error && console.log(error);
+    }, [error])
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        handleBeforeSubmit();  
+
+        if(!validateData()) return;
+
+        setIsSaving(true);
         try { 
-
-            setIsSave(true);
-
             let uploadResult : ImageUploadResult = await agent.Upload.upload(upload);
             if (!uploadResult) {
                 console.log('Update Image has some problems !');
+                setIsSaving(false);
                 return;
             }
-            
-            // if update as normal, setProduct is not updated in function
+                     
             const updatedProduct : ProductUpsert = {
-                ...product,
-                imageUrl: uploadResult.imageUrl || product.imageUrl,
-                publicId: uploadResult.publicId || product.publicId
-            };     
-            setProduct(updatedProduct);
-
+                ...product
+                , imageUrl: uploadResult.imageUrl || product.imageUrl
+                , publicId: uploadResult.publicId || product.publicId
+                , productDetails: product.productDetails.filter(p => !isEmptyRow(p))
+            }
+        
             if(!isCreateMode) {
                 await agent.Product.update(updatedProduct);
             }
             else {
                 await agent.Product.create(updatedProduct);
             }
-
             queryClient.invalidateQueries({queryKey: ['products']});
             handleCloseForm();
 
         } catch (error: any) {      
-
-        }
-        finally {
-            setIsSave(false);
+            setIsSaving(false);
         }
     }
 
     //#endregion
 
     return (
-        <ProductUpsertStyle onSubmit={handleSubmit} disabled={isSave} >
+        <ProductUpsertStyle onSubmit={handleSubmit} disabled={isSaving || isLoading} >
             <div className="product-header-container" >
                 <Input id='name' value={product.name} placeholder="Name..." type="text" 
                         onGetDataChange={(e) => handleGetDataChange(e, 'name')} 
@@ -276,7 +355,11 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                 <Textarea id='description' value={product.description} placeholder="Description..." 
                             onGetDataChange={e => handleGetDataChange(e, 'description')}
                 />
-                <MultipleFileImage value={upload.imageDisplay || ''} onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}/>
+                <MultipleFileImage 
+                    isClearMode = {isClearMode}
+                    value={upload.imageDisplay} 
+                    onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}
+                />
             </div>
             <div className="product-detail-container" >
                 <div className="label-details-container" >
@@ -300,8 +383,8 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
             </div>
         
             <div className="form_controls" >
-                <input className="btn-submit" type="submit" value={'Submit'}/>
-                <input className="btn-clear" type="button" value={'Clear'} onClick={handleClearData}/>
+                <button className="btn-submit" type="submit">Submit</button>
+                <button className="btn-clear" type="button" onClick={handleClearData}>Clear</button>
             </div>
         </ProductUpsertStyle>
     )

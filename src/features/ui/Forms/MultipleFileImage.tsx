@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Props {
+    isClearMode: boolean;
     value: string;
     onGetDataChange: (e:any) => void;
 }
@@ -11,11 +12,10 @@ export interface FileWithPreview {
     preview: string;
   }
 
-export const MultipleFileImage = ({value, onGetDataChange}: Props) => {
+export const MultipleFileImage = ({isClearMode, value, onGetDataChange}: Props) => {
     const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
 
     const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-
         const files = e.target.files;
         if (!files) return;
 
@@ -28,6 +28,9 @@ export const MultipleFileImage = ({value, onGetDataChange}: Props) => {
         onGetDataChange(Array.from(files));
     }
 
+    useEffect(() => {
+        isClearMode && setSelectedFiles([]);
+    }, [isClearMode])
 
     return (
         <Style>
@@ -41,7 +44,7 @@ export const MultipleFileImage = ({value, onGetDataChange}: Props) => {
             <label htmlFor="imageUpload" >Uploads:</label>
             <div className="preview" >
                 {
-                (selectedFiles.length === 0 && value !== '') ?
+                ((selectedFiles.length === 0 && value !== '') || isClearMode) ?
                     Array.from(value.split(',')).map((item, index) => (
                         <img 
                             key={index}

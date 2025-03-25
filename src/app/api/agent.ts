@@ -60,6 +60,9 @@ axios.interceptors.response.use(async response => {
             }
             else if(data.title) {  
                 toast.error(data.title, {icon: icons.error});
+            } 
+            else {
+                console.log(data);
             }
             break;
         case 401:
