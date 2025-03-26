@@ -15,7 +15,7 @@ export interface PromotionUpsert {
     categoryName?: string;
     brandId: string,
     brandName?: string;
-    start: string,
-    end: string,
+    startDate: Date,
+    endDate: Date,
     percentageDiscount: number, 
 }

@@ -5,7 +5,6 @@ import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
 import { Brand } from "../models/Brand";
-import { PromotionUpsert } from "../models/Promotion";
 import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserAddressDTO, UserProfileUpdate } from "../models/User";
 import { store } from "../store/configureStore";
 import { ImageUploadDTO } from "../models/ImageUpload";
@@ -146,10 +145,10 @@ const Brands = {
 }
 
 const Promotions = {
-    getAll: (start: string, end: string) => requests.get(`promotions/get-all?start=${start}&end=${end}`),
+    getAll: () => requests.get(`promotions/get-all`),
 
-    create: (promotion: PromotionUpsert) => requests.postForm(`promotions/create`, getFormData(promotion)),
-    update: (promotion: PromotionUpsert) => requests.putForm(`promotions/update`, getFormData(promotion)),
+    create: (promotion: any) => requests.postForm(`promotions/create`, getFormData(promotion)),
+    update: (promotion: any) => requests.putForm(`promotions/update`, getFormData(promotion)),
     delete: (id: string) => requests.del(`promotions/delete?id=${id}`),
 }
 

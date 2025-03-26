@@ -6,11 +6,10 @@ import { Brand } from "../../../app/models/Brand";
 import { Promotion, PromotionUpsert } from "../../../app/models/Promotion";
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
 import { Category } from "../../../app/models/Category";
-import { setPromotions } from "../../../app/store/promotionSlice";
+import { setPromotionsCreate, setPromotionUpdate } from "../../../app/store/promotionSlice";
 import { useCategories } from "../../Hooks/useCategories";
 import { useBrands } from "../../Hooks/useBrands";
 import agent from "../../../app/api/agent";
-import { formatDateString } from "../../../app/utils/helper";
 
 interface Props {
     id: string;
@@ -18,10 +17,12 @@ interface Props {
 }
 
 export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
-    const [promotion, setPromotion] = useState<PromotionUpsert>({id: id, brandId: '', categoryId: '', start: '', end: '', percentageDiscount: 0});
+    const [promotion, setPromotion] = useState<PromotionUpsert>({id: id, brandId: '', categoryId: '', startDate: new Date(), endDate: new Date(), percentageDiscount: 0});
     const {promotions} = useAppSelector(state => state.promotion);
     const existedPromoiton = promotions.find(c => c.id === id);
     const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [saving, setSaving] = useState<boolean>(false);
 
     // react query
     const {data: categories} = useCategories();
@@ -35,12 +36,13 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
                     id: existedPromoiton.id,
                     categoryId: existedPromoiton.categoryId, 
                     brandId: existedPromoiton.brandId,
-                    start: existedPromoiton.startDate+'',
-                    end: existedPromoiton.endDate+'',
+                    startDate: new Date(existedPromoiton.startDate),
+                    endDate: new Date(existedPromoiton.endDate),
                     percentageDiscount: existedPromoiton.percentageDiscount
                 };
-            });
+            });   
         }
+        
     }, [existedPromoiton]);
 
     const categoryDropdown : DropdownData[] = useMemo(() => {
@@ -69,14 +71,21 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
         }
     }, [brandDropdown, promotion.brandId]);
     
-    const handleGetDataChange = (e: any, key: string) => {
-        setPromotion(prev => {
-            return {...prev, [key] : e.target.value};
-        });
-    }
+    const handleGetDataChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        let value: string | Date;;
+        switch(key){
+            case "startDate":
+            case "endDate":
+                value = new Date(e.target.value);
+                break;
+            default:
+                value = e.target.value;
+                break;          
+        }
 
-    const handleBeforeSubmit = () => {
-        console.log(promotion);     
+        setPromotion(prev => {
+            return {...prev, [key] : value};
+        });        
     }
 
     const handleCloseForm = () => {
@@ -85,42 +94,25 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        handleBeforeSubmit();
         try{
             let promotionResult : Promotion;
+            let objectParam = {
+                id: promotion.id,
+                categoryId: promotion.categoryId,
+                brandId: promotion.brandId,
+                startDate: promotion.startDate.toISOString(),
+                endDate: promotion.endDate.toISOString(),
+                percentageDiscount: promotion.percentageDiscount
+            }
+            console.log(objectParam);
+            
             if(existedPromoiton) {            
-                promotionResult = await agent.Promotions.update(
-                {
-                    id: promotion.id,
-                    categoryId: promotion.categoryId,
-                    brandId: promotion.brandId,
-                    start: promotion.start.split('T')[0].replaceAll('-', ''),
-                    end: promotion.end.split('T')[0].replaceAll('-', ''),
-                    percentageDiscount: promotion.percentageDiscount
-                });
+                promotionResult = await agent.Promotions.update(objectParam);
+                dispatch(setPromotionUpdate(promotionResult));
             }
             else {
-                promotionResult = await agent.Promotions.create(
-                {
-                    id: promotion.id,
-                    categoryId: promotion.categoryId,
-                    brandId: promotion.brandId,
-                    start: promotion.start.replaceAll('-', ''),
-                    end: promotion.end.replaceAll('-', ''),
-                    percentageDiscount: promotion.percentageDiscount
-                });
-
-                console.log(promotionResult);
-                
-                promotionResult = 
-                {
-                    ...promotionResult
-                    , categoryName: categoryDropdown.filter(c => c.value === promotionResult.categoryId)[0].title
-                    , brandName: brandDropdown.filter(c => c.value === promotionResult.brandId)[0].title
-                    , startDate: new Date(formatDateString(promotionResult.startDate.toString()))
-                    , endDate: new Date(formatDateString(promotionResult.endDate.toString()))
-                }
-                dispatch(setPromotions(promotionResult));
+                promotionResult = await agent.Promotions.create(objectParam);
+                dispatch(setPromotionsCreate(promotionResult));          
             }
             handleCloseForm();
         }
@@ -130,57 +122,52 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
     }
 
     return (
-        <Style>
-            <form onSubmit={handleSubmit} >
+        <Style onSubmit={handleSubmit} >
+            <div className="form_inputs" >
                 <Dropdown field="categoryId" data={categoryDropdown} currentSelectedValue={promotion.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
                 <Dropdown field="brandId" data={brandDropdown} currentSelectedValue={promotion.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
-
-                <Input id='startDate' placeholder="Start Date..." type="date" value={promotion.start.split('T')[0]} onGetDataChange = {(e) => handleGetDataChange(e, 'start')}  />
-                <Input id='endDate' placeholder="End Date..." type="date" value={promotion.end.split('T')[0]} onGetDataChange = {(e) => handleGetDataChange(e, 'end')}  />
-
+                <Input id='startDate' placeholder="Start Date..." type="date" value={promotion.startDate instanceof Date ? promotion.startDate.toISOString().split("T")[0] : ''} onGetDataChange = {(e) => handleGetDataChange(e, 'startDate')}  />
+                <Input id='endDate' placeholder="End Date..." type="date" value={promotion.startDate instanceof Date ? promotion.endDate.toISOString().split("T")[0] : ''} onGetDataChange = {(e) => handleGetDataChange(e, 'endDate')}  />
                 <Input id='percentageDiscount' placeholder="% Discount" type="number" value={promotion.percentageDiscount} onGetDataChange = {(e) => handleGetDataChange(e, 'percentageDiscount')}  />
+            </div>
 
-                <div className="form_controls" >
-                    <button>Save</button>
-                </div>
-            </form>
+            <div className="form_controls" >
+                <button>Save</button>
+            </div>
         </Style>
     )
 }
 
-const Style = styled.div`
-    form {
+const Style = styled.form`
+    .form_inputs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10%;
+        
+    }
 
-        .form_inputs {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10%;
-            
-        }
+    .form_controls {
+        margin-top: 11vh;
+        display: flex;
+        justify-content: right;
 
-        .form_controls {
-            margin-top: 11vh;
-            display: flex;
-            justify-content: right;
+        border-top: 2px solid #6082B6;
+        padding-top: 1vh;
 
-            border-top: 2px solid #6082B6;
-            padding-top: 1vh;
+        button {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background-color: #EE4B2B;
+            color: white;
+            opacity: 0.8;
 
-            button {
-                padding: 10px 20px;
-                font-size: 1.1rem;
-                border-radius: 10px;
-                border: none;
-                outline: none;
-                background-color: #EE4B2B;
-                color: white;
-                opacity: 0.8;
-
-                &:hover {
-                    cursor: pointer;
-                    opacity: 1;
-                    transition: 0.5s;
-                }
+            &:hover {
+                cursor: pointer;
+                opacity: 1;
+                transition: 0.5s;
             }
         }
     }

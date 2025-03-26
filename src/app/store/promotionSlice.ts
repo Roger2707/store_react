@@ -12,11 +12,11 @@ const initialState : PromotionState = {
     status: false,
 }
 
-export const fetchPromotionsAsync = createAsyncThunk<Promotion[], {start: string, end: string}>(
+export const fetchPromotionsAsync = createAsyncThunk<Promotion[]>(
     'promotions/fetchPromotionsAsync',
-    async ({start, end}, thunkAPI) => {
+    async (_, thunkAPI) => {
         try {
-            const response = await agent.Promotions.getAll(start, end);      
+            const response = await agent.Promotions.getAll();  
             return response;
         }
         catch(error: any) {
@@ -29,8 +29,17 @@ export const promotionSlice = createSlice({
     name: 'promotion',
     initialState,
     reducers: {
-        setPromotions : (state, action) => {
-            state.promotions = [...state.promotions, action.payload];
+        setPromotionsCreate : (state, action) => {
+            state.promotions = [...state.promotions, action.payload].sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+        },
+
+        setPromotionUpdate : (state, action) => {
+            const index = state.promotions.findIndex(p => p.id === action.payload.id);
+            state.promotions[index] = action.payload;
+        },
+
+        setPromotionDelete : (state, action) => {
+            state.promotions = state.promotions.filter(p => p.id !== action.payload);
         }
     },
     extraReducers: builder => {
@@ -45,9 +54,8 @@ export const promotionSlice = createSlice({
 
         builder.addCase(fetchPromotionsAsync.rejected, (state, action) => {
             state.status = true;
-            console.log(action.payload);
         });
     }
 });
 
-export const {setPromotions} = promotionSlice.actions;
+export const {setPromotionsCreate, setPromotionUpdate, setPromotionDelete} = promotionSlice.actions;

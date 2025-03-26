@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import agent from "../../../app/api/agent";
-import { fetchPromotionsAsync, setPromotions } from "../../../app/store/promotionSlice";
+import { fetchPromotionsAsync, setPromotionDelete } from "../../../app/store/promotionSlice";
 import { Modal } from "../../ui/Layout/Modal";
 import { FaPlus } from "react-icons/fa";
 import { Loading } from "../../ui/Common/Loading";
@@ -69,15 +69,15 @@ export const AdminPromotion = () => {
     const handleDeletePromotion = async (id: string) => {
         try {
             await agent.Promotions.delete(id);
-            dispatch(setPromotions(undefined));
+            dispatch(setPromotionDelete(id));
         }
         catch(error: any) {
-
+            console.error(error);
         }
     }
 
     useEffect(() => {
-        if(!status) dispatch(fetchPromotionsAsync({start: '', end: ''}));
+        if(!status) dispatch(fetchPromotionsAsync());
     }, [status, dispatch]);
 
     return (
@@ -101,10 +101,10 @@ export const AdminPromotion = () => {
                 <Loading message="Loading..."/>
                 :
                 (
-                    (promotions != null && promotions.length !== 0) ?          
+                    (promotions != null && promotions.length !== 0) ?
                     <>
                         <DataTable 
-                            data={promotions} 
+                            data={promotions}
                             columns={columns} 
 
                             onSetCurrentId={setPromotionId} 

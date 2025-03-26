@@ -34,7 +34,7 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
     }
 
     const handleDelete = (row: T) => {
-        onDeleteItem(+row['id' as keyof T]);
+        onDeleteItem(row['id' as keyof T]);
     }
     
     return (
