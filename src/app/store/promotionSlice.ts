@@ -30,7 +30,7 @@ export const promotionSlice = createSlice({
     initialState,
     reducers: {
         setPromotions : (state, action) => {
-            state.status = false;
+            state.promotions = [...state.promotions, action.payload];
         }
     },
     extraReducers: builder => {

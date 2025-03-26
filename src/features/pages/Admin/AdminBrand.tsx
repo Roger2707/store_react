@@ -12,8 +12,9 @@ import { BrandUpsertForm } from "../../components/Brands/BrandUpsertForm";
 
 export const AdminBrand = () => {
     const {brands, status} = useAppSelector(state => state.brand);
-    const [brandId, setBrandId] = useState<number>(0);
+    const [brandId, setBrandId] = useState<string>('');
     const [openForm, setOpenForm] = useState<boolean>(false);
+    const [isCreateMode, setIsCreateMode] = useState<boolean>(false);
     const dispatch = useAppDispatch();
 
     const columns = [
@@ -33,10 +34,11 @@ export const AdminBrand = () => {
 
     const handleOpenCreateForm = () => {
         setOpenForm(true);
-        setBrandId(0);
+        setBrandId(crypto.randomUUID());
+        setIsCreateMode(true);
     }
 
-    const handleDeleteBrand = async (id: number) => {
+    const handleDeleteBrand = async (id: string) => {
         try {
             await agent.Brands.delete(id);
             dispatch(setBrands(undefined));
@@ -53,8 +55,8 @@ export const AdminBrand = () => {
     return (
         <Style>
             {openForm &&
-                <Modal title={brandId === 0 ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
-                    <BrandUpsertForm id={brandId} onSetOpenForm={setOpenForm} onSetBrandId={setBrandId} />
+                <Modal title={isCreateMode ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
+                    <BrandUpsertForm id={brandId} onSetOpenForm={setOpenForm} />
                 </Modal>
             }
 

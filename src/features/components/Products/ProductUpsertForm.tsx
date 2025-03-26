@@ -31,8 +31,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     const colorRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [error, setError] = useState<string>('');
 
-    // State Origin -> use when clear form
-    const [originState, setOriginState] = useState<ProductUpsert>({
+    const initProduct : ProductUpsert = {
         id : productId,
         name: '',
         description: '',
@@ -40,38 +39,25 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         publicId: '',
         productStatus: 1,
         created: new Date().toISOString(),
-        categoryId: 1,
-        brandId: 1,
+        categoryId: crypto.randomUUID(),
+        brandId: crypto.randomUUID(),
         productDetails: [{color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: ''}]
-    });
+    }
 
-    const [originUpload, setOriginUpload] = useState<ImageUploadDTO>({
+    const initUpload : ImageUploadDTO = {
         files: null,
         folderPath: '',
         publicIds: '',
         imageDisplay: ''
-    });
+    }
+
+    // State Origin -> use when clear form
+    const [originState, setOriginState] = useState<ProductUpsert>(initProduct)
+    const [originUpload, setOriginUpload] = useState<ImageUploadDTO>(initUpload);
 
     //#region Get / Init Data Component
-    const [product, setProduct] = useState<ProductUpsert>({
-        id : productId,
-        name: '',
-        description: '',
-        imageUrl: '',
-        publicId: '',
-        productStatus: 1,
-        created: new Date().toISOString(),
-        categoryId: 1,
-        brandId: 1,
-        productDetails: [{color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: ''}]
-    });
-
-    const [upload, setUpload] = useState<ImageUploadDTO>({
-        files: null,
-        folderPath: '',
-        publicIds: '',
-        imageDisplay: ''
-    });
+    const [product, setProduct] = useState<ProductUpsert>(initProduct);
+    const [upload, setUpload] = useState<ImageUploadDTO>(initUpload);
 
     const [categoriesDropdown, setCategoriesDropdown] = useState<DropdownData[]>([]);
     const [brandsDropdown, setBrandsDropdown] = useState<DropdownData[]>([]);

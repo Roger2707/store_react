@@ -11,9 +11,9 @@ interface Props {
 
 export const CategoryFilter = ({categoriesFilter, onSetCategoriesFilter}: Props) => { 
     const { data } = useCategories();
-    const [categoriesSelected, setCategoriesSelected] = useState<number[]>([]);
+    const [categoriesSelected, setCategoriesSelected] = useState<string[]>([]);
 
-    const handleSelectedCategory = (id: number) => {
+    const handleSelectedCategory = (id: string) => {
         setCategoriesSelected(prev => {
             const current = [...prev];        
             if(current.filter(c => c === id).length > 0)

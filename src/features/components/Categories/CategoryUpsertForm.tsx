@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
@@ -7,13 +7,12 @@ import agent from "../../../app/api/agent";
 import { setCategories } from "../../../app/store/categorySlice";
 
 interface Props {
-    id: number;
+    id: string;
     onSetOpenForm: (e: boolean) => void;
-    onSetCategoryId: Dispatch<SetStateAction<number>>;
 }
 
-export const CategoryUpsertForm = ({id, onSetOpenForm, onSetCategoryId} : Props) => {
-    const [category, setCategory] = useState<Category>({id: 0, name: ''});
+export const CategoryUpsertForm = ({id, onSetOpenForm} : Props) => {
+    const [category, setCategory] = useState<Category>({id: id, name: ''});
     const {categories} = useAppSelector(state => state.category);
     const dispatch = useAppDispatch();
     const existedCategory = categories.find(c => c.id === id);
@@ -32,20 +31,12 @@ export const CategoryUpsertForm = ({id, onSetOpenForm, onSetCategoryId} : Props)
         });
     }
 
-    const handleBeforeSubmit = () => {
-        //console.log(category);
-    }
-
     const handleCloseForm = () => {
         onSetOpenForm(false);
-        onSetCategoryId(0);
     }
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
-        handleBeforeSubmit();
-
         try{
             if(existedCategory) await agent.Categories.update(category); 
             else await agent.Categories.create(category);
@@ -62,9 +53,8 @@ export const CategoryUpsertForm = ({id, onSetOpenForm, onSetCategoryId} : Props)
         <Style>
             <form onSubmit={handleSubmit} >
                 <Input id='name' placeholder="Category Name..." type="text" value={category.name} onGetDataChange = {(e) => handleGetDataChange(e, 'name')}  />
-
                 <div className="form_controls" >
-                    <button>{id === 0 ? 'Create' : 'Update'}</button>
+                    <button>Save</button>
                 </div>
             </form>
         </Style>

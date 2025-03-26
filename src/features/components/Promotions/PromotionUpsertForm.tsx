@@ -1,36 +1,38 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import agent from "../../../app/api/agent";
 import { Brand } from "../../../app/models/Brand";
-import { fetchBrandsAsync } from "../../../app/store/brandSlice";
-import { PromotionUpsert } from "../../../app/models/Promotion";
+import { Promotion, PromotionUpsert } from "../../../app/models/Promotion";
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
 import { Category } from "../../../app/models/Category";
-import { fetchCategoryAsync } from "../../../app/store/categorySlice";
 import { setPromotions } from "../../../app/store/promotionSlice";
+import { useCategories } from "../../Hooks/useCategories";
+import { useBrands } from "../../Hooks/useBrands";
+import agent from "../../../app/api/agent";
+import { formatDateString } from "../../../app/utils/helper";
 
 interface Props {
-    id: number;
+    id: string;
     onSetOpenForm: (e: boolean) => void;
-    onSetPromotionId: Dispatch<SetStateAction<number>>;
 }
 
-export const PromotionUpsertForm = ({id, onSetOpenForm, onSetPromotionId} : Props) => {
-    const [promotion, setPromotion] = useState<PromotionUpsert>({brandId: 1, categoryId: 1, start: '', end: '', percentageDiscount: 0});
+export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
+    const [promotion, setPromotion] = useState<PromotionUpsert>({id: id, brandId: '', categoryId: '', start: '', end: '', percentageDiscount: 0});
     const {promotions} = useAppSelector(state => state.promotion);
-    const {categories, status: categoryStatus} = useAppSelector(state => state.category);
-    const {brands, status: brandStatus} = useAppSelector(state => state.brand);
-    const [categoryDropdown, setCategoryDropdown] = useState<DropdownData[]>([]);
-    const [brandDropdown, setBrandDropdown] = useState<DropdownData[]>([]);
-    const dispatch = useAppDispatch();
     const existedPromoiton = promotions.find(c => c.id === id);
+    const dispatch = useAppDispatch();
 
+    // react query
+    const {data: categories} = useCategories();
+    const {data: brands} = useBrands();
+    
+    // This function only called when update mode
     useEffect(() => {
-        if(existedPromoiton !== undefined) {      
+        if(existedPromoiton) {      
             setPromotion(prev => {
-                return {    
+                return {
+                    id: existedPromoiton.id,
                     categoryId: existedPromoiton.categoryId, 
                     brandId: existedPromoiton.brandId,
                     start: existedPromoiton.startDate+'',
@@ -39,25 +41,34 @@ export const PromotionUpsertForm = ({id, onSetOpenForm, onSetPromotionId} : Prop
                 };
             });
         }
+    }, [existedPromoiton]);
 
-        // Handle Dropdown Data
-        if(!categoryStatus) dispatch(fetchCategoryAsync());
-        setCategoryDropdown(prev => {
-            return categories.map((c: Category) => {
-                return {title: c.name, value: c.id};
-            });
-        });
-
-        if(!brandStatus) dispatch(fetchBrandsAsync());
-        setBrandDropdown(prev => {
-            return brands.map((c: Brand) => {
-                return {title: c.name, value: c.id};
-            });
-        });
-
-    }, [existedPromoiton, dispatch, categories, brands, brandStatus, categoryStatus]);
-
-
+    const categoryDropdown : DropdownData[] = useMemo(() => {
+        return categories?.map((d: Category) => ({ title: d.name, value: d.id })) || [];
+    }, [categories]);
+    
+    useEffect(() => {     
+        if (promotion.categoryId === '' && categoryDropdown.length > 0) {
+            setPromotion(prev => ({
+                ...prev,
+                categoryId: categoryDropdown[0].value
+            }));
+        }
+    }, [categoryDropdown, promotion.categoryId]); 
+    
+    const brandDropdown : DropdownData[] = useMemo(() => {
+        return brands?.map((d: Brand) => ({ title: d.name, value: d.id })) || [];
+    }, [brands]);
+    
+    useEffect(() => {     
+        if (promotion.brandId === '' && brandDropdown.length > 0) {
+            setPromotion(prev => ({
+                ...prev,
+                brandId: brandDropdown[0].value
+            }));
+        }
+    }, [brandDropdown, promotion.brandId]);
+    
     const handleGetDataChange = (e: any, key: string) => {
         setPromotion(prev => {
             return {...prev, [key] : e.target.value};
@@ -65,41 +76,52 @@ export const PromotionUpsertForm = ({id, onSetOpenForm, onSetPromotionId} : Prop
     }
 
     const handleBeforeSubmit = () => {
-        console.log(promotion);
-        
+        console.log(promotion);     
     }
 
     const handleCloseForm = () => {
         onSetOpenForm(false);
-        onSetPromotionId(0);
     }
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
         handleBeforeSubmit();
-
         try{
+            let promotionResult : Promotion;
             if(existedPromoiton) {            
-                await agent.Promotions.update(existedPromoiton.id, 
-                    {
-                        categoryId: promotion.categoryId,
-                        brandId: promotion.brandId,
-                        start: promotion.start.split('T')[0].replaceAll('-', ''),
-                        end: promotion.end.split('T')[0].replaceAll('-', ''),
-                        percentageDiscount: promotion.percentageDiscount
-                    }); 
+                promotionResult = await agent.Promotions.update(
+                {
+                    id: promotion.id,
+                    categoryId: promotion.categoryId,
+                    brandId: promotion.brandId,
+                    start: promotion.start.split('T')[0].replaceAll('-', ''),
+                    end: promotion.end.split('T')[0].replaceAll('-', ''),
+                    percentageDiscount: promotion.percentageDiscount
+                });
             }
-            else await agent.Promotions.create(
-                    {
-                        categoryId: promotion.categoryId,
-                        brandId: promotion.brandId,
-                        start: promotion.start.replaceAll('-', ''),
-                        end: promotion.end.replaceAll('-', ''),
-                        percentageDiscount: promotion.percentageDiscount
-                    });
+            else {
+                promotionResult = await agent.Promotions.create(
+                {
+                    id: promotion.id,
+                    categoryId: promotion.categoryId,
+                    brandId: promotion.brandId,
+                    start: promotion.start.replaceAll('-', ''),
+                    end: promotion.end.replaceAll('-', ''),
+                    percentageDiscount: promotion.percentageDiscount
+                });
 
-            dispatch(setPromotions(undefined));
+                console.log(promotionResult);
+                
+                promotionResult = 
+                {
+                    ...promotionResult
+                    , categoryName: categoryDropdown.filter(c => c.value === promotionResult.categoryId)[0].title
+                    , brandName: brandDropdown.filter(c => c.value === promotionResult.brandId)[0].title
+                    , startDate: new Date(formatDateString(promotionResult.startDate.toString()))
+                    , endDate: new Date(formatDateString(promotionResult.endDate.toString()))
+                }
+                dispatch(setPromotions(promotionResult));
+            }
             handleCloseForm();
         }
         catch(error: any) {
@@ -119,7 +141,7 @@ export const PromotionUpsertForm = ({id, onSetOpenForm, onSetPromotionId} : Prop
                 <Input id='percentageDiscount' placeholder="% Discount" type="number" value={promotion.percentageDiscount} onGetDataChange = {(e) => handleGetDataChange(e, 'percentageDiscount')}  />
 
                 <div className="form_controls" >
-                    <button>{id === 0 ? 'Create' : 'Update'}</button>
+                    <button>Save</button>
                 </div>
             </form>
         </Style>

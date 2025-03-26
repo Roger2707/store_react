@@ -12,8 +12,9 @@ import agent from "../../../app/api/agent";
 
 export const AdminCategory = () => {
     const {categories, status} = useAppSelector(state => state.category);
-    const [categoryId, setCategoryId] = useState<number>(0);
+    const [categoryId, setCategoryId] = useState<string>('');
     const [openForm, setOpenForm] = useState<boolean>(false);
+    const [isCreateMode, setIsCreateMode] = useState<boolean>(true);
     const dispatch = useAppDispatch();
 
     const columns = [
@@ -29,10 +30,11 @@ export const AdminCategory = () => {
 
     const handleOpenCreateForm = () => {
         setOpenForm(true);
-        setCategoryId(0);
+        setCategoryId(crypto.randomUUID());
+        setIsCreateMode(true);
     }
 
-    const handleDeleteCategory = async (id: number) => {
+    const handleDeleteCategory = async (id: string) => {
         try {
             await agent.Categories.delete(id);
             dispatch(setCategories(undefined));
@@ -49,8 +51,8 @@ export const AdminCategory = () => {
     return (
         <Style>
             {openForm &&
-                <Modal title={categoryId === 0 ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
-                    <CategoryUpsertForm id={categoryId} onSetOpenForm={setOpenForm} onSetCategoryId={setCategoryId} />
+                <Modal title={isCreateMode ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
+                    <CategoryUpsertForm id={categoryId} onSetOpenForm={setOpenForm} />
                 </Modal>
             }
 

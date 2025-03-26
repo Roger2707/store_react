@@ -12,9 +12,9 @@ interface Props {
 export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
     const {data} = useBrands();
     
-    const [brandsSelected, setBrandsSelected] = useState<number[]>([]);
+    const [brandsSelected, setBrandsSelected] = useState<string[]>([]);
 
-    const handleSelectedBrands = (id: number) => {
+    const handleSelectedBrands = (id: string) => {
         setBrandsSelected(prev => {
             const current = [...prev];    
             if(current.filter(c => c === id).length > 0) 

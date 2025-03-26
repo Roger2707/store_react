@@ -155,34 +155,16 @@ export const productStatus = [
     }
 ]
 
-export const convertDateStringToCurrentDateTime = (dateString: string): Date => {
-    const [year, month, day] = dateString.split('/').map(Number);
-    const currentTime = new Date();
+export const formatDateString = (value: string): string => {
+    const valueStr = value.toString(); 
+    
+    const year = parseInt(valueStr.substring(0, 4));  
+    const month = parseInt(valueStr.substring(4, 6)) - 1; 
+    const day = parseInt(valueStr.substring(6, 8));
 
-    // Tạo đối tượng Date với ngày từ chuỗi và giờ hiện tại
-    return new Date(year, month - 1, day, currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds());
+    return `${year}-${month}-${day}}`;
 };
 
-export const formatDateToDateTimeString = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-
-    // Trả về định dạng "yyyy-MM-ddThh:mm:ss"
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-};
-
-export const formatDateToDateString = (date: Date): string => {    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const day = String(date.getDate()).padStart(2, '0');
-
-    // Trả về định dạng "yyyy-MM-dd"
-    return `${year}-${month}-${day}`;
-};
 
 export function convertKeysToLowerCase(obj: { [key: string]: any }) {
     const newObj: { [key: string]: any } = {};

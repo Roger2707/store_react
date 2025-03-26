@@ -11,8 +11,9 @@ import styled from "styled-components";
 import { PromotionUpsertForm } from "../../components/Promotions/PromotionUpsertForm";
 
 export const AdminPromotion = () => {
-    const [promotionId, setPromotionId] = useState<number>(0);
+    const [promotionId, setPromotionId] = useState<string>('');
     const [openForm, setOpenForm] = useState<boolean>(false);
+    const [isCreateMode, setIsCreateMode] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const {promotions, status} = useAppSelector(state => state.promotion);
 
@@ -61,10 +62,11 @@ export const AdminPromotion = () => {
 
     const handleOpenCreateForm = () => {
         setOpenForm(true);
-        setPromotionId(0);
+        setPromotionId(crypto.randomUUID());
+        setIsCreateMode(true);
     }
 
-    const handleDeletePromotion = async (id: number) => {
+    const handleDeletePromotion = async (id: string) => {
         try {
             await agent.Promotions.delete(id);
             dispatch(setPromotions(undefined));
@@ -81,8 +83,8 @@ export const AdminPromotion = () => {
     return (
         <Style>
             {openForm &&
-                <Modal title={promotionId === 0 ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
-                    <PromotionUpsertForm id={promotionId} onSetOpenForm={setOpenForm} onSetPromotionId={setPromotionId} />
+                <Modal title={isCreateMode ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
+                    <PromotionUpsertForm id={promotionId} onSetOpenForm={setOpenForm} />
                 </Modal>
             }
 

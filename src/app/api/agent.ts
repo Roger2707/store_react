@@ -129,28 +129,28 @@ const Product = {
 
 const Categories = {
     list: () => requests.get('category/get-all'),
-    details: (id: number) => requests.get(`category/get-category-detail/${id}`),
+    details: (id: string) => requests.get(`category/get-category-detail/${id}`),
 
-    create: (category: Category) => requests.post(`category/create?id=${category.id}&name=${category.name}`, category),
-    update: (category: Category) => requests.put(`category/update?id=${category.id}&name=${category.name}`, category),
-    delete: (id: number) => requests.del(`category/delete?id=${id}`),
+    create: (category: Category) => requests.post(`category/create`, getFormData(category)),
+    update: (category: Category) => requests.put(`category/update`, getFormData(category)),
+    delete: (id: string) => requests.del(`category/delete?id=${id}`),
 }
 
 const Brands = {
     list: () => requests.get('brands/get-all'),
-    details: (id: number) => requests.get(`brands/get-brand-detail/${id}`),
+    details: (id: string) => requests.get(`brands/get-brand-detail/${id}`),
 
     create: (brand: Brand) => requests.postForm('brands/create', getFormData(brand)),
-    update: (id: number, brand: Brand) => requests.putForm(`brands/update?id=${id}`, getFormData(brand)),
-    delete: (id: number) => requests.del(`brands/delete?id=${id}`),
+    update: (brand: Brand) => requests.putForm(`brands/update`, getFormData(brand)),
+    delete: (id: string) => requests.del(`brands/delete?id=${id}`),
 }
 
 const Promotions = {
     getAll: (start: string, end: string) => requests.get(`promotions/get-all?start=${start}&end=${end}`),
 
     create: (promotion: PromotionUpsert) => requests.postForm(`promotions/create`, getFormData(promotion)),
-    update: (id:number, promotion: PromotionUpsert) => requests.putForm(`promotions/update?id=${id}`, getFormData(promotion)),
-    delete: (id: number) => requests.del(`promotions/delete?id=${id}`),
+    update: (promotion: PromotionUpsert) => requests.putForm(`promotions/update`, getFormData(promotion)),
+    delete: (id: string) => requests.del(`promotions/delete?id=${id}`),
 }
 
 const Account = {

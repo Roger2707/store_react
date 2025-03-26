@@ -1,17 +1,20 @@
 export interface Promotion {
-    id: number,
-    brandId: number,
+    id: string,
+    brandId: string,
     brandName: string,
-    categoryId: number,
-    cayegoryName: string,
+    categoryId: string,
+    categoryName: string,
     startDate: Date,
     endDate: Date,
     percentageDiscount: number, 
 }
 
 export interface PromotionUpsert {
-    categoryId: number,
-    brandId: number,
+    id: string,
+    categoryId: string,
+    categoryName?: string;
+    brandId: string,
+    brandName?: string;
     start: string,
     end: string,
     percentageDiscount: number, 

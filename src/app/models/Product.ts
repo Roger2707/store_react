@@ -8,9 +8,9 @@ export interface Product {
 
     productStatus: string;
     created: Date;
-    categoryId: number;
+    categoryId: string;
     categoryName: string;
-    brandId: number;
+    brandId: string;
     brandName: string;
     brandCountry: string;
     details: ProductDetail[],
@@ -44,8 +44,8 @@ export interface ProductUpsert {
 
     productStatus: number;
     created: string;
-    categoryId: number;
-    brandId: number;
+    categoryId: string;
+    brandId: string;
 
     // Detail
     productDetails: ProductUpsertDetail[];
