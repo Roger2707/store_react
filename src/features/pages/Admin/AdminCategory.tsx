@@ -5,7 +5,7 @@ import DataTable from "../../ui/Data/DataTable";
 import { EmptyData } from "../../ui/Layout/EmptyData";
 import { FaPlus } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { fetchCategoryAsync, setCategories } from "../../../app/store/categorySlice";
+import { fetchCategoryAsync, setCategoriesDelete } from "../../../app/store/categorySlice";
 import { Modal } from "../../ui/Layout/Modal";
 import { CategoryUpsertForm } from "../../components/Categories/CategoryUpsertForm";
 import agent from "../../../app/api/agent";
@@ -37,7 +37,7 @@ export const AdminCategory = () => {
     const handleDeleteCategory = async (id: string) => {
         try {
             await agent.Categories.delete(id);
-            dispatch(setCategories(undefined));
+            dispatch(setCategoriesDelete(id));
         }
         catch(error: any) {
 

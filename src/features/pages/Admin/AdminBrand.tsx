@@ -7,7 +7,7 @@ import { Modal } from "../../ui/Layout/Modal";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import agent from "../../../app/api/agent";
-import { fetchBrandsAsync, setBrands } from "../../../app/store/brandSlice";
+import { fetchBrandsAsync, setBrandsDelete } from "../../../app/store/brandSlice";
 import { BrandUpsertForm } from "../../components/Brands/BrandUpsertForm";
 
 export const AdminBrand = () => {
@@ -41,7 +41,7 @@ export const AdminBrand = () => {
     const handleDeleteBrand = async (id: string) => {
         try {
             await agent.Brands.delete(id);
-            dispatch(setBrands(undefined));
+            dispatch(setBrandsDelete(id));
         }
         catch(error: any) {
 

@@ -28,8 +28,17 @@ export const categorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
-        setCategories: (state, action) => {
-            state.status = false;
+        setCategoriesCreate : (state, action) => {
+            state.categories = [...state.categories, action.payload].sort((a, b) => a.name - b.name);
+        },
+
+        setCategoriesUpdate : (state, action) => {
+            const index = state.categories.findIndex(p => p.id === action.payload.id);
+            state.categories[index] = action.payload;
+        },
+
+        setCategoriesDelete : (state, action) => {
+            state.categories = state.categories.filter(p => p.id !== action.payload);
         }
     },
     extraReducers: builder => {
@@ -39,8 +48,7 @@ export const categorySlice = createSlice({
 
         builder.addCase(fetchCategoryAsync.fulfilled, (state, action) => {
             state.categories = action.payload;
-            state.status = true;
-            //console.log(state.categories);          
+            state.status = true;        
         });
 
         builder.addCase(fetchCategoryAsync.rejected, (state, action) => {
@@ -51,4 +59,4 @@ export const categorySlice = createSlice({
     }
 });
 
-export const { setCategories } = categorySlice.actions;
+export const { setCategoriesCreate, setCategoriesUpdate, setCategoriesDelete } = categorySlice.actions;

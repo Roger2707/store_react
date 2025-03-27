@@ -80,7 +80,7 @@ export const ProductDetailPage = () => {
                                     }
                                 </div>
 
-                                <ProductCartButtons productId={product.id} />
+                                {/* <ProductCartButtons productId={product.id} /> */}
                             </div>
                         </div>    
 

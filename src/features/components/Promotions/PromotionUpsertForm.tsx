@@ -30,6 +30,7 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
     
     // This function only called when update mode
     useEffect(() => {
+        setLoading(true);
         if(existedPromoiton) {      
             setPromotion(prev => {
                 return {
@@ -42,7 +43,7 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
                 };
             });   
         }
-        
+        setLoading(false)
     }, [existedPromoiton]);
 
     const categoryDropdown : DropdownData[] = useMemo(() => {
@@ -95,6 +96,7 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         try{
+            setSaving(true);
             let promotionResult : Promotion;
             let objectParam = {
                 id: promotion.id,
@@ -119,10 +121,13 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
         catch(error: any) {
             console.log(error);
         }
+        finally {
+            setSaving(false);
+        }
     }
 
     return (
-        <Style onSubmit={handleSubmit} >
+        <Style onSubmit={handleSubmit} disabled={saving || loading} >
             <div className="form_inputs" >
                 <Dropdown field="categoryId" data={categoryDropdown} currentSelectedValue={promotion.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
                 <Dropdown field="brandId" data={brandDropdown} currentSelectedValue={promotion.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
@@ -138,12 +143,11 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
     )
 }
 
-const Style = styled.form`
+const Style = styled.form<{ disabled: boolean }>` 
     .form_inputs {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 10%;
-        
     }
 
     .form_controls {

@@ -28,8 +28,17 @@ export const brandSlice = createSlice({
     name: 'brand',
     initialState,
     reducers: {
-        setBrands: (state, action) => {
-            state.status = false;
+        setBrandsCreate : (state, action) => {
+            state.brands = [...state.brands, action.payload].sort((a, b) => a.name - b.name);
+        },
+
+        setBrandsUpdate : (state, action) => {
+            const index = state.brands.findIndex(p => p.id === action.payload.id);
+            state.brands[index] = action.payload;
+        },
+
+        setBrandsDelete : (state, action) => {
+            state.brands = state.brands.filter(p => p.id !== action.payload);
         }
     },
     
@@ -50,4 +59,4 @@ export const brandSlice = createSlice({
     }
 });
 
-export const {setBrands} = brandSlice.actions;
+export const {setBrandsCreate, setBrandsUpdate, setBrandsDelete} = brandSlice.actions;
