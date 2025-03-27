@@ -118,11 +118,9 @@ const Upload = {
 const Product = {
     list: (params: ProductParams) => requests.get('products/get-products-page', params),
     details: (id: string) => requests.get(`products/get-product-detail?id=${id}`),
-    technologies: (productId: string) => requests.get(`products/get-technologies?productId=${productId}`),
     
     create: (product: ProductUpsert) => requests.post('products/create', product),
     update: (product: ProductUpsert) => requests.put(`products/update`, product),
-    delete: (id: string) => requests.del(`products/?id=${id}`),
     changeStatus: (id: string) => requests.post(`products/change-status?id=${id}`, {})
 }
 
@@ -179,6 +177,9 @@ const Location = {
     getWards : (districtCode: number) => requests.get(`location/get-wards?districtCode=${districtCode}`),
 }
 
+const Technology = {
+    list: (productId: string) => requests.get(`technologies/get-technologies-by-product?productId=${productId}`),
+}
 const Basket = {
     get: () => requests.get(`baskets/get-basket`),
     upsert : (productId: string, mode: number) => requests.post(`baskets/upsert-basket?productId=${productId}&mode=${mode}`, {}),
@@ -200,7 +201,8 @@ const agent = {
     Account,
     Location,
     Basket,
-    Order
+    Order,
+    Technology
 }
 
 export default agent;

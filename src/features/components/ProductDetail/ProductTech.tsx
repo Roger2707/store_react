@@ -11,18 +11,17 @@ export const ProductTech = ({productId}: Props) => {
     const [technologies, setTechnologies] = useState<ProductTechnology[] | null>(null);
     const [techHover, setTechHover] = useState<number | null>(null);
 
-    const fetchTechnologies = async () => {
-        try {
-            const response = await agent.Product.technologies(productId);
-            setTechnologies(response);
-        } catch (error: any) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
+        const fetchTechnologies = async () => {
+            try {
+                const response = await agent.Technology.list(productId);
+                setTechnologies(response);
+            } catch (error: any) {
+                console.log(error);
+            }
+        }
+
         fetchTechnologies();
-        // eslint-disable-next-line
     }, [productId]);
 
     const handleMouseEnter = (index: number) => {
