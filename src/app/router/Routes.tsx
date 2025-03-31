@@ -11,7 +11,6 @@ import { AdminAccount } from "../../features/pages/Admin/AdminAccount";
 import { AdminCategory } from "../../features/pages/Admin/AdminCategory";
 import { AdminBrand } from "../../features/pages/Admin/AdminBrand";
 import { AdminPromotion } from "../../features/pages/Admin/AdminPromotion";
-import { AdminContent } from "../../features/pages/Admin/AdminContent";
 import { AdminOrder } from "../../features/pages/Admin/AdminOrder";
 import { About } from "../../features/pages/Others/About";
 import { News } from "../../features/pages/Others/News";
@@ -26,6 +25,7 @@ import { OrdersInfo } from "../../features/pages/Accounts/OrdersInfo";
 import { UserAddressList } from "../../features/pages/Accounts/UserAddressList";
 import { BasketPage } from "../../features/pages/Cart/BasketPage";
 import { Order } from "../../features/pages/Orders/Order";
+import { AdminStock } from "../../features/pages/Admin/AdminStock";
 
 export const router = createBrowserRouter(([
     {
@@ -57,7 +57,7 @@ export const router = createBrowserRouter(([
                             { path: 'categories', element: <AdminCategory/> },
                             { path: 'brands', element: <AdminBrand/> },
                             { path: 'promotions', element: <AdminPromotion/> },
-                            { path: 'contents', element: <AdminContent/> },
+                            { path: 'stocks', element: <AdminStock/> },
                             { path: 'orders', element: <AdminOrder/> },
                         ]
                     },

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { Input } from "../../ui/Forms/Input";
 import { Textarea } from "../../ui/Forms/Textarea";
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
-import { productStatus } from "../../../app/utils/helper";
 import { Category } from "../../../app/models/Category";
 import { Brand } from "../../../app/models/Brand";
 import { MultipleFileImage } from "../../ui/Forms/MultipleFileImage";
@@ -37,11 +36,10 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         description: '',
         imageUrl: '',
         publicId: '',
-        productStatus: 1,
         created: new Date().toISOString(),
         categoryId: crypto.randomUUID(),
         brandId: crypto.randomUUID(),
-        productDetails: [{color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: ''}]
+        productDetails: [{color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', productStatus: 1}]
     }
 
     const initUpload : ImageUploadDTO = {
@@ -97,7 +95,6 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                     description: response.description,
                     imageUrl: response.imageUrl,
                     publicId: response.publicId,
-                    productStatus: response.productStatus === 'In Stock' ? 1 : 2,
                     created: response.created.toString(),
                     categoryId: response.categoryId,
                     brandId: response.brandId,
@@ -110,7 +107,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                             color: d.color,
                             extraName: d.extraName,
                             price: d.price,
-                            quantityInStock: d.quantityInStock
+                            productStatus: d.productStatus === 'Active' ? 1 : 2,
                         }
                     })
                 }
@@ -158,7 +155,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
             setUpload(prev => {
                 return {...prev, files: e };
             });
-        } else if(key === 'categoryId' || key === 'brandId' || key === 'productStatus') {
+        } else if(key === 'categoryId' || key === 'brandId') {
             setProduct(prev => {
                 return {...prev, [key]: +e.target.value };
             });
@@ -177,7 +174,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         setProduct(prev => {
             if(prev.productDetails.length === 99) return {...prev};
 
-            const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: ''};
+            const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', productStatus: 1};
             let updatedProductDetails = [
                 ...prev.productDetails.slice(0, indexRow + 1),
                 newDetail, 
@@ -194,7 +191,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     const handleRemoveRow = (indexRow: number) => {
         setProduct(prev => {
             if(prev.productDetails.length === 1) {
-                const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: ''};
+                const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', productStatus: 1};
                 return {
                     ...prev,
                     productDetails: [newDetail]
@@ -238,13 +235,9 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
             if(isEmptyRow(currentRow)) continue;
 
             const currentPrice = +currentRow.price;
-            const currentQuantity = +currentRow.quantityInStock;
+
             if(currentPrice === 0) {
                 setError(`Row index ${i} has empty price`);
-                return false;
-            }
-            if(currentQuantity === 0) {
-                setError(`Row index ${i} has empty quantity`);
                 return false;
             }
         }
@@ -281,7 +274,6 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
 
     const isEmptyRow = (currentRow: ProductUpsertDetail) => {
         if(+currentRow.price !== 0) return false;
-        if(+currentRow.quantityInStock !== 0) return false;
         if(currentRow.color !== '') return false;
         if(currentRow.extraName !== '') return false;
 
@@ -335,7 +327,6 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                 <Input id='name' value={product.name} placeholder="Name..." type="text" 
                         onGetDataChange={(e) => handleGetDataChange(e, 'name')} 
                 />
-                <Dropdown field="productStatus" data={productStatus} currentSelectedValue={product.productStatus} onGetDataChange={e => handleGetDataChange(e, 'productStatus')} />
                 <Dropdown field="category" data={categoriesDropdown} currentSelectedValue={product.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
                 <Dropdown field="brand" data={brandsDropdown} currentSelectedValue={product.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
                 <Textarea id='description' value={product.description} placeholder="Description..." 
@@ -351,9 +342,9 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                 <div className="label-details-container" >
                     <h3>a</h3>
                     <h3>Price</h3>
-                    <h3>Quantity</h3>
                     <h3>Color</h3>
                     <h3>Extra</h3>
+                    <h3>Status</h3>
                 </div>
                 <div className="rows-container" >
                     {product.productDetails.map((d, i) => 

@@ -3,6 +3,8 @@ import { Input } from "../../ui/Forms/Input"
 import { InputMoney } from "../../ui/Forms/InputMoney"
 import { ProductUpsert, ProductUpsertDetail } from "../../../app/models/Product"
 import { Dispatch, SetStateAction } from "react";
+import { Dropdown } from "../../ui/Forms/Dropdown";
+import { productStatus } from "../../../app/utils/helper";
 
 interface Props {
     productDetail : ProductUpsertDetail;
@@ -20,7 +22,7 @@ export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRo
             case 'price':
                 newValue = e;
                 break;
-            case 'quantityInStock':
+            case 'productStatus':
                 newValue = +e.target.value;
                 break;
             default:
@@ -50,17 +52,24 @@ export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRo
                 <button type="button" onClick={() => onAddRow(indexRow)} >+</button>
                 <button type="button" onClick={() => onRemoveRow(indexRow)}>-</button>
             </div>
+
             <InputMoney id='price' value={productDetail.price} placeholder="Price..." type="text"
                 onGetDataChange={(e) => handleGetDataChange(e, 'price')} 
             />
-            <Input id='quantityInStock' value={productDetail.quantityInStock} placeholder="Quantity..." type="number" 
-                onGetDataChange={(e) => handleGetDataChange(e, 'quantityInStock')} 
-            />
+
             <Input id='color' value={productDetail.color} placeholder="Color..." type="text" 
                 onGetDataChange={(e) => handleGetDataChange(e, 'color')} 
             />
+
             <Input id='extraName' value={productDetail.extraName} placeholder="Extra Name..." type="text" 
                 onGetDataChange={(e) => handleGetDataChange(e, 'extraName')} 
+            />
+
+            <Dropdown 
+                field="productStatus" 
+                data={productStatus} 
+                currentSelectedValue={productDetail.productStatus} 
+                onGetDataChange={e => handleGetDataChange(e, 'productStatus')}
             />
         </Row>
     )

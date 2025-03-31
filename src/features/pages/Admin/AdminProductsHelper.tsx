@@ -12,7 +12,6 @@ export const columns = [
             return <img width={50} height={50} src={String(src)} alt="img" /> as ReactNode;
         }
     }, 
-    { key: 'productStatus', title: 'Status'}, 
     { 
         key: 'created',
         title: 'Created',

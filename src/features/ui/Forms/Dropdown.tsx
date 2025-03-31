@@ -48,6 +48,7 @@ const Select = styled.select `
     font-size: 1rem;
     border: none;
     outline: none;
+    height: fit-content;
 
     option {
         text-transform: capitalize;

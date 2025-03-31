@@ -6,7 +6,6 @@ import { Product, ProductDetail } from "../../../app/models/Product";
 import agent from "../../../app/api/agent";
 import { Loading } from "../../ui/Common/Loading";
 import { FaArrowRight } from "react-icons/fa";
-import { ProductCartButtons } from "../../components/ProductDetail/ProductCartButtons";
 import { ProductTech } from "../../components/ProductDetail/ProductTech";
 
 export const ProductDetailPage = () => {
@@ -46,12 +45,10 @@ export const ProductDetailPage = () => {
                                     <h1>{`${product.name} - ${productDetail.extraName}`}</h1>
                                     <p>Sku: #{product.id.toString().padStart(6, '0')}</p>
                                     <p>Description: {product.description}</p>
-                                    <p>Status: {product.productStatus}</p>
                                     <p>Created: {product.created.toString()}</p>
                                     <p>Category: {product.categoryName}</p>
                                     <p>Brand: {product.brandName}</p>
                                     <p>Imported: {product.brandCountry}</p>               
-                                    <p>Inventory: {productDetail.quantityInStock}</p>
                                 </div>
 
                                 <div className="product-color" >

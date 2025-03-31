@@ -27,7 +27,7 @@ export const Login = () => {
     }
 
     const handleBeforeSubmit = () => {
-        console.log(loginRequest);
+        //console.log(loginRequest);
     }
 
     const handleSubmit = (e: any) => {

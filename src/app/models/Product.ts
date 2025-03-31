@@ -6,7 +6,6 @@ export interface Product {
     imageUrl: string;
     publicId: string;
 
-    productStatus: string;
     created: Date;
     categoryId: string;
     categoryName: string;
@@ -29,9 +28,9 @@ export interface ProductDetail {
     productid: string;
     price: number;
     discountPrice: number;
-    quantityInStock: number;
     color: string;
     extraName: string;
+    productStatus: string;
 }
 
 export interface ProductUpsert {
@@ -42,7 +41,6 @@ export interface ProductUpsert {
     imageUrl: string;
     publicId: string;
 
-    productStatus: number;
     created: string;
     categoryId: string;
     brandId: string;
@@ -55,13 +53,23 @@ export interface ProductUpsertDetail {
     id: string;
     productid: string;
     price: number;
-    quantityInStock: number;
     color: string;
     extraName: string;
+    productStatus: number;
 }
 
 export interface ProductTechnology {
     name : string,
     description: string,
     imageUrl: string,
+}
+
+export interface ProductWithDetail {
+    productDetailId: string;
+    imageUrl: string;
+    color: string;
+    categoryName: string;
+    brandName: string;
+    price: number;
+    productName: string;
 }

@@ -99,8 +99,8 @@ export const adminSidebars = [
     },
     {
         id: 6,
-        title: 'Contents',
-        path: '/admin/contents',
+        title: 'Stocks',
+        path: '/admin/stocks',
         icon: <MdDescription  />
     },
     {
@@ -146,12 +146,12 @@ export const accountSidebars = [
 
 export const productStatus = [
     {
-        title: 'In Stock',
+        title: 'Active',
         value: 1,
     },
     {
-        title: 'Out Stock',
-        value: 2,
+        title: 'In - Active',
+        value: 0,
     }
 ]
 

@@ -1,23 +1,32 @@
+import { forwardRef } from "react";
 import styled from "styled-components";
 
 interface Props {
     id: string;
     value: any;
-    placeholder: string;
+    placeholder?: string;
     type: string;
-    onGetDataChange: (e: any) => void;
+    onGetDataChange?: (e: any) => void;
+    onGetDataEnter?: (e: any) => void;
     errors?: string[];
+    readonly?: boolean;
 }
 
-export const Input = ({id, value, placeholder, type, onGetDataChange}: Props) => {   
+export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, onGetDataEnter, readonly}, ref) => {   
     
     return (
         <Style className="input_container" >
-            <input id={id} type={type} value={value} placeholder={placeholder} onChange={onGetDataChange}/>
+            <input 
+                id={id} type={type} value={value} placeholder={placeholder} 
+                onChange={onGetDataChange}
+                ref={ref} 
+                onKeyDown={e => e.key === 'Enter' && onGetDataEnter && onGetDataEnter(e)}
+                readOnly={readonly ? true: false}
+            />
             <span ></span>
         </Style>
     )
-}
+})
 
 const Style = styled.div`
     
@@ -35,6 +44,14 @@ const Style = styled.div`
 
         font-size: 1rem;
     }
+
+    input[readonly] {
+        pointer-events: none; 
+        background-color: #f0f0f0; 
+        color: #999;
+        border: 1px solid #ccc;
+    }
+
 
     .error-message {
         display: block;
