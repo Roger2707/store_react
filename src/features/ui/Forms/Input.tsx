@@ -10,9 +10,10 @@ interface Props {
     onGetDataEnter?: (e: any) => void;
     errors?: string[];
     readonly?: boolean;
+    width?: string;
 }
 
-export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, onGetDataEnter, readonly}, ref) => {   
+export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, onGetDataEnter, readonly, width}, ref) => {   
     
     return (
         <Style className="input_container" >
@@ -22,6 +23,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholde
                 ref={ref} 
                 onKeyDown={e => e.key === 'Enter' && onGetDataEnter && onGetDataEnter(e)}
                 readOnly={readonly ? true: false}
+                style={{width : `${width ? width : '100%'}`}}
             />
             <span ></span>
         </Style>
@@ -35,7 +37,6 @@ const Style = styled.div`
     }
 
     input {
-        width: 100%;
         margin-top: 5px;
         padding: 5px 8px;
         border-radius: 5px;

@@ -155,6 +155,17 @@ export const productStatus = [
     }
 ]
 
+export const transactionType = [
+    {
+        title: 'Import',
+        value: 1,
+    },
+    {
+        title: 'Export',
+        value: 0,
+    }
+]
+
 export const formatDateString = (value: string): string => {
     const valueStr = value.toString(); 
     
