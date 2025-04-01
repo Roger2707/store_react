@@ -8,6 +8,8 @@ import { Brand } from "../models/Brand";
 import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserAddressDTO, UserProfileUpdate } from "../models/User";
 import { store } from "../store/configureStore";
 import { ImageUploadDTO } from "../models/ImageUpload";
+import { WarehouseSearch } from "../models/Warehouse";
+import { StockUpsertDTO } from "../models/Stock";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
@@ -195,6 +197,18 @@ const Order = {
     create: (userAddressId: number) => requests.post(`orders/create-order?userAddressId=${userAddressId}`, {}),
 }
 
+const Warehouse = {
+    list: () => requests.get(`warehouses/get-all`),
+    listByCondition: (params: WarehouseSearch) => requests.get(`warehouses/get-all-by-condition`, params),
+    detail: (id: string) => requests.get(`warehouses/get-warehouse-detail?warehouseId=${id}`),
+}
+
+const Stocks = {
+    getStockOfProduct: (productId: string) => requests.get(`stocks/get-stock-product-detail?productId=${productId}`),
+    getQuantity: (productDetailId: string) => requests.get(`stocks/get-quantity?productDetailId=${productDetailId}`),
+    upsertStock: (request: StockUpsertDTO) => requests.post(`stocks/upsert-stock`, request)
+}
+
 const agent = {
     Upload,
     Product,
@@ -205,7 +219,9 @@ const agent = {
     Location,
     Basket,
     Order,
-    Technology
+    Technology,
+    Warehouse,
+    Stocks
 }
 
 export default agent;

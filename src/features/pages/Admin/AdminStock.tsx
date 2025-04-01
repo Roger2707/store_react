@@ -1,10 +1,9 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input";
 import { StockUpsertDTO } from "../../../app/models/Stock";
 import { Warehouse } from "../../../app/models/Warehouse";
 import { ProductWithDetail } from "../../../app/models/Product";
-import axios from "axios";
 import { Dropdown } from "../../ui/Forms/Dropdown";
 import { transactionType } from "../../../app/utils/helper";
 import { SearchProductDetailStock } from "../../components/Stock/SearchProductDetailStock";
@@ -14,7 +13,6 @@ import agent from "../../../app/api/agent";
 
 const defaultStockUpsertDTO : StockUpsertDTO = {
     productDetailId: '',
-    stockId: '',
     stockTransactionId: crypto.randomUUID(),
     wareHouseId: '',
     quantity: 0,
@@ -48,7 +46,8 @@ export const AdminStock = () => {
     const wareHouseInputRef = useRef<HTMLInputElement | null>(null);
     const [isOpenSearchProduct, setIsOpenSearchProduct] = useState<boolean>(false);
     const [isOpenSearchWareHouse, setIsOpenSearchWareHouse] = useState<boolean>(false);
-
+    const [actionEnable, setActionEnable] = useState<boolean>(false);
+    
     const getProductDetail = async (productDetailId: string) => {
         try {
             setIsLoadData(true);
@@ -66,7 +65,7 @@ export const AdminStock = () => {
     const getWarehouse = async (wareHouseId: string) => {
         try {
             setIsLoadData(true);
-            const {data} = await axios.get(`http://localhost:5110/api/warehouses/get-warehouse-detail?warehouseId=${wareHouseId}`);
+            const data = await agent.Warehouse.detail(wareHouseId);
             setWareHouse(data);
         } catch (error) {
             setStockUpsertDTO(prev => ({...prev, wareHouseId: ''}));
@@ -110,6 +109,8 @@ export const AdminStock = () => {
             case "quantity":
             case "transactionType":
                 setStockUpsertDTO(prev => {
+                    console.log(value);
+                    
                     return {
                         ...prev
                         , [key] : +value
@@ -120,16 +121,7 @@ export const AdminStock = () => {
         }
     }
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        console.log('submit');
-
-        setIsSaving(false);
-    }
-
-    const handleReceiveProp = (product: ProductWithDetail) => {
+    const handleReceiveProduct = (product: ProductWithDetail) => {
         if(product) {
             setIsOpenSearchProduct(false);
             setProductDetail(product);
@@ -137,12 +129,67 @@ export const AdminStock = () => {
         }
     }
 
+    const handleReceiveWarehouse = (warehouse: Warehouse) => {
+        if(warehouse) {
+            setIsOpenSearchWareHouse(false);
+            setWareHouse(warehouse);
+            setStockUpsertDTO(prev => ({...prev, wareHouseId: warehouse.id}));   
+        }
+    }
+
+    useEffect(() => {
+        if(stockUpsertDTO.productDetailId !== '' && stockUpsertDTO.wareHouseId !== '') {
+            // Get Stock of products
+            const fetchQuantity = async () => {
+                try {
+                    const quantity = await agent.Stocks.getQuantity(stockUpsertDTO.productDetailId);
+                    setStockUpsertDTO(prev => ({...prev, quantity: +quantity}));
+                } catch (error) {
+                    console.error('Error fetching quantity:', error);
+                }
+              };
+          
+            fetchQuantity(); 
+     
+            // Enable Input Actions
+            setActionEnable(true); 
+        }
+    }, [stockUpsertDTO])
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        
+        try {
+            setIsSaving(true);
+
+            if(stockUpsertDTO.transactionType === 1) {
+                const newStockUpsert : StockUpsertDTO = {
+                    ...stockUpsertDTO
+                }
+
+                console.log(newStockUpsert);
+                
+                //await agent.Stocks.upsertStock(newStockUpsert);
+            } else {
+
+            }
+            
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
     return (
         <>
         {isOpenSearchProduct && (
-            <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} ><SearchProductDetailStock onReceiveProps={handleReceiveProp} /></Modal>
+            <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} ><SearchProductDetailStock onReceiveProps={handleReceiveProduct} /></Modal>
         )}
-        {isOpenSearchWareHouse && <SearchWareHouseStock />}
+
+        {isOpenSearchWareHouse && (
+            <Modal title="Search Warehouse" onSetOpen={setIsOpenSearchWareHouse} ><SearchWareHouseStock onReceiveProps={handleReceiveWarehouse} /></Modal>
+        )}
         <h1>Stocks:</h1>
         <StockFormStyle disabled={isSaving || isOpenSearchProduct} onSubmit={handleSubmit} >
             <div className="stocks-header" >
@@ -157,6 +204,7 @@ export const AdminStock = () => {
                             onGetDataChange={e => handleChangeData(e, 'productDetailId')}
                             onGetDataEnter={(e) => handleLoadDataFromDB(e, 'productDetailId')}
                             ref={productDetailInputRef}
+                            disable={actionEnable}
                         />
 
                         <button type="button" className="btn-search-product" onClick={() => setIsOpenSearchProduct(true)} >
@@ -188,6 +236,7 @@ export const AdminStock = () => {
                             onGetDataChange={e => handleChangeData(e, 'wareHouseId')}
                             onGetDataEnter={(e) => handleLoadDataFromDB(e, 'wareHouseId')}
                             ref={wareHouseInputRef}
+                            disable={actionEnable}
                         />
 
                         <button type="button" className="btn-search-warehouse" onClick={() => setIsOpenSearchWareHouse(true)} >
@@ -218,6 +267,7 @@ export const AdminStock = () => {
                             width="50%"
                             value={stockUpsertDTO.quantity}
                             onGetDataChange={e => handleChangeData(e, 'quantity')}
+                            disable={!actionEnable}
                         />
 
                         <Dropdown
@@ -226,13 +276,14 @@ export const AdminStock = () => {
                             marginTop="1vh"
                             onGetDataChange={e => handleChangeData(e, 'transactionType')}
                             currentSelectedValue={stockUpsertDTO.transactionType}
+                            disable={!actionEnable}
                         />
                     </div>
 
                     <div className="stocks-quantity-actions" >
                         <button type="button" >Clear Data</button>
-                        <button type="button">Show Transactions</button>
-                        <button type="submit" >Save</button>
+                        <button type="button" disabled={!actionEnable} >Show Transactions</button>
+                        <button type="submit" disabled={!actionEnable} >Save</button>
                     </div>
                 </div>
             </div>
@@ -358,7 +409,7 @@ const StockFormStyle = styled.form<{ disabled: boolean }>`
             grid-column-gap: 3vw;
 
             .stocks-quantity-input {
-
+                
             }
 
             .stocks-quantity-actions {
@@ -384,6 +435,17 @@ const StockFormStyle = styled.form<{ disabled: boolean }>`
 
                     &:last-child {
                         background-color: #FF4433;
+                    }
+    
+                    &:disabled {
+                        color: #666; 
+                        cursor: not-allowed; 
+                        opacity: 0.6;
+                        border: 1px solid #aaa; 
+                    }
+    
+                    &:disabled:hover {
+                        background-color: #e0e0e0;
                     }
                 }
             }

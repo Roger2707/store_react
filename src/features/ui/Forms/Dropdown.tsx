@@ -15,9 +15,10 @@ interface Props {
 
     currentSelectedValue: any;
     onGetDataChange: (e: any) => void;
+    disable?: boolean;
 }
 
-export const Dropdown = ({field, data, currentSelectedValue, onGetDataChange, backgroundColor, loading, width, marginTop}: Props) => {
+export const Dropdown = ({field, data, currentSelectedValue, onGetDataChange, backgroundColor, loading, width, marginTop, disable}: Props) => {
 
     const style = {
         backgroundColor: `${backgroundColor ? backgroundColor : '#708090'}`,
@@ -30,7 +31,7 @@ export const Dropdown = ({field, data, currentSelectedValue, onGetDataChange, ba
                 data.length > 0 &&
                 (
                     <Select value={currentSelectedValue === '' ? data[0].value : currentSelectedValue} onChange={onGetDataChange} 
-                            style={style}
+                            style={style} disabled={disable ? disable : false}
                     >
                         {
                             loading ? <option>...</option>

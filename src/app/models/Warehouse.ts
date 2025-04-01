@@ -3,3 +3,8 @@ export interface Warehouse {
     name: string;
     location: string;
 }
+
+export interface WarehouseSearch {
+    name: string
+    location: string
+}
