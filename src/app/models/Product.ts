@@ -65,11 +65,19 @@ export interface ProductTechnology {
 }
 
 export interface ProductWithDetail {
-    productDetailId: string;
-    imageUrl: string;
-    color: string;
-    categoryName: string;
-    brandName: string;
-    price: number;
-    productName: string;
+    productDetailId: string
+    imageUrl: string
+    color: string
+    categoryName: string
+    brandName: string
+    price: number
+    productName: string
+}
+
+export interface ProductSearch {
+    productName: string
+    minPrice: number
+    maxPrice: number
+    brandId: string
+    categoryId: string
 }

@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import { router } from "../router/Routes";
-import { ProductParams, ProductUpsert } from "../models/Product";
+import { ProductParams, ProductSearch, ProductUpsert } from "../models/Product";
 import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
@@ -36,7 +36,7 @@ axios.interceptors.response.use(async response => {
         case 400:
             // Validation Inputs
             if(data.errors) {
-                const validationErrors = convertKeysToLowerCase(data.errors);              
+                const validationErrors = convertKeysToLowerCase(data.errors);
                 Object.keys(validationErrors).forEach(field => {
                     const errorMessage = validationErrors[field][0]; // get first error in array              
                     // get input has error by Id
@@ -117,7 +117,10 @@ const Upload = {
 
 const Product = {
     list: (params: ProductParams) => requests.get('products/get-products-page', params),
-    details: (id: string) => requests.get(`products/get-product-detail?id=${id}`),
+    singleDTO: (id: string) => requests.get(`products/get-product-dto?id=${id}`),
+
+    detail: (id: string) => requests.get(`products/get-product-detail?productDetailId=${id}`),
+    details: (params: ProductSearch) => requests.get(`products/get-product-details`, params),
     
     create: (product: ProductUpsert) => requests.post('products/create', product),
     update: (product: ProductUpsert) => requests.put(`products/update`, product),

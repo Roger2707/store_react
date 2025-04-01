@@ -53,6 +53,8 @@ const Style = styled.div`
 
         border-radius: 10px;
         overflow: hidden;
+        min-width: 50%;
+        min-height: 50%;
 
         .modal_header {
             display: flex;

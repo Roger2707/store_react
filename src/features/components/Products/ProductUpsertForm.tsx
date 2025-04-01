@@ -88,7 +88,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
             try {
                 if(isCreateMode) return;
                 setIsLoading(true);
-                const response : Product = await agent.Product.details(productId);
+                const response : Product = await agent.Product.singleDTO(productId);
                 const productUpsert : ProductUpsert = {
                     id: productId,
                     name: response.name,

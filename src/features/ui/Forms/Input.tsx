@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import styled from "styled-components";
 
 interface Props {
-    id: string;
+    id: string
     value: any;
     placeholder?: string;
     type: string;

@@ -213,5 +213,5 @@ export const sortOptions = [
 
 export const formatPrice = (value: string | number) => {
     const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.]/g, '')) : value;
-    return !isNaN(numericValue) ? numericValue.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '';
+    return !isNaN(numericValue) ? numericValue.toLocaleString('en-US', { minimumFractionDigits: 2 }) : Number(0).toLocaleString('en-US', { minimumFractionDigits: 2 });
 };

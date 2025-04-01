@@ -1,22 +1,24 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { formatPrice } from "../../../app/utils/helper";
 
 interface Props {
     id: string;
     value: any;
-    placeholder: string;
+    placeholder?: string;
     type: string;
     onGetDataChange: (e: any) => void;
     errors?: string[];
+    readonly?: boolean;
+    width?: string;
 }
 
-export const InputMoney = ({id, value, placeholder, type, onGetDataChange}: Props) => {   
+export const InputMoney = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, errors, readonly, width}, ref) => {
     const [inputValue, setInputValue] = useState<string>(formatPrice(value));
 
     useEffect(()=> {
-        if(value) {
-            setInputValue(formatPrice(value));     
+        if(value || +value === 0) {
+            setInputValue(formatPrice(value));
         }
     }, [value])
 
@@ -40,11 +42,20 @@ export const InputMoney = ({id, value, placeholder, type, onGetDataChange}: Prop
 
     return (
         <Style className="input_container" >
-            <input id={id} type={type} value={inputValue} placeholder={placeholder} onChange={handleChange} onBlur={handleBlur}/>
+            <input 
+                id={id} type={type} 
+                value={inputValue} 
+                placeholder={placeholder} 
+                onChange={handleChange} 
+                onBlur={handleBlur}
+                ref={ref} 
+                readOnly={readonly ? true: false}
+                style={{width : `${width ? width : '100%'}`}}
+            />
             <span ></span>
         </Style>
     )
-}
+})
 
 const Style = styled.div`
     label {

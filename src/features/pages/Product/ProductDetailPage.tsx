@@ -17,7 +17,7 @@ export const ProductDetailPage = () => {
         const fetchProductDetailAsync = async () => {
             try {
                 if(id == null) return;
-                const response = await agent.Product.details(id);              
+                const response = await agent.Product.singleDTO(id);              
                 setProduct(prev => response);
                 setProductDetail(response.details[0] || null);
             } catch (error: any) {

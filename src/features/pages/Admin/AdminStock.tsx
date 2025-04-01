@@ -7,6 +7,10 @@ import { ProductWithDetail } from "../../../app/models/Product";
 import axios from "axios";
 import { Dropdown } from "../../ui/Forms/Dropdown";
 import { transactionType } from "../../../app/utils/helper";
+import { SearchProductDetailStock } from "../../components/Stock/SearchProductDetailStock";
+import { SearchWareHouseStock } from "../../components/Stock/SearchWareHouseStock";
+import { Modal } from "../../ui/Layout/Modal";
+import agent from "../../../app/api/agent";
 
 const defaultStockUpsertDTO : StockUpsertDTO = {
     productDetailId: '',
@@ -42,6 +46,36 @@ export const AdminStock = () => {
     const [isLoadData, setIsLoadData] = useState<boolean>(false);
     const productDetailInputRef = useRef<HTMLInputElement | null>(null);
     const wareHouseInputRef = useRef<HTMLInputElement | null>(null);
+    const [isOpenSearchProduct, setIsOpenSearchProduct] = useState<boolean>(false);
+    const [isOpenSearchWareHouse, setIsOpenSearchWareHouse] = useState<boolean>(false);
+
+    const getProductDetail = async (productDetailId: string) => {
+        try {
+            setIsLoadData(true);
+            const data = await agent.Product.detail(productDetailId)
+            setProductDetail(data);
+        } catch (error) {
+            setStockUpsertDTO(prev => ({...prev, productDetailId: ''}));
+            productDetailInputRef?.current?.focus();
+        }
+        finally {
+            setIsLoadData(false);
+        }
+    }
+
+    const getWarehouse = async (wareHouseId: string) => {
+        try {
+            setIsLoadData(true);
+            const {data} = await axios.get(`http://localhost:5110/api/warehouses/get-warehouse-detail?warehouseId=${wareHouseId}`);
+            setWareHouse(data);
+        } catch (error) {
+            setStockUpsertDTO(prev => ({...prev, wareHouseId: ''}));
+            wareHouseInputRef?.current?.focus();
+        }
+        finally {
+            setIsLoadData(false);
+        }
+    }
 
     const handleLoadDataFromDB = (e: any, key: string) => {
         e.preventDefault();
@@ -59,44 +93,11 @@ export const AdminStock = () => {
         }
     }
 
-    const getProductDetail = async (productDetailId: string) => {
-        try {
-            setIsLoadData(true);
-            const {data} = await axios.get(`http://localhost:5110/api/products/get-product-with-detail?productDetailId=${productDetailId}`);
-            setProductDetail(data);
-        } catch (error) {
-            productDetailInputRef?.current?.focus();
-        }
-        finally {
-            setIsLoadData(false);
-        }
-    }
-
-    const getWarehouse = async (wareHouseId: string) => {
-        try {
-            setIsLoadData(true);
-            const {data} = await axios.get(`http://localhost:5110/api/warehouses/get-warehouse-detail?warehouseId=${wareHouseId}`);
-            setWareHouse(data);
-        } catch (error) {
-            productDetailInputRef?.current?.focus();
-        }
-        finally {
-            setIsLoadData(false);
-        }
-    }
-
     const handleChangeData = (e: any, key: string) => {
         const value = e.target.value;
         switch(key)
         {
             case 'productDetailId':
-                setStockUpsertDTO(prev => {
-                    return {
-                        ...prev
-                        , [key] : value
-                    }
-                })
-                break;
             case 'wareHouseId':
                 setStockUpsertDTO(prev => {
                     return {
@@ -105,14 +106,8 @@ export const AdminStock = () => {
                     }
                 })
                 break;
+
             case "quantity":
-                setStockUpsertDTO(prev => {
-                    return {
-                        ...prev
-                        , [key] : +value
-                    }
-                })
-                break;
             case "transactionType":
                 setStockUpsertDTO(prev => {
                     return {
@@ -127,104 +122,121 @@ export const AdminStock = () => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
+        setIsSaving(true);
+
+        console.log('submit');
+
+        setIsSaving(false);
+    }
+
+    const handleReceiveProp = (product: ProductWithDetail) => {
+        if(product) {
+            setIsOpenSearchProduct(false);
+            setProductDetail(product);
+            setStockUpsertDTO(prev => ({...prev, productDetailId: product.productDetailId}));   
+        }
     }
 
     return (
         <>
-            <h1>Stocks:</h1>
-            <StockFormStyle disabled={isSaving} onSubmit={handleSubmit} >
-                <div className="stocks-header" >
-                    <div className="stock-products" >
-                        <div className="stock-products-header" >
-                            <Input
-                                id="productDetailId"
-                                placeholder="ProductDetailID..."
-                                type="text"
-                                width="100%"
-                                value={stockUpsertDTO.productDetailId}
-                                onGetDataChange={e => handleChangeData(e, 'productDetailId')}
-                                onGetDataEnter={(e) => handleLoadDataFromDB(e, 'productDetailId')}
-                                ref={productDetailInputRef}
-                            />
+        {isOpenSearchProduct && (
+            <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} ><SearchProductDetailStock onReceiveProps={handleReceiveProp} /></Modal>
+        )}
+        {isOpenSearchWareHouse && <SearchWareHouseStock />}
+        <h1>Stocks:</h1>
+        <StockFormStyle disabled={isSaving || isOpenSearchProduct} onSubmit={handleSubmit} >
+            <div className="stocks-header" >
+                <div className="stock-products" >
+                    <div className="stock-products-header" >
+                        <Input
+                            id="productDetailId"
+                            placeholder="ProductDetailID..."
+                            type="text"
+                            width="100%"
+                            value={stockUpsertDTO.productDetailId}
+                            onGetDataChange={e => handleChangeData(e, 'productDetailId')}
+                            onGetDataEnter={(e) => handleLoadDataFromDB(e, 'productDetailId')}
+                            ref={productDetailInputRef}
+                        />
 
-                            <button type="button" className="btn-search-product" >
-                                . . .
-                            </button>
-                        </div>
-
-                        <div className="products" style={{opacity: `${isLoadData ? 0.5 : 1}`}} >
-                            <h3>Product Detail:</h3>
-                            <div className="product-detail-info" >
-                                <Input id="productName" type="text" value={productDetail.productName} readonly />
-                                <Input id="color" type="text" value={productDetail.color} readonly />
-                                <Input id="categoryName" type="text" value={productDetail.categoryName} readonly />
-                                <Input id="brandName" type="text" value={productDetail.brandName} readonly />
-                                <Input id="price" type="text" value={productDetail.price} readonly />
-                                <img src={productDetail.imageUrl.split(',')[0]} alt="product-detail-first-image" />
-                            </div>
-                        </div>
+                        <button type="button" className="btn-search-product" onClick={() => setIsOpenSearchProduct(true)} >
+                            . . .
+                        </button>
                     </div>
 
-                    <div className="stock-warehouse" >
-                        <div className="stock-warehouse-header" >
-                            <Input
-                                id="wareHouseId"
-                                placeholder="WarehouseID..."
-                                type="text"
-                                width="100%"
-                                value={stockUpsertDTO.wareHouseId}
-                                onGetDataChange={e => handleChangeData(e, 'wareHouseId')}
-                                onGetDataEnter={(e) => handleLoadDataFromDB(e, 'wareHouseId')}
-                                ref={wareHouseInputRef}
-                            />
-
-                            <button type="button" className="btn-search-warehouse" >
-                                . . .
-                            </button>
+                    <div className="products" style={{opacity: `${isLoadData ? 0.5 : 1}`}} >
+                        <h3>Product Detail:</h3>
+                        <div className="product-detail-info" >
+                            <Input id="productName" type="text" value={productDetail.productName} readonly />
+                            <Input id="color" type="text" value={productDetail.color} readonly />
+                            <Input id="categoryName" type="text" value={productDetail.categoryName} readonly />
+                            <Input id="brandName" type="text" value={productDetail.brandName} readonly />
+                            <Input id="price" type="text" value={productDetail.price} readonly />
+                            <img src={productDetail.imageUrl.split(',')[0]} alt="product-detail-first-image" />
                         </div>
-
-
-                        <div className="warehouse" style={{opacity: `${isLoadData ? 0.5 : 1}`}} >
-                            <h3>Warehouse:</h3>
-                            <div className="warehouse-info" >
-                                <Input id="wareHouseName" type="text" value={wareHouse.name} readonly />
-                                <Input id="wareHouseLocation" type="text" value={wareHouse.location} readonly />
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
-                <div className="stocks-management" >
-                    <h3>Stocks Quantity:</h3>
-                    <div className="stocks-quantity" >
-                        <div className="stocks-quantity-input" >
-                            <Input
-                                id="quantity"
-                                placeholder="Quantity..."
-                                type="number"
-                                width="50%"
-                                value={stockUpsertDTO.quantity}
-                                onGetDataChange={e => handleChangeData(e, 'quantity')}
-                            />
+                <div className="stock-warehouse" >
+                    <div className="stock-warehouse-header" >
+                        <Input
+                            id="wareHouseId"
+                            placeholder="WarehouseID..."
+                            type="text"
+                            width="100%"
+                            value={stockUpsertDTO.wareHouseId}
+                            onGetDataChange={e => handleChangeData(e, 'wareHouseId')}
+                            onGetDataEnter={(e) => handleLoadDataFromDB(e, 'wareHouseId')}
+                            ref={wareHouseInputRef}
+                        />
 
-                            <Dropdown
-                                data={transactionType}
-                                width="50%"
-                                marginTop="1vh"
-                                onGetDataChange={e => handleChangeData(e, 'transactionType')}
-                                currentSelectedValue={transactionType[0].value}
-                            />
-                        </div>
+                        <button type="button" className="btn-search-warehouse" onClick={() => setIsOpenSearchWareHouse(true)} >
+                            . . .
+                        </button>
+                    </div>
 
-                        <div className="stocks-quantity-actions" >
-                            <button type="button" >Clear Data</button>
-                            <button type="button">Show Transactions</button>
-                            <button type="submit">Save</button>
+
+                    <div className="warehouse" style={{opacity: `${isLoadData ? 0.5 : 1}`}} >
+                        <h3>Warehouse:</h3>
+                        <div className="warehouse-info" >
+                            <Input id="wareHouseName" type="text" value={wareHouse.name} readonly />
+                            <Input id="wareHouseLocation" type="text" value={wareHouse.location} readonly />
                         </div>
                     </div>
+
                 </div>
-            </StockFormStyle>
+            </div>
+
+            <div className="stocks-management" >
+                <h3>Stocks Quantity:</h3>
+                <div className="stocks-quantity" >
+                    <div className="stocks-quantity-input" >
+                        <Input
+                            id="quantity"
+                            placeholder="Quantity..."
+                            type="number"
+                            width="50%"
+                            value={stockUpsertDTO.quantity}
+                            onGetDataChange={e => handleChangeData(e, 'quantity')}
+                        />
+
+                        <Dropdown
+                            data={transactionType}
+                            width="50%"
+                            marginTop="1vh"
+                            onGetDataChange={e => handleChangeData(e, 'transactionType')}
+                            currentSelectedValue={stockUpsertDTO.transactionType}
+                        />
+                    </div>
+
+                    <div className="stocks-quantity-actions" >
+                        <button type="button" >Clear Data</button>
+                        <button type="button">Show Transactions</button>
+                        <button type="submit" >Save</button>
+                    </div>
+                </div>
+            </div>
+        </StockFormStyle>
         </>
     )
 }
@@ -358,7 +370,7 @@ const StockFormStyle = styled.form<{ disabled: boolean }>`
                 button {
                     padding: 1.5vh 1vw;
                     font-size: 1.2rem;
-                    min-width: 28%;
+                    width: 28%;
                     border-radius: 5px;
                     border: none;
                     outline: none;
