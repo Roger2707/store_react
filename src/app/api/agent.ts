@@ -201,6 +201,9 @@ const Warehouse = {
     list: () => requests.get(`warehouses/get-all`),
     listByCondition: (params: WarehouseSearch) => requests.get(`warehouses/get-all-by-condition`, params),
     detail: (id: string) => requests.get(`warehouses/get-warehouse-detail?warehouseId=${id}`),
+
+    // 
+    productQuantity: (productDetailId: string) => requests.get(`warehouses/get-product-quantity-in-warehouse?productDetailId=${productDetailId}`),
 }
 
 const Stocks = {

@@ -8,3 +8,9 @@ export interface WarehouseSearch {
     name: string
     location: string
 }
+
+export interface WarehouseProductQuantity {
+    warehouseId: string
+    warehouseName: string
+    quantity: number
+}
