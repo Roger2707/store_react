@@ -109,8 +109,6 @@ export const AdminStock = () => {
             case "quantity":
             case "transactionType":
                 setStockUpsertDTO(prev => {
-                    console.log(value);
-                    
                     return {
                         ...prev
                         , [key] : +value
@@ -154,7 +152,7 @@ export const AdminStock = () => {
             // Enable Input Actions
             setActionEnable(true); 
         }
-    }, [stockUpsertDTO])
+    }, [stockUpsertDTO.productDetailId, stockUpsertDTO.wareHouseId])
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
