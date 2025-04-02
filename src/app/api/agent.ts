@@ -42,8 +42,12 @@ axios.interceptors.response.use(async response => {
                 Object.keys(validationErrors).forEach(field => {
                     const errorMessage = validationErrors[field][0]; // get first error in array              
                     // get input has error by Id
+                    if(field.includes('.')) field = field.split('.')[1];
                     const inputElement = document.getElementById(field);
-                    
+
+                    console.log(inputElement);
+                    console.log(field);
+                              
                     if (inputElement) {
                       // Display error
                       const errorElement = inputElement.nextElementSibling;

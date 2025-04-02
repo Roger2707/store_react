@@ -1,38 +1,40 @@
 import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input";
-import { StockUpsertDTO } from "../../../app/models/Stock";
-import { Warehouse, WarehouseProductQuantity } from "../../../app/models/Warehouse";
+import { StockDTO, StockUpsertDTO } from "../../../app/models/Stock";
+import { WarehouseProductQuantity } from "../../../app/models/Warehouse";
 import { ProductWithDetail } from "../../../app/models/Product";
-import { Dropdown } from "../../ui/Forms/Dropdown";
+import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
 import { transactionType } from "../../../app/utils/helper";
 import { SearchProductDetailStock } from "../../components/Stock/SearchProductDetailStock";
 import { Modal } from "../../ui/Layout/Modal";
 import agent from "../../../app/api/agent";
 
 const defaultStockUpsertDTO : StockUpsertDTO = {
+    stockId: '',
     productDetailId: '',
-    stockTransactionId: crypto.randomUUID(),
-    wareHouseId: '',
+    warehouseId: '',
     quantity: 0,
-    transactionType: 1,
+    transactionType: -1,
 }
 
-const defaultProductDetail : ProductWithDetail = {
+const defaulStockDTO : StockDTO = {
     productDetailId: '',
-    imageUrl: '',
+    productName: '',
     color: '',
+    price: 0,
+    imageUrl: '',
     categoryName: '',
     brandName: '',
-    price: 0,
-    productName: ''
+    stockDetail : []
 }
 
 // 5F3C3A57-1F41-4E32-9C7A-12D4686DBF8B
 export const AdminStock = () => {
     const [stockUpsertDTO, setStockUpsertDTO] = useState<StockUpsertDTO>(defaultStockUpsertDTO);
-    const [productDetail, setProductDetail] = useState<ProductWithDetail>(defaultProductDetail);
-    const [wareHouses, setWareHouses] = useState<WarehouseProductQuantity[]>([]);
+    const [stockDTO, setStockDTO] = useState<StockDTO>(defaulStockDTO);
+    const [warehouses, setWarehouses] = useState<WarehouseProductQuantity[]>([]);
+    const [warehousesDropdown, setWarehousesDropdown] = useState<DropdownData[]>([]);
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isLoadData, setIsLoadData] = useState<boolean>(false);
@@ -40,29 +42,14 @@ export const AdminStock = () => {
     const [isOpenSearchProduct, setIsOpenSearchProduct] = useState<boolean>(false);
     const [actionEnable, setActionEnable] = useState<boolean>(false);
     
-    const getProductDetail = async (productDetailId: string) => {
+    const getStockDTO = async (productDetailId: string) => {
         try {
             setIsLoadData(true);
-            const data = await agent.Product.detail(productDetailId)
-            setProductDetail(data);
-
-            getQuantityInWarehouse(stockUpsertDTO.productDetailId);
+            const data : StockDTO = await agent.Stocks.getStockOfProduct(productDetailId)
+            setStockDTO(data);
         } catch (error) {
             setStockUpsertDTO(prev => ({...prev, productDetailId: ''}));
             productDetailInputRef?.current?.focus();
-        }
-        finally {
-            setIsLoadData(false);
-        }
-    }
-
-    const getQuantityInWarehouse = async (productDetailId: string) => {
-        try {
-            setIsLoadData(true);
-            const data = await agent.Warehouse.productQuantity(productDetailId);
-            setWareHouses(data);
-        } catch (error) {
-            
         }
         finally {
             setIsLoadData(false);
@@ -74,7 +61,7 @@ export const AdminStock = () => {
         switch(key)
         {
             case 'productDetailId':
-            case 'wareHouseId':
+            case 'warehouseId':
                 setStockUpsertDTO(prev => {
                     return {
                         ...prev
@@ -84,7 +71,7 @@ export const AdminStock = () => {
                 break;
 
             case "quantity":
-            case "transactionType":
+            case "transactionType":                
                 setStockUpsertDTO(prev => {
                     return {
                         ...prev
@@ -99,41 +86,63 @@ export const AdminStock = () => {
     const handleReceiveProduct = (product: ProductWithDetail) => {
         if(product) {
             setIsOpenSearchProduct(false);
-            setProductDetail(product);
+            getStockDTO(product.productDetailId);
             setStockUpsertDTO(prev => ({...prev, productDetailId: product.productDetailId}));   
         }
     }
     
     useEffect(() => {
-        if(productDetail.productDetailId !== '') {
+        if(stockDTO.productDetailId !== '') {
+            // Retrieve warehouse quantity
+            let warehousesQuantities: WarehouseProductQuantity[] = stockDTO.stockDetail.map(s => ({
+                warehouseId: s.warehouseId,
+                warehouseName: s.warehouseName,
+                quantity: s.quantity
+            }));
+            setWarehouses(warehousesQuantities);
+
+            // Set Dropdown
+            const wareHouseDropdownDefault = {
+                warehouseId: '00000000-0000-0000-0000-000000000000',
+                warehouseName: '',
+            }
+            let newWarehouseDropdown = [wareHouseDropdownDefault, ...stockDTO.stockDetail];
+            setWarehousesDropdown(prev => {
+                return newWarehouseDropdown?.map((d: any) => {
+                    return {title: d.warehouseName, value: d.warehouseId};
+                });                
+            });
             // Enable Input Actions
             setActionEnable(true); 
         }
-    }, [productDetail.productDetailId])
+    }, [stockDTO.productDetailId, stockDTO.stockDetail])
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         
         try {
             setIsSaving(true);
-
-            if(stockUpsertDTO.transactionType === 1) {
-                const newStockUpsert : StockUpsertDTO = {
-                    ...stockUpsertDTO
-                }
-
-                console.log(newStockUpsert);
-                
-                //await agent.Stocks.upsertStock(newStockUpsert);
-            } else {
-
-            }
+            const newStockUpsert : StockUpsertDTO = {
+                ...stockUpsertDTO
+                , stockId: stockDTO.stockDetail.find(s => s.warehouseId === stockUpsertDTO.warehouseId)?.stockId || ''
+            }     
+            
+            await agent.Stocks.upsertStock(newStockUpsert);
+            handleClearData();
             
         } catch (error) {
             console.log(error);
         } finally {
             setIsSaving(false);
         }
+    }
+
+    const handleClearData = () => {
+        setStockUpsertDTO(defaultStockUpsertDTO);
+        setStockDTO(defaulStockDTO);
+        setWarehouses([]);
+        setWarehousesDropdown([]);
+        setActionEnable(false);
     }
 
     return (
@@ -154,7 +163,7 @@ export const AdminStock = () => {
                             width="100%"
                             value={stockUpsertDTO.productDetailId}
                             onGetDataChange={e => handleChangeData(e, 'productDetailId')}
-                            onGetDataEnter={(e) => getProductDetail(e.target.value)}
+                            onGetDataEnter={(e) => getStockDTO(e.target.value)}
                             ref={productDetailInputRef}
                             disable={actionEnable}
                         />
@@ -168,12 +177,12 @@ export const AdminStock = () => {
                     <div className="products" style={{opacity: `${isLoadData ? 0.5 : 1}`}} >
                         <h3>Product Detail:</h3>
                         <div className="product-detail-info" >
-                            <Input id="productName" type="text" value={productDetail.productName} readonly />
-                            <Input id="color" type="text" value={productDetail.color} readonly />
-                            <Input id="categoryName" type="text" value={productDetail.categoryName} readonly />
-                            <Input id="brandName" type="text" value={productDetail.brandName} readonly />
-                            <Input id="price" type="text" value={productDetail.price} readonly />
-                            <img src={productDetail.imageUrl.split(',')[0]} alt="product-detail-first-image" />
+                            <Input id="productName" type="text" value={stockDTO.productName} readonly />
+                            <Input id="color" type="text" value={stockDTO.color} readonly />
+                            <Input id="categoryName" type="text" value={stockDTO.categoryName} readonly />
+                            <Input id="brandName" type="text" value={stockDTO.brandName} readonly />
+                            <Input id="price" type="text" value={stockDTO.price} readonly />
+                            <img src={stockDTO.imageUrl.split(',')[0]} alt="product-detail-first-image" />
                         </div>
                     </div>
                 </div>
@@ -182,7 +191,7 @@ export const AdminStock = () => {
                     <h2>Inventory Detail:</h2>
                     <div className="warehouse-detail" >
                         {
-                            wareHouses?.map(w => {
+                            warehouses?.map(w => {
                                 return (
                                     <div className="warehouse-item" key={w.warehouseId} >
                                         <span>{w.warehouseName}</span>
@@ -196,7 +205,7 @@ export const AdminStock = () => {
             </div>
 
             <div className="stocks-management" >
-                <h3>Stocks Quantity:</h3>
+                <h3>Import / Export Inventory:</h3>
                 <div className="stocks-quantity" >
                     <div className="stocks-quantity-input" >
                         <Input
@@ -210,6 +219,7 @@ export const AdminStock = () => {
                         />
 
                         <Dropdown
+                            id='transactionType'
                             data={transactionType}
                             width="60%"
                             marginTop="1vh"
@@ -219,17 +229,18 @@ export const AdminStock = () => {
                         />
 
                         <Dropdown
-                            data={transactionType}
+                            id='warehouseId'
+                            data={warehousesDropdown}
                             width="60%"
                             marginTop="1vh"
-                            onGetDataChange={e => handleChangeData(e, 'transactionType')}
-                            currentSelectedValue={stockUpsertDTO.transactionType}
+                            onGetDataChange={e => handleChangeData(e, 'warehouseId')}
+                            currentSelectedValue={stockUpsertDTO.warehouseId}
                             disable={!actionEnable}
                         />
                     </div>
 
                     <div className="stocks-quantity-actions" >
-                        <button type="button" >Clear Data</button>
+                        <button type="button" onClick={handleClearData} >Clear Data</button>
                         <button type="button" disabled={!actionEnable} >Show Transactions</button>
                         <button type="submit" disabled={!actionEnable} >Save</button>
                     </div>

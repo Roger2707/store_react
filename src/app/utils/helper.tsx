@@ -157,6 +157,10 @@ export const productStatus = [
 
 export const transactionType = [
     {
+        title: '',
+        value: -1
+    },
+    {
         title: 'Import',
         value: 1,
     },
