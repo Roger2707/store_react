@@ -39,7 +39,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         created: new Date().toISOString(),
         categoryId: crypto.randomUUID(),
         brandId: crypto.randomUUID(),
-        productDetails: [{color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', productStatus: 1}]
+        productDetails: [{color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1}]
     }
 
     const initUpload : ImageUploadDTO = {
@@ -64,16 +64,29 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
 
     useEffect(() => {     
         if(categories && categories.length > 0) {
+            const defaultCategory : Category = {
+                id: '',
+                name: ''
+            }
+            let newCategories : Category[] = [defaultCategory, ...categories];
+
             setCategoriesDropdown(prev => {
-                return categories?.map((d: Category) => {
+                return newCategories?.map((d: Category) => {
                     return {title: d.name, value: d.id};
                 });                
             });
         }
 
         if(brands && brands.length > 0) {     
+            const defaultBrand : Brand = {
+                id: '',
+                name: '',
+                country: ''
+            }
+            let newBrands : Brand[] = [defaultBrand, ...brands];
+
             setBrandsDropdown(prev => {
-                return brands.map((d: Brand) => {
+                return newBrands.map((d: Brand) => {
                     return {title: d.name, value: d.id};
                 });                
             })
@@ -89,6 +102,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                 if(isCreateMode) return;
                 setIsLoading(true);
                 const response : Product = await agent.Product.singleDTO(productId);
+                
                 const productUpsert : ProductUpsert = {
                     id: productId,
                     name: response.name,
@@ -107,7 +121,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                             color: d.color,
                             extraName: d.extraName,
                             price: d.price,
-                            productStatus: d.productStatus === 'Active' ? 1 : 2,
+                            status: d.status === 'In stock' ? 1 : 0,
                         }
                     })
                 }
@@ -143,6 +157,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         }
         // If id !== 0 -> Update -> Fetch Existed Product data
         if(!isCreateMode) fetchProductDetailAsync();
+        
     }, [isCreateMode, productId]);
 
     //#endregion
@@ -154,10 +169,6 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
             // Set FILE State
             setUpload(prev => {
                 return {...prev, files: e };
-            });
-        } else if(key === 'categoryId' || key === 'brandId') {
-            setProduct(prev => {
-                return {...prev, [key]: +e.target.value };
             });
         } else {       
             setProduct(prev => {
@@ -174,7 +185,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         setProduct(prev => {
             if(prev.productDetails.length === 99) return {...prev};
 
-            const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', productStatus: 1};
+            const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1};
             let updatedProductDetails = [
                 ...prev.productDetails.slice(0, indexRow + 1),
                 newDetail, 
@@ -191,7 +202,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     const handleRemoveRow = (indexRow: number) => {
         setProduct(prev => {
             if(prev.productDetails.length === 1) {
-                const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', productStatus: 1};
+                const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1};
                 return {
                     ...prev,
                     productDetails: [newDetail]
@@ -304,7 +315,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                 , publicId: uploadResult.publicId || product.publicId
                 , productDetails: product.productDetails.filter(p => !isEmptyRow(p))
             }
-        
+            
             if(!isCreateMode) {
                 await agent.Product.update(updatedProduct);
             }
@@ -324,19 +335,24 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     return (
         <ProductUpsertStyle onSubmit={handleSubmit} disabled={isSaving || isLoading} >
             <div className="product-header-container" >
-                <Input id='name' value={product.name} placeholder="Name..." type="text" 
-                        onGetDataChange={(e) => handleGetDataChange(e, 'name')} 
-                />
-                <Dropdown field="category" data={categoriesDropdown} currentSelectedValue={product.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
-                <Dropdown field="brand" data={brandsDropdown} currentSelectedValue={product.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
-                <Textarea id='description' value={product.description} placeholder="Description..." 
-                            onGetDataChange={e => handleGetDataChange(e, 'description')}
-                />
-                <MultipleFileImage 
-                    isClearMode = {isClearMode}
-                    value={upload.imageDisplay} 
-                    onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}
-                />
+                <div className="product-fields-group-1" >
+                    <Input id='name' value={product.name} placeholder="Name..." type="text" 
+                            onGetDataChange={(e) => handleGetDataChange(e, 'name')} 
+                    />
+                    <Dropdown field="category" data={categoriesDropdown} currentSelectedValue={product.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
+                    <Dropdown field="brand" data={brandsDropdown} currentSelectedValue={product.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
+                </div>
+
+                <div className="product-fields-group-2">
+                    <Textarea id='description' value={product.description} placeholder="Description..." 
+                                onGetDataChange={e => handleGetDataChange(e, 'description')}
+                    />
+                    <MultipleFileImage 
+                        isClearMode = {isClearMode}
+                        value={upload.imageDisplay} 
+                        onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}
+                    />
+                </div>
             </div>
             <div className="product-detail-container" >
                 <div className="label-details-container" >
@@ -375,11 +391,21 @@ const ProductUpsertStyle = styled.form<{ disabled: boolean }>`
     pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 
     .product-header-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-column-gap: 10%;   
-        grid-row-gap: 1.5vh;
-        height: fit-content;    
+        
+        .product-fields-group-1 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-column-gap: 1vw; 
+            height: fit-content;   
+        }
+
+        .product-fields-group-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-column-gap: 10%;   
+            height: fit-content;   
+            margin-top: 1vh;
+        }
     }
 
     .product-detail-container {
@@ -441,6 +467,10 @@ const ProductUpsertStyle = styled.form<{ disabled: boolean }>`
                 cursor: pointer;
                 opacity: 1;
                 transition: 0.5s;
+            }
+
+            &:first-child {
+                margin-right: 1vw;
             }
         }
 

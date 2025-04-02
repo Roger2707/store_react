@@ -159,7 +159,7 @@ const Styled = styled.form<{ disabled: boolean }>`
     .search-conditions {
         .product-prices {
             display: grid;
-            grid-template-columns: 45% 10% 45%;
+            grid-template-columns: 45% 9.3% 45%;
             grid-column-gap: .2vw;
             align-items: center;
         }
@@ -175,7 +175,7 @@ const Styled = styled.form<{ disabled: boolean }>`
         margin-top: 2vh;
         margin-bottom: 2vh;
         width: 100%;
-        height: 30vh;
+        height: 45vh;
         background-color: #ccc;
         overflow: scroll;
 
@@ -221,6 +221,11 @@ const Styled = styled.form<{ disabled: boolean }>`
             outline: none;
             cursor: pointer;
             color: #fff;
+            opacity: 0.8;
+
+            &:hover {
+                opacity: 1;
+            }
             
             &:first-child {
                 background-color: orangered;

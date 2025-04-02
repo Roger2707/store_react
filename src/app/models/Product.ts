@@ -26,11 +26,11 @@ export interface ProductParams {
 export interface ProductDetail {
     id: string;
     productid: string;
+    color: string;
+    status: string;
     price: number;
     discountPrice: number;
-    color: string;
     extraName: string;
-    productStatus: string;
 }
 
 export interface ProductUpsert {
@@ -55,7 +55,7 @@ export interface ProductUpsertDetail {
     price: number;
     color: string;
     extraName: string;
-    productStatus: number;
+    status: number;
 }
 
 export interface ProductTechnology {

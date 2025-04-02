@@ -150,7 +150,7 @@ export const AdminStock = () => {
     return (
         <>
         {isOpenSearchProduct && (
-            <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} ><SearchProductDetailStock onReceiveProps={handleReceiveProduct} /></Modal>
+            <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} height="80%" ><SearchProductDetailStock onReceiveProps={handleReceiveProduct} /></Modal>
         )}
 
         {showTransactionMode && (

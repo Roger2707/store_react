@@ -30,7 +30,7 @@ export const Dropdown = ({id, field, data, currentSelectedValue, onGetDataChange
     let defaultValue;
 
     if(typeof currentSelectedValue === 'number') {
-        defaultValue = currentSelectedValue >= 0 ? currentSelectedValue : data[0]?.value || "";
+        defaultValue = currentSelectedValue >= 0 ? currentSelectedValue : data[0]?.value || -1;
     } else if(typeof currentSelectedValue === 'string') {
         defaultValue = currentSelectedValue ? currentSelectedValue : data[0]?.value || "";
     }

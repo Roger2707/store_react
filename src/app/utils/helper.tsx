@@ -146,6 +146,10 @@ export const accountSidebars = [
 
 export const productStatus = [
     {
+        title: '',
+        value: -1,
+    },
+    {
         title: 'Active',
         value: 1,
     },

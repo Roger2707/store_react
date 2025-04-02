@@ -9,6 +9,9 @@ interface Props {
 
 export const ShowTransactions = ({productDetailId} : Props) => {
     const [transactions, setTransactions] = useState<StockTransactionDTO[] | null>(null);
+    const [filters, setFilters] = useState<StockTransactionDTO[] | null>(null);
+    const [selectedOption, setSelectedOption] = useState<string>('all');
+
 
     useEffect(() => {
         const getTransactions = async () => {
@@ -25,32 +28,84 @@ export const ShowTransactions = ({productDetailId} : Props) => {
         getTransactions();
     }, [productDetailId])
 
+    const handleRadioChange = (value: string) => {
+        setSelectedOption(value);
+    }
+
+    useEffect(() => {
+        if(transactions && transactions?.length > 0) {
+            switch(selectedOption)
+            {
+                case 'import':
+                    setFilters(prev => transactions.filter(t => t.transactionType.toLowerCase() === 'import'));
+                    break;
+                case 'export':
+                    setFilters(prev => transactions.filter(t => t.transactionType.toLowerCase() === 'export'));
+                    break;
+                default:
+                    setFilters(prev => [...transactions]);
+            }
+        }
+    }, [transactions, selectedOption])
+
     return (
         <Style>
             <div className="search-container" >
-                    
+                <label>
+                    <input
+                        type="radio"
+                        name="transactionType"
+                        value="import"
+                        checked={selectedOption === "import"}
+                        onChange={() => handleRadioChange("import")}
+                    />
+                    <span>Import</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="transactionType"
+                        value="export"
+                        checked={selectedOption === "export"}
+                        onChange={() => handleRadioChange("export")}
+                    />
+                    <span>Export</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="transactionType"
+                        value="all"
+                        checked={selectedOption === "all"}
+                        onChange={() => handleRadioChange("all")}
+                    />
+                    <span>All</span>
+                </label>
             </div>
+
             <Table>
                 <thead>
                     <tr>
                         <th>Color</th>
                         <th>Price</th>
-                        <th>Quantity</th>
                         <th>Warehouse</th>
                         <th>Type</th>
+                        <th>Quantity</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        transactions?.map(t => {
+                        filters?.map(t => {
                             return (
                                 <tr key={t.id}>
                                     <td>{t.color}</td>
                                     <td>{t.price.toLocaleString('vi-VN')}</td>
-                                    <td>{t.quantity}</td>
                                     <td>{t.warehouseName}</td>
                                     <td>{t.transactionType}</td>
+                                    <td>{t.quantity}</td>
                                     <td>{t.created.toString().split('T')[0]}</td>
                                 </tr>
                             )
@@ -64,7 +119,23 @@ export const ShowTransactions = ({productDetailId} : Props) => {
 
 const Style = styled.div`
     .search-container {
-        margin-bottom: 3vh;
+        margin-bottom: 2vh;
+        padding: .5vh 1vw .5vh 0;
+
+        label {
+            font-size: 1rem;
+
+            input {
+                cursor: pointer;
+            }
+
+            span {
+                display: inline-block;
+                font-style: italic;
+                margin-right: 1vw;
+                color: darkblue;
+            }
+        }
     }
 
 `

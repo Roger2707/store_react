@@ -39,7 +39,6 @@ const Style = styled.div`
     }
 
     input {
-        margin-top: 5px;
         padding: 5px 8px;
         border-radius: 5px;
         border: none;

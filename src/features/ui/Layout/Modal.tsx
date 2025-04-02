@@ -7,9 +7,10 @@ interface Props {
     onSetOpen: (value: boolean) => void;
     children: ReactNode;
     width?: string;
+    height?: string;
 }
 
-export const Modal = ({title, onSetOpen, children, width} : Props) => {
+export const Modal = ({title, onSetOpen, children, width, height} : Props) => {
 
     const handleCloseModal = () => {
         onSetOpen(false);
@@ -17,7 +18,7 @@ export const Modal = ({title, onSetOpen, children, width} : Props) => {
 
     return (
         <Style>
-            <div className="modal_container" style={{width: `${width ? width : '60%'}`}} >
+            <div className="modal_container" style={{width: `${width ? width : '60%'}`, height: `${height ? height : '50%'}`}} >
                 <div className="modal_header" >
                     <p>{title}</p>
                     <button onClick={handleCloseModal} ><span><FaWindowClose/></span></button>

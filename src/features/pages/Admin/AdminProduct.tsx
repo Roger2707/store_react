@@ -50,7 +50,7 @@ export const AdminProduct = () => {
     return (
         <Style>
             {openForm &&
-                <Modal title={isCreateMode ? 'Create' : 'Update'} onSetOpen={setOpenForm} >
+                <Modal title={isCreateMode ? 'Create' : 'Update'} onSetOpen={setOpenForm} width="80%" height="80%" >
                     <ProductUpsertForm productId={productId} onSetOpenForm={setOpenForm} isCreateMode={isCreateMode} />
                 </Modal>
             }

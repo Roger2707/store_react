@@ -84,16 +84,17 @@ const Style = styled.div `
         margin-top: 1vh;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-row-gap: 5px;
-        column-gap: 5px;
-        height: fit-content;
+        grid-row-gap: 2px;
+        column-gap: 2px;
+        height: 160px;
         background-color: #ccc;
         border: 2px solid darkgray;
 
         img {
             display: inline-block;
             width: 100%;
-            height: 100px;
+            height: 70px;
+            cursor: pointer;
         }
     }
 `

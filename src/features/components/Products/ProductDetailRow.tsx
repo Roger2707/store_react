@@ -15,7 +15,6 @@ interface Props {
 }
 
 export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRow, onRemoveRow}: Props) => {
-
     const handleGetDataChange = (e: any, key: string) => {
         let newValue;
         switch (key) {
@@ -23,7 +22,7 @@ export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRo
                 newValue = e;
                 break;
             case 'productStatus':
-                newValue = +e.target.value;
+                newValue = e.target.value;
                 break;
             default:
                 newValue = e.target.value;
@@ -68,7 +67,7 @@ export const ProductDetailRow = ({productDetail, onSetProduct, indexRow, onAddRo
             <Dropdown 
                 field="productStatus" 
                 data={productStatus} 
-                currentSelectedValue={productDetail.productStatus} 
+                currentSelectedValue={productDetail.status} 
                 onGetDataChange={e => handleGetDataChange(e, 'productStatus')}
             />
         </Row>
