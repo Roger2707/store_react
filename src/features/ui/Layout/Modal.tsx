@@ -6,9 +6,10 @@ interface Props {
     title: string;
     onSetOpen: (value: boolean) => void;
     children: ReactNode;
+    width?: string;
 }
 
-export const Modal = ({title, onSetOpen, children} : Props) => {
+export const Modal = ({title, onSetOpen, children, width} : Props) => {
 
     const handleCloseModal = () => {
         onSetOpen(false);
@@ -16,7 +17,7 @@ export const Modal = ({title, onSetOpen, children} : Props) => {
 
     return (
         <Style>
-            <div className="modal_container" >
+            <div className="modal_container" style={{width: `${width ? width : '60%'}`}} >
                 <div className="modal_header" >
                     <p>{title}</p>
                     <button onClick={handleCloseModal} ><span><FaWindowClose/></span></button>
@@ -44,7 +45,7 @@ const Style = styled.div`
 
     .modal_container {
         background-color: #E5E4E2;
-        padding: 5vh 5vw;
+        padding: 3vh 3vw;
 
         position: absolute;
         top: 50%;
@@ -53,7 +54,6 @@ const Style = styled.div`
 
         border-radius: 10px;
         overflow: hidden;
-        min-width: 50%;
         min-height: 50%;
 
         .modal_header {

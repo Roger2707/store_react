@@ -9,6 +9,7 @@ import { transactionType } from "../../../app/utils/helper";
 import { SearchProductDetailStock } from "../../components/Stock/SearchProductDetailStock";
 import { Modal } from "../../ui/Layout/Modal";
 import agent from "../../../app/api/agent";
+import { ShowTransactions } from "../../components/Stock/ShowTransactions";
 
 const defaultStockUpsertDTO : StockUpsertDTO = {
     stockId: '',
@@ -41,6 +42,7 @@ export const AdminStock = () => {
     const productDetailInputRef = useRef<HTMLInputElement | null>(null);
     const [isOpenSearchProduct, setIsOpenSearchProduct] = useState<boolean>(false);
     const [actionEnable, setActionEnable] = useState<boolean>(false);
+    const [showTransactionMode, setShowTransactionMode] = useState<boolean>(false);
     
     const getStockDTO = async (productDetailId: string) => {
         try {
@@ -90,7 +92,7 @@ export const AdminStock = () => {
             setStockUpsertDTO(prev => ({...prev, productDetailId: product.productDetailId}));   
         }
     }
-    
+
     useEffect(() => {
         if(stockDTO.productDetailId !== '') {
             // Retrieve warehouse quantity
@@ -149,6 +151,10 @@ export const AdminStock = () => {
         <>
         {isOpenSearchProduct && (
             <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} ><SearchProductDetailStock onReceiveProps={handleReceiveProduct} /></Modal>
+        )}
+
+        {showTransactionMode && (
+            <Modal title={`Transaction of Product: ${stockDTO.productName}`} onSetOpen={setShowTransactionMode} width="80%" ><ShowTransactions productDetailId={stockDTO.productDetailId}/></Modal>
         )}
 
         <h1>Stocks:</h1>
@@ -241,7 +247,7 @@ export const AdminStock = () => {
 
                     <div className="stocks-quantity-actions" >
                         <button type="button" onClick={handleClearData} >Clear Data</button>
-                        <button type="button" disabled={!actionEnable} >Show Transactions</button>
+                        <button type="button" onClick={() => setShowTransactionMode(true)} disabled={!actionEnable} >Show Transactions</button>
                         <button type="submit" disabled={!actionEnable} >Save</button>
                     </div>
                 </div>

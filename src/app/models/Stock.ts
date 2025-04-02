@@ -23,3 +23,16 @@ export interface StockDetailDTO {
     warehouseName: string
     quantity: number
 }
+
+export interface StockTransactionDTO {
+    id: string
+    productDetailId: string
+    productName: string
+    color: string
+    price: number
+    quantity: number
+    warehouseId: string
+    warehouseName: string
+    transactionType: string
+    created: Date
+}

@@ -212,7 +212,7 @@ const Warehouse = {
 
 const Stocks = {
     getStockOfProduct: (productId: string) => requests.get(`stocks/get-stock-product-detail?productId=${productId}`),
-    getQuantity: (productDetailId: string) => requests.get(`stocks/get-quantity?productDetailId=${productDetailId}`),
+    getStockTransactionsOfProduct: (productId: string) => requests.get(`stocks/get-stock-transactions?productId=${productId}`),
     upsertStock: (request: StockUpsertDTO) => requests.post(`stocks/upsert-stock`, request)
 }
 
