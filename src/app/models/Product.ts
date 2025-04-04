@@ -64,14 +64,16 @@ export interface ProductTechnology {
     imageUrl: string,
 }
 
-export interface ProductWithDetail {
+export interface ProductSingleDetailDTO {
     productDetailId: string
-    imageUrl: string
+    productName: string
+    productFirstImage: string
     color: string
+    originPrice: number
+    discountPercent: number
+    discountPrice: number
     categoryName: string
     brandName: string
-    price: number
-    productName: string
 }
 
 export interface ProductSearch {

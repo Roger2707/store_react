@@ -13,7 +13,6 @@ export const BasketTable = ({basket} : Props) => {
         <Table>
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Image</th>
                     <th>Detail</th>
                     <th>Quantity</th>
@@ -24,11 +23,10 @@ export const BasketTable = ({basket} : Props) => {
             <tbody>
                 {
                     basket && 
-                    basket.items.length > 0 &&
+                    basket.items && basket.items.length > 0 &&
                     basket.items.map((basketItem, index) => {
                         return (
                             <tr key={index} >
-                                <td>#{basketItem.productId.toString().padStart(6, '0')}</td>
                                 <td>
                                     <img src={basketItem.productFirstImage} alt="img-first-basket" />
                                 </td>
@@ -44,7 +42,7 @@ export const BasketTable = ({basket} : Props) => {
                                 </td>
                                 <td>
                                     <BasketDetailQuantity 
-                                        productId={basketItem.productId} 
+                                        productDetailId={basketItem.productDetailId} 
                                         quantity={basketItem.quantity}
                                     />
                                 </td>

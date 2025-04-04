@@ -3,19 +3,25 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import styled from "styled-components"
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { upsertBasket } from "../../../app/store/basketSlice";
+import { BasketUpsertParam } from "../../../app/models/Basket";
 
 interface Props {
     quantity: number;
-    productId: string;
+    productDetailId: string;
 }
 
-export const BasketDetailQuantity = ({quantity, productId}: Props) => {
+export const BasketDetailQuantity = ({quantity, productDetailId}: Props) => {
     const [currentQuantity, setCurrentQuantity] = useState<number>(quantity);
     const dispatch = useAppDispatch();
 
     const handleUpsertQuantity = (mode: number) => {
         try {
-            dispatch(upsertBasket({productId: productId, mode: mode}));
+            const basketUpsertParam : BasketUpsertParam = {
+                productDetailId: productDetailId,
+                quantity: 1,
+                mode: mode
+            }
+            dispatch(upsertBasket(basketUpsertParam));
         } catch (error) {
             console.log(error);
         }
@@ -27,7 +33,7 @@ export const BasketDetailQuantity = ({quantity, productId}: Props) => {
 
     return (
         <Style>
-            <button onClick={() => handleUpsertQuantity(0)} >
+            <button onClick={() => handleUpsertQuantity(2)} >
                 <span><FaMinus/></span>     
             </button>
             <span className="current-quantity" >{currentQuantity}</span>

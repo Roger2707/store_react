@@ -10,7 +10,7 @@ interface Props {
 
 export const BasketHeader = ({onSetPage, currentPage} : Props) => {
     const {basket} = useAppSelector(state => state.basket);
-    const basketQuantity = basket?.items ? basket.items.reduce((total, item) => total + item.quantity, 0) : 0;
+    const basketQuantity = basket?.items ? basket?.items?.reduce((total, item) => total + item.quantity, 0) : 0;
 
     return(
         <BasketStyles>

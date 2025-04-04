@@ -7,6 +7,7 @@ import agent from "../../../app/api/agent";
 import { Loading } from "../../ui/Common/Loading";
 import { FaArrowRight } from "react-icons/fa";
 import { ProductTech } from "../../components/ProductDetail/ProductTech";
+import { ProductCartButtons } from "../../components/ProductDetail/ProductCartButtons";
 
 export const ProductDetailPage = () => {
     const  [product, setProduct] = useState<Product | null>(null);
@@ -43,7 +44,7 @@ export const ProductDetailPage = () => {
                             <div className="product-detail" >
                                 <div className="product-basic-info">
                                     <h1>{`${product.name} - ${productDetail.extraName}`}</h1>
-                                    <p>Sku: #{product.id.toString().padStart(6, '0')}</p>
+                                    <p>DetailId: #{productDetail.id}</p>
                                     <p>Description: {product.description}</p>
                                     <p>Created: {product.created.toString()}</p>
                                     <p>Category: {product.categoryName}</p>
@@ -77,7 +78,7 @@ export const ProductDetailPage = () => {
                                     }
                                 </div>
 
-                                {/* <ProductCartButtons productId={product.id} /> */}
+                                <ProductCartButtons productDetailId={productDetail.id} />
                             </div>
                         </div>    
 

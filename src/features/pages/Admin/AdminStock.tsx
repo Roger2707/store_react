@@ -3,13 +3,13 @@ import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input";
 import { StockDTO, StockUpsertDTO } from "../../../app/models/Stock";
 import { WarehouseProductQuantity } from "../../../app/models/Warehouse";
-import { ProductWithDetail } from "../../../app/models/Product";
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
 import { transactionType } from "../../../app/utils/helper";
 import { SearchProductDetailStock } from "../../components/Stock/SearchProductDetailStock";
 import { Modal } from "../../ui/Layout/Modal";
 import agent from "../../../app/api/agent";
 import { ShowTransactions } from "../../components/Stock/ShowTransactions";
+import { ProductSingleDetailDTO } from "../../../app/models/Product";
 
 const defaultStockUpsertDTO : StockUpsertDTO = {
     stockId: '',
@@ -85,7 +85,7 @@ export const AdminStock = () => {
         }
     }
 
-    const handleReceiveProduct = (product: ProductWithDetail) => {
+    const handleReceiveProduct = (product: ProductSingleDetailDTO) => {
         if(product) {
             setIsOpenSearchProduct(false);
             getStockDTO(product.productDetailId);

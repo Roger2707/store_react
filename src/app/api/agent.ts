@@ -10,6 +10,7 @@ import { store } from "../store/configureStore";
 import { ImageUploadDTO } from "../models/ImageUpload";
 import { WarehouseSearch } from "../models/Warehouse";
 import { StockUpsertDTO } from "../models/Stock";
+import { BasketUpsertParam } from "../models/Basket";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
@@ -125,8 +126,8 @@ const Product = {
     list: (params: ProductParams) => requests.get('products/get-products-page', params),
     singleDTO: (id: string) => requests.get(`products/get-product-dto?id=${id}`),
 
-    detail: (id: string) => requests.get(`products/get-product-detail?productDetailId=${id}`),
-    details: (params: ProductSearch) => requests.get(`products/get-product-details`, params),
+    detail: (id: string) => requests.get(`products/get-product-single-detail?productDetailId=${id}`),
+    details: (params: ProductSearch) => requests.get(`products/get-product-single-details`, params),
     
     create: (product: ProductUpsert) => requests.post('products/create', product),
     update: (product: ProductUpsert) => requests.put(`products/update`, product),
@@ -191,8 +192,8 @@ const Technology = {
 }
 const Basket = {
     get: () => requests.get(`baskets/get-basket`),
-    upsert : (productId: string, mode: number) => requests.post(`baskets/upsert-basket?productId=${productId}&mode=${mode}`, {}),
-    toggleStatusItem : (itemId: number) => requests.post(`baskets/toggle-status-item?itemId=${itemId}`, {}),
+    upsert : (basketUpsertDTO : BasketUpsertParam) => requests.post(`baskets/upsert-basket`, basketUpsertDTO),
+    toggleStatusItem : (itemId: string) => requests.post(`baskets/toggle-status-item?itemId=${itemId}`, {}),
 }
 
 const Order = {

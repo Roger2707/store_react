@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input"
 import { useMemo, useState } from "react"
-import { ProductSearch, ProductWithDetail } from "../../../app/models/Product"
+import { ProductSearch, ProductSingleDetailDTO } from "../../../app/models/Product"
 import { InputMoney } from "../../ui/Forms/InputMoney"
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown"
 import { useCategories } from "../../Hooks/useCategories"
@@ -11,7 +11,7 @@ import { Brand } from "../../../app/models/Brand"
 import agent from "../../../app/api/agent"
 
 interface Props {
-    onReceiveProps: (data: ProductWithDetail) => void;
+    onReceiveProps: (data: ProductSingleDetailDTO) => void;
 }
 
 export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
@@ -32,7 +32,7 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
     }, [brands]);
 
     const [isSearch, setIsSearch] = useState<boolean>(false);
-    const [productSearchData, setProductSearchData] = useState<ProductWithDetail[]>([]);
+    const [productSearchData, setProductSearchData] = useState<ProductSingleDetailDTO[]>([]);
 
     const handleChangeData = (e: any, key: string) => {
         switch(key) {
@@ -56,7 +56,7 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
 
         try {
             setIsSearch(true);
-            const data : ProductWithDetail[] = await agent.Product.details(productSearch);
+            const data : ProductSingleDetailDTO[] = await agent.Product.details(productSearch);
             setProductSearchData(data);
         }
         catch(error: any) {
@@ -72,7 +72,7 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
         setProductSearchData([]);
     }
 
-    const handlePropProductToParent = (product: ProductWithDetail) => {
+    const handlePropProductToParent = (product: ProductSingleDetailDTO) => {
         onReceiveProps(product);
     }
 
@@ -127,11 +127,11 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
 
             <div className="search-data" >
                 {
-                    productSearchData.map((p: ProductWithDetail) => {
+                    productSearchData.map((p: ProductSingleDetailDTO) => {
                         return (
                             <div className="search-row" key={p.productDetailId} onDoubleClick={handlePropProductToParent.bind(null, p)} >
                                 <span>{p.productName}</span>
-                                <span>{p.price.toLocaleString('vi-VN')}</span>
+                                <span>{p.originPrice.toLocaleString('vi-VN')}</span>
                                 <span>{p.categoryName}</span>
                                 <span>{p.brandName}</span>
                             </div>

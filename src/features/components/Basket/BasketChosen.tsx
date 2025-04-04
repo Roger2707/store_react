@@ -4,7 +4,7 @@ import { useAppDispatch } from "../../../app/store/configureStore";
 import { toggleStatusItem } from "../../../app/store/basketSlice";
 
 interface Props {
-    basketItemId: number;
+    basketItemId: string;
     status: boolean;
 }
 
@@ -12,7 +12,7 @@ export const BasketChosen = ({basketItemId, status} : Props) => {
     const [currentStatus, setCurrentStatus] = useState<boolean>(status);
     const dispatch = useAppDispatch();
 
-    const handleToggleItem = (itemId: number) => {
+    const handleToggleItem = (itemId: string) => {
         setCurrentStatus(prevState => !prevState);
         try {
             dispatch(toggleStatusItem(itemId));

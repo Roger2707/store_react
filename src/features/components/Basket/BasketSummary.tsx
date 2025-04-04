@@ -11,7 +11,7 @@ export const BasketSummary = () => {
                 <p>Items: </p>
                 <div style={{padding: '0 0 0 1vw'}} >
                     {
-                        basket?.items.filter(item => item.status).map((item) => {
+                        basket?.items?.filter(item => item.status).map((item) => {
                             return (
                                 <div className="basket-item" key={item.basketItemId}>
                                     <p>💣{item.productName}</p>
@@ -25,11 +25,11 @@ export const BasketSummary = () => {
                 
                 <div className="basket-item-price" >
                     <p>Total Items:</p>
-                    <p>{basket?.items.filter(item => item.status).reduce((sum, item) => sum + item.quantity, 0)}</p>
+                    <p>{basket?.items?.filter(item => item.status).reduce((sum, item) => sum + item.quantity, 0)}</p>
                 </div>
                 <div className="basket-item-price" >
                     <p>Grand Total:</p>
-                    <p style={{color: 'red', fontSize: '1.5rem'}} >{(basket?.items.filter(item => item.status).reduce((grand, item) => grand + (item.quantity * item.discountPrice), 0).toLocaleString("vi-VN"))}VND</p>
+                    <p style={{color: 'red', fontSize: '1.5rem'}} >{(basket?.items?.filter(item => item.status).reduce((grand, item) => grand + (item.quantity * item.discountPrice), 0).toLocaleString("vi-VN"))}VND</p>
                 </div>
             </div>
         </Style>

@@ -1,29 +1,13 @@
-export interface Basket {
-    id: number,
-    userId: number,
-    items: BasketItem [],
-}
-
-export interface BasketItem {
-    id: number,
-    basketId: number,
-    productId: string,
-    quantity: number,
-    status: boolean
-}
-
 export interface BasketDTO {
-    id: number,
+    id: string,
     userId: number,
-    items: BasketItemDTO[],
-    totalPrice: number,
-    paymentIntentId: number,
-    clientSecret: number
+    items?: BasketItemDTO[],
+    grandTotal: number,
 }
 
-interface BasketItemDTO {
-    basketItemId: number,
-    productId: string,
+export interface BasketItemDTO {
+    basketItemId: string,
+    productDetailId: string,
     productName: string,
     productFirstImage: string,
     quantity: number,
@@ -31,4 +15,18 @@ interface BasketItemDTO {
     discountPercent: number,
     discountPrice: number,
     status: boolean
+}
+
+export interface BasketUpsertDTO {
+    userId: number
+    username: string
+    productDetailId: string
+    quantity: number
+    mode: number
+}
+
+export interface BasketUpsertParam {
+    productDetailId: string
+    quantity: number
+    mode: number
 }

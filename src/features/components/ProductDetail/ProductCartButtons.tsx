@@ -3,33 +3,38 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import styled from "styled-components"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import { getBasket, upsertBasket } from "../../../app/store/basketSlice";
+import { BasketUpsertParam } from "../../../app/models/Basket";
 
 interface Props {
-    productId: string;
+    productDetailId: string;
 }
 
-export const ProductCartButtons = ({productId}: Props) => {
+export const ProductCartButtons = ({productDetailId}: Props) => {
     const {basket, isLoadBasket} = useAppSelector(state => state.basket);
     const [currentQuantity, setCurrentQuantity] = useState<number>(0);
     const dispatch = useAppDispatch();
-
-    useEffect(() => {        
-        if(!isLoadBasket) dispatch(getBasket());      
+    useEffect(() => { 
+        if(!isLoadBasket) dispatch(getBasket());
     }, [isLoadBasket, dispatch]);
-
 
     useEffect(() => {
         if (basket?.items) {
-            const foundItem = basket.items.find(item => item.productId === productId);
+            const foundItem = basket.items.find(item => item.productDetailId === productDetailId);
             if (foundItem) {
                 setCurrentQuantity(prev => foundItem.quantity);
-            }
-        }      
-    }, [basket, productId]);
+            } 
+            else setCurrentQuantity(0);
+        }
+    }, [basket, productDetailId]);
 
     const handleUpsertQuantity = (mode: number) => {
         try {
-            dispatch(upsertBasket({productId: productId, mode: mode}));
+            const basketUpsertParam : BasketUpsertParam = {
+                productDetailId: productDetailId,
+                quantity: 1,
+                mode: mode
+            }        
+            dispatch(upsertBasket(basketUpsertParam));
         } catch (error) {
             console.log(error);
         }
@@ -38,7 +43,7 @@ export const ProductCartButtons = ({productId}: Props) => {
     return (
         <Style>
             <HandleCartQuantity>
-                <button onClick={() => handleUpsertQuantity(0)} >
+                <button onClick={() => handleUpsertQuantity(2)} >
                     <span><FaMinus /></span>
                 </button>
                 <p>{currentQuantity}</p>
