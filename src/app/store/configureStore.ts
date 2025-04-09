@@ -4,7 +4,6 @@ import { categorySlice } from "./categorySlice";
 import { brandSlice } from "./brandSlice";
 import { promotionSlice } from "./promotionSlice";
 import { accountSlice } from "./accountSlice";
-import { userAddressSlice } from "./userAddressSlice";
 import { basketSlice } from "./basketSlice";
 import { orderSlice } from "./orderSlice";
 
@@ -15,7 +14,6 @@ export const store = configureStore({
         brand: brandSlice.reducer,
         promotion: promotionSlice.reducer,
         account: accountSlice.reducer,
-        userAddress: userAddressSlice.reducer,
         basket: basketSlice.reducer,
         order: orderSlice.reducer,
     }

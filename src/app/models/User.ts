@@ -1,4 +1,5 @@
-export interface User {
+export interface UserDTO {
+    userName: string;
     fullName: string;
     email: string;
     token: string;
@@ -8,6 +9,19 @@ export interface User {
     phoneNumber: string;
     imageUrl: string;
     basketId?: number;
+
+    userAddresses: UserAddressDTO[];
+}
+
+export interface UserAddressDTO {
+    id: number; // primary key
+
+    city : string;
+    district: string;
+    ward: string;
+    streetAddress: string;
+    postalCode: string;
+    country: string;
 }
 
 export interface UserProfileUpdate {
@@ -44,23 +58,6 @@ export interface ChangePasswordDTO {
     currentPassword: string;
     newPassword: string;
     confirmedNewPassword: string;
-}
-
-export interface UserAddressDTO {
-    id: number; // primary key
-
-    city : string;
-    district: string;
-    ward: string;
-    streetAddress: string;
-    postalCode: string;
-    country: string;
-}
-
-export interface UserCookie {
-    FullName: string;
-    Email: string;
-    Token: string;
 }
 
 export interface GoogleAuthRequest  {

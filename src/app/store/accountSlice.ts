@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ChangePasswordDTO, ForgetPasswordDTO, ResetPasswordDTO, SignInRequest, SignUpRequest, User, UserProfileUpdate } from "../models/User";
+import { ChangePasswordDTO, ForgetPasswordDTO, ResetPasswordDTO, SignInRequest, SignUpRequest, UserDTO, UserProfileUpdate } from "../models/User";
 import agent from "../api/agent";
 import { router } from "../router/Routes";
 
 interface AccountState {
-    user: User | null,
+    user: UserDTO | null,
     loadingState: boolean,
     message?: string,
 }
@@ -15,7 +15,7 @@ const initialState : AccountState = {
     message: ''
 }
 
-export const signUpAsync = createAsyncThunk<User, SignUpRequest>(
+export const signUpAsync = createAsyncThunk<UserDTO, SignUpRequest>(
     'account/signUpAsync',
     async(data, thunkAPI) => {
         try {
@@ -27,7 +27,7 @@ export const signUpAsync = createAsyncThunk<User, SignUpRequest>(
     }
 );
 
-export const signInAsync = createAsyncThunk<User, SignInRequest>(
+export const signInAsync = createAsyncThunk<UserDTO, SignInRequest>(
     'account/signInAsync',
     async (data, thunkAPI) => {
         try {
@@ -41,7 +41,7 @@ export const signInAsync = createAsyncThunk<User, SignInRequest>(
     }
 );
 
-export const fetchCurrentUser = createAsyncThunk<User>(
+export const fetchCurrentUser = createAsyncThunk<UserDTO>(
     'account/fetchCurrentUser',
     async (_, thunkAPI) => {
         try {
@@ -95,7 +95,7 @@ export const handleResetPassword = createAsyncThunk<void, ResetPasswordDTO>(
     }
 )
 
-export const updateUserProfile = createAsyncThunk<User, UserProfileUpdate>(
+export const updateUserProfile = createAsyncThunk<UserDTO, UserProfileUpdate>(
     'account/update-user-profile',
     async (data, thunkAPI) => {
         try {

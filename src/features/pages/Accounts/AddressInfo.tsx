@@ -6,7 +6,6 @@ import { UserAddressDTO } from "../../../app/models/User";
 import { FaMinus } from "react-icons/fa";
 import agent from "../../../app/api/agent";
 import { useAppDispatch } from "../../../app/store/configureStore";
-import { setUserAddresses } from "../../../app/store/userAddressSlice";
 
 interface Props {
     userAddressProps: UserAddressDTO;
@@ -247,8 +246,8 @@ export const AddressInfo = ({onRemoveRow, userAddressProps} : Props) => {
         handleBeforeSubmit();  
 
         try {
-            await agent.Account.upsertUserAddress(userAddress);
-            dispatch(setUserAddresses(null));
+            //await agent.Account.upsertUserAddress(userAddress);
+            //dispatch(setUserAddresses(null));
         } catch (error) {
             console.error(error);
         }

@@ -63,10 +63,11 @@ const Style = styled.div `
     .preview {
         margin-top: 1vh;
 
-        width: 50%;
-        height: 18vh;
+        width: 100%;
+        height: 25vh;
         border: 1px solid #333;
         background-color: #ccc;
+        border-radius: 50%;
         
         img {
             width: 100%;

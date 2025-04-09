@@ -1,58 +1,57 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { fetchUserAddressAsync } from "../../../app/store/userAddressSlice";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { OrderProcessing } from "../Order/OrderProcessing";
 
 export const ConfirmAddress = () => {
-    const {loadingUser, userAddresses} = useAppSelector(state => state.userAddress);
-    const {basket} = useAppSelector(state => state.basket);
-    const selectedItem = basket?.items?.filter(item => item.status === true)?.length || 0;
+    // const {loadingUser, userAddresses} = useAppSelector(state => state.userAddress);
+    // const {basket} = useAppSelector(state => state.basket);
+    // const selectedItem = basket?.items?.filter(item => item.status === true)?.length || 0;
 
-    const dispatch = useAppDispatch();
-    const [selectedAddress, setSelectedAddress] = useState<number>(0);
+    // const dispatch = useAppDispatch();
+    // const [selectedAddress, setSelectedAddress] = useState<number>(0);
 
-    useEffect(() => {
-        if(loadingUser) dispatch(fetchUserAddressAsync());
-    }, [loadingUser, dispatch]);
+    // useEffect(() => {
+    //     if(loadingUser) dispatch(fetchUserAddressAsync());
+    // }, [loadingUser, dispatch]);
 
-    const handleChooseAddress = (value: number) => {
-        setSelectedAddress(value);
-    }
+    // const handleChooseAddress = (value: number) => {
+    //     setSelectedAddress(value);
+    // }
 
-    return (
-        <Style>
-            {userAddresses.length === 0 && <Link to='/profile/address-info' className="link-to-create-address" >Add Shipping Address</Link>}
-            {
-                userAddresses.length > 0 &&
-                <ul className="address-list" >
-                    <h3>Shipping Address</h3>
-                    {
-                        userAddresses.map(address => {
-                            const addressInfo = `${address.streetAddress}, ${address.district}, ${address.ward}, ${address.city}`;
-                            return (
-                                <li key={address.id} className="address-item" >
-                                    <input  type="radio" value={address.id} name="shippingAddress" 
-                                            checked={selectedAddress === address.id}
-                                            onChange={(e) => handleChooseAddress(address.id)} 
-                                    /> <span>{addressInfo}</span>
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
-            }
-            {
-                selectedAddress > 0 && selectedItem > 0 &&
-                (
-                    <div className="btn-order-container" >                
-                        <OrderProcessing userAddressId = {selectedAddress} />
-                    </div>
-                )
-            }
-        </Style>
-    )
+    // return (
+    //     <Style>
+    //         {userAddresses.length === 0 && <Link to='/profile/address-info' className="link-to-create-address" >Add Shipping Address</Link>}
+    //         {
+    //             userAddresses.length > 0 &&
+    //             <ul className="address-list" >
+    //                 <h3>Shipping Address</h3>
+    //                 {
+    //                     userAddresses.map(address => {
+    //                         const addressInfo = `${address.streetAddress}, ${address.district}, ${address.ward}, ${address.city}`;
+    //                         return (
+    //                             <li key={address.id} className="address-item" >
+    //                                 <input  type="radio" value={address.id} name="shippingAddress" 
+    //                                         checked={selectedAddress === address.id}
+    //                                         onChange={(e) => handleChooseAddress(address.id)} 
+    //                                 /> <span>{addressInfo}</span>
+    //                             </li>
+    //                         )
+    //                     })
+    //                 }
+    //             </ul>
+    //         }
+    //         {
+    //             selectedAddress > 0 && selectedItem > 0 &&
+    //             (
+    //                 <div className="btn-order-container" >                
+    //                     <OrderProcessing userAddressId = {selectedAddress} />
+    //                 </div>
+    //             )
+    //         }
+    //     </Style>
+    // )
 }
 
 const Style = styled.div`

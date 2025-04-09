@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { getBasket } from "../../../app/store/basketSlice";
 import { BasketTable } from "../../components/Basket/BasketTable";
 import { BasketSummary } from "../../components/Basket/BasketSummary";
-import { ConfirmAddress } from "../../components/Basket/ConfirmAddress";
 import { BasketEmpty } from "../../components/Basket/BasketEmpty";
 
 export const BasketPage = () => {
@@ -26,7 +25,7 @@ export const BasketPage = () => {
 
                         <div className="basket-summary" >
                             <BasketSummary/>
-                            <ConfirmAddress/>
+                            {/* <ConfirmAddress/> */}
                         </div>
                     </div>
                 </>

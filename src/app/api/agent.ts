@@ -174,11 +174,6 @@ const Account = {
     //////////////////////////////////////////////////////////////////////////////////
     updateUserProfile: (userProfileDTO: UserProfileUpdate) => requests.putForm(`users/update-profile`, getFormData(userProfileDTO)),
     changePassword: (passwordDTO: ChangePasswordDTO) => requests.post(`users/change-password`, passwordDTO),
-
-    /////////////////////////////////////////////////////////////////////////////////////
-    getUserAddress: () => requests.get(`user-address/get-user-address`),
-    upsertUserAddress : (userAddressDTO: UserAddressDTO) => requests.postForm(`user-address/upsert-user-address`, getFormData(userAddressDTO)),
-    deleteUserAddress : (id: number) => requests.del(`user-address/delete-user-address?id=${id}`),
 }
 
 const Location = {
