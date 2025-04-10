@@ -50,8 +50,14 @@ export const Login = () => {
                         <h1>Welcome back,</h1>
                     </div>
                     <div className="form_content" >
-                        <Input id="username" placeholder="Username..." type="text" value={loginRequest.username} onGetDataChange={e => handleChangeData(e, 'username')} />
-                        <Input id="password" placeholder="Password..." type="password" value={loginRequest.password} onGetDataChange={e => handleChangeData(e, 'password')} />
+                        <Input 
+                            id="username" placeholder="Username..." type="text" 
+                            value={loginRequest.username} onGetDataChange={e => handleChangeData(e, 'username')} 
+                        />
+                        <Input 
+                            id="password" placeholder="Password..." type="password" marginTop="1vh" 
+                            value={loginRequest.password} onGetDataChange={e => handleChangeData(e, 'password')} 
+                        />
                     </div>
                     <div className="form_footer" >
                         <button disabled={loadingState} type="submit" >
@@ -108,15 +114,18 @@ const Style = styled.div`
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+
                 h1 {
                     color: #333;
-                    margin-top: 5%;
+                    margin-top: 1vh;
                     font-size: 1.5rem;
+                    font-style: italic;
+                    letter-spacing: 1px;
                 }
             }
     
             .form_content {
-                margin-top: 8%;
+                margin-top: 2vh;
 
                 p {
                     color: #5D3FD3;

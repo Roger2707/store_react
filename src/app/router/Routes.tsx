@@ -65,10 +65,9 @@ export const router = createBrowserRouter(([
             // AUTHENTICATED ROUTES
             {
                 element: <RequireAuth />, children: [
-                    { path: 'profile', element: <UserProfile/>, children: [
-                        { path: 'orders', element: <OrdersInfo/> },
-                        { path: 'change-password', element: <ChangePassword/> },
-                    ] },
+                    { path: 'profile', element: <UserProfile/>, },
+                    { path: 'orders', element: <OrdersInfo/> },
+                    { path: 'change-password', element: <ChangePassword/> },
                     { path: 'basket', element: <BasketPage/> },
                     { path: 'orders', element: <Order/> },
                 ]

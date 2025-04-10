@@ -192,10 +192,10 @@ export const UserProfile = () => {
                 </div>
 
                 <div className="form_footer" >
-                    <Link type="button" to='/profile/change-password' >
+                    <Link type="button" to='/change-password' >
                         Change Password
                     </Link>
-                    <Link type="button" to='/profile/orders' >
+                    <Link type="button" to='/orders' >
                         Show Orders
                     </Link>
                     <button type="submit" disabled={isSubmitting} >

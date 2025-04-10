@@ -5,6 +5,7 @@ import { GoogleAuthRequest } from "../../../app/models/User";
 import agent from "../../../app/api/agent";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { setUser } from "../../../app/store/userSlice";
+import { FcGoogle } from "react-icons/fc";
 
 export const OAuthIdentity = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -34,7 +35,7 @@ export const OAuthIdentity = () => {
     return (
         <Style>
             <button onClick={() => login()} style={{ padding: "10px", cursor: "pointer" }}>
-                Sign in with Google
+                <FcGoogle className="google-icon" />
             </button>
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </Style>
@@ -43,14 +44,21 @@ export const OAuthIdentity = () => {
 
 const Style = styled.div `
     margin-top: 1%;
-    width: 60%;
-    text-align: center;
+    width: 100%;
 
     display: flex;
     justify-content: center;
-    flex-direction: column;
 
-    p {
-        margin-bottom: 3%;
+    button {
+        border: none;
+        background-color: transparent;
+        .google-icon {
+            font-size: 2rem;
+
+            &:hover {
+                transform: scale(120%);
+                
+            }
+        }
     }
 `

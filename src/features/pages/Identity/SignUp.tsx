@@ -47,10 +47,22 @@ export const SignUp = () => {
                         <h1>Welcome,</h1>
                     </div>
                     <div className="form_content" >
-                        <Input id="username" placeholder="Username..." type="text" value={signupRequest.username} onGetDataChange={e => handleChangeData(e, 'username')} />
-                        <Input id="fullname" placeholder="FullName..." type="text" value={signupRequest.fullname} onGetDataChange={e => handleChangeData(e, 'fullname')} />
-                        <Input id="email" placeholder="Email..." type="email" value={signupRequest.email} onGetDataChange={e => handleChangeData(e, 'email')} />
-                        <Input id="phoneNumber" placeholder="Phone..." type="number" value={signupRequest.phoneNumber} onGetDataChange={e => handleChangeData(e, 'phoneNumber')} />
+                        <Input 
+                            id="username" placeholder="Username..." type="text" 
+                            value={signupRequest.username} onGetDataChange={e => handleChangeData(e, 'username')} 
+                        />
+                        <Input 
+                            id="fullname" placeholder="FullName..." type="text" marginTop="1vh"
+                            value={signupRequest.fullname} onGetDataChange={e => handleChangeData(e, 'fullname')} 
+                        />
+                        <Input 
+                            id="email" placeholder="Email..." type="email" marginTop="1vh"
+                            value={signupRequest.email} onGetDataChange={e => handleChangeData(e, 'email')} 
+                        />
+                        <Input 
+                            id="phoneNumber" placeholder="Phone..." type="number" marginTop="1vh"
+                            value={signupRequest.phoneNumber} onGetDataChange={e => handleChangeData(e, 'phoneNumber')} 
+                        />
                     </div>
                     <div className="form_footer" >
                         <button disabled={loadingState} type="submit" >
@@ -108,13 +120,15 @@ const Style = styled.div`
                 align-items: center;
                 h1 {
                     color: #333;
-                    margin-top: 5%;
+                    margin-top: 1vh;
                     font-size: 1.5rem;
+                    font-style: italic;
+                    letter-spacing: 1px;
                 }
             }
     
             .form_content {
-                margin-top: 8%;
+                margin-top: 1vh;
 
                 p {
                     color: #5D3FD3;
