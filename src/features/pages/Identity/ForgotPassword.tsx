@@ -3,14 +3,14 @@ import { Input } from "../../ui/Forms/Input"
 import { useState } from "react"
 import { ForgetPasswordDTO } from "../../../app/models/User";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { handleForgetPassword } from "../../../app/store/accountSlice";
+import { handleForgetPassword } from "../../../app/store/userSlice";
 
 const logo = require('../../assets/images/mainLogo.jpg');
 
 export const ForgotPassword = () => {
     const [forgetPasswordDTO, setForgetPasswordDTO] = useState<ForgetPasswordDTO>({email: ''});
     const dispatch = useAppDispatch();
-    const {loadingState, message} = useAppSelector(state => state.account);
+    const {loadingState, message} = useAppSelector(state => state.user);
 
     const handleChangeData = (e: any, email: string) => {
         setForgetPasswordDTO(prev => {

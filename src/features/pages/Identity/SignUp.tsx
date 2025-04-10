@@ -4,13 +4,13 @@ import { useState } from "react"
 import { Link } from "react-router-dom";
 import { SignUpRequest } from "../../../app/models/User";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { signUpAsync } from "../../../app/store/accountSlice";
+import { signUpAsync } from "../../../app/store/userSlice";
 import { OAuthIdentity } from "./OAuthIdentity";
 
 const logo = require('../../assets/images/mainLogo.jpg');
 
 export const SignUp = () => {
-    const {loadingState} = useAppSelector(state => state.account);
+    const {loadingState} = useAppSelector(state => state.user);
     const [signupRequest, setSignUpRequest] = useState<SignUpRequest>(
         {email: '', fullname: '', username: '', phoneNumber: ''}
     );

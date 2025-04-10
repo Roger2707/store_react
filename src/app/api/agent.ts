@@ -21,7 +21,7 @@ const responseBody = (response: AxiosResponse) => response.data;
 
 // Add Token to Headers
 axios.interceptors.request.use(config => {
-    const token = store.getState().account.user?.token;
+    const token = store.getState().user.user?.token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
@@ -160,7 +160,7 @@ const Promotions = {
     delete: (id: string) => requests.del(`promotions/delete?id=${id}`),
 }
 
-const Account = {
+const User = {
     signIn: (request: SignInRequest) => requests.post(`users/log-in`, request),
     signUp: (request: SignUpRequest) => requests.post(`users/sign-up`, request),
     logOut: () => requests.post(`users/log-out`, {}),
@@ -218,7 +218,7 @@ const agent = {
     Categories,
     Brands,
     Promotions,
-    Account,
+    User,
     Location,
     Basket,
     Order,

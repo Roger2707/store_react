@@ -4,7 +4,7 @@ import { ResetPasswordDTO } from "../../../app/models/User"
 import { useLocation } from "react-router-dom";
 import { Input } from "../../ui/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { handleResetPassword } from "../../../app/store/accountSlice";
+import { handleResetPassword } from "../../../app/store/userSlice";
 
 const logo = require('../../assets/images/mainLogo.jpg');
 
@@ -13,7 +13,7 @@ export const ResetPassword = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const dispatch = useAppDispatch();
-    const {loadingState} = useAppSelector(state => state.account);
+    const {loadingState} = useAppSelector(state => state.user);
 
     const [resetPasswordDTO, setResetPasswordDTO] = useState<ResetPasswordDTO>({
         email: '',

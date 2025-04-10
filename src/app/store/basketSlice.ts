@@ -63,8 +63,6 @@ export const basketSlice = createSlice({
 
         builder.addCase(getBasket.fulfilled, (state, action) => {
             state.basket = action.payload;
-            console.log('Get Fullfilled: ');
-            console.log(state.basket);
             state.isLoadBasket = true;
         });
 

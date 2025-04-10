@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GoogleAuthRequest } from "../../../app/models/User";
 import agent from "../../../app/api/agent";
 import { useAppDispatch } from "../../../app/store/configureStore";
-import { setUser } from "../../../app/store/accountSlice";
+import { setUser } from "../../../app/store/userSlice";
 
 export const OAuthIdentity = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export const OAuthIdentity = () => {
             setErrorMessage(null);
             try {            
                 const request: GoogleAuthRequest = {authCode: response.code};
-                const user = await agent.Account.oAuthLogin(request);
+                const user = await agent.User.oAuthLogin(request);
                 console.log("Login Success:", user);
                 dispatch(setUser(user));
             } catch (error: any) {

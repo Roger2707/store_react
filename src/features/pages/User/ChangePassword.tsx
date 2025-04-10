@@ -3,7 +3,7 @@ import { Input } from "../../ui/Forms/Input"
 import { useState } from "react"
 import { ChangePasswordDTO } from "../../../app/models/User"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
-import { changePassword } from "../../../app/store/accountSlice"
+import { changePassword } from "../../../app/store/userSlice"
 
 export const ChangePassword = () => {
 
@@ -13,7 +13,7 @@ export const ChangePassword = () => {
         confirmedNewPassword: ''
     });
 
-    const {loadingState} = useAppSelector(state => state.account);
+    const {loadingState} = useAppSelector(state => state.user);
     const dispatch = useAppDispatch();
 
     const handleGetDataChange = (e: any, key: string) => {

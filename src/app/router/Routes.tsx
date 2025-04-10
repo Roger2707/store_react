@@ -18,10 +18,10 @@ import { Contact } from "../../features/pages/Others/Contact";
 import RequireAuth from "./RequireAuth";
 import { ForgotPassword } from "../../features/pages/Identity/ForgotPassword";
 import { ResetPassword } from "../../features/pages/Identity/ResetPassword";
-import { Profile } from "../../features/pages/Accounts/Profile";
 import { BasketPage } from "../../features/pages/Cart/BasketPage";
 import { Order } from "../../features/pages/Orders/Order";
 import { AdminStock } from "../../features/pages/Admin/AdminStock";
+import { UserProfile } from "../../features/pages/User/UserProfile";
 
 export const router = createBrowserRouter(([
     {
@@ -63,7 +63,7 @@ export const router = createBrowserRouter(([
             // AUTHENTICATED ROUTES
             {
                 element: <RequireAuth />, children: [
-                    { path: 'profile', element: <Profile/> },             
+                    { path: 'profile', element: <UserProfile/> },             
                     { path: 'basket', element: <BasketPage/> },
                     { path: 'orders', element: <Order/> },
                 ]

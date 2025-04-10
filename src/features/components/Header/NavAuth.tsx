@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const NavAuth = ({onSetPage, currentPage} : Props) => {
-    const {user} = useAppSelector(state => state.account);
+    const {user} = useAppSelector(state => state.user);
     return (
         <NavAuthStyles>
             {

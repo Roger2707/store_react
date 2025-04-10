@@ -5,7 +5,7 @@ export interface UserDTO {
     token: string;
     role?: string;
 
-    dob: Date | null | undefined;
+    dob: Date;
     phoneNumber: string;
     imageUrl: string;
     basketId?: number;

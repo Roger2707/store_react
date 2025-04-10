@@ -3,7 +3,7 @@ import { Input } from "../../ui/Forms/Input"
 import { useState } from "react"
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { signInAsync } from "../../../app/store/accountSlice";
+import { signInAsync } from "../../../app/store/userSlice";
 import { SignInRequest } from "../../../app/models/User";
 import { OAuthIdentity } from "./OAuthIdentity";
 
@@ -11,7 +11,7 @@ const logo = require('../../assets/images/mainLogo.jpg');
 
 export const Login = () => {
     const dispatch = useAppDispatch();
-    const {loadingState} = useAppSelector(state => state.account);
+    const {loadingState} = useAppSelector(state => state.user);
     const [loginRequest, setLoginRequest] = useState<SignInRequest>(
         {
             username: '',

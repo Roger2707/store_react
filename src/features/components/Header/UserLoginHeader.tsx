@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch } from "../../../app/store/configureStore";
-import { logOutAsync } from "../../../app/store/accountSlice";
+import { logOutAsync } from "../../../app/store/userSlice";
 import { Link } from "react-router-dom";
 import { setBasket } from "../../../app/store/basketSlice";
 

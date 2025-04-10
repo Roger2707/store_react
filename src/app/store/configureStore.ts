@@ -3,7 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { categorySlice } from "./categorySlice";
 import { brandSlice } from "./brandSlice";
 import { promotionSlice } from "./promotionSlice";
-import { accountSlice } from "./accountSlice";
+import { userSlice } from "./userSlice";
 import { basketSlice } from "./basketSlice";
 import { orderSlice } from "./orderSlice";
 
@@ -13,7 +13,7 @@ export const store = configureStore({
         category: categorySlice.reducer,
         brand: brandSlice.reducer,
         promotion: promotionSlice.reducer,
-        account: accountSlice.reducer,
+        user: userSlice.reducer,
         basket: basketSlice.reducer,
         order: orderSlice.reducer,
     }

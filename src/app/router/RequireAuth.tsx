@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function RequireAuth({roles}: Props) {
-    const {user} = useAppSelector(state => state.account);
+    const {user} = useAppSelector(state => state.user);
     const location = useLocation();
 
     if (!user) {

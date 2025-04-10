@@ -3,23 +3,23 @@ import { ChangePasswordDTO, ForgetPasswordDTO, ResetPasswordDTO, SignInRequest, 
 import agent from "../api/agent";
 import { router } from "../router/Routes";
 
-interface AccountState {
+interface UserState {
     user: UserDTO | null,
     loadingState: boolean,
     message?: string,
 }
 
-const initialState : AccountState = {
+const initialState : UserState = {
     user: null,
     loadingState: false,
     message: ''
 }
 
 export const signUpAsync = createAsyncThunk<UserDTO, SignUpRequest>(
-    'account/signUpAsync',
+    'user/signUpAsync',
     async(data, thunkAPI) => {
         try {
-            const user = await agent.Account.signUp(data);
+            const user = await agent.User.signUp(data);
             return user;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -28,10 +28,10 @@ export const signUpAsync = createAsyncThunk<UserDTO, SignUpRequest>(
 );
 
 export const signInAsync = createAsyncThunk<UserDTO, SignInRequest>(
-    'account/signInAsync',
+    'user/signInAsync',
     async (data, thunkAPI) => {
         try {
-            const response = await agent.Account.signIn(data);
+            const response = await agent.User.signIn(data);
             localStorage.setItem('user', JSON.stringify(response));
             return response;
         }
@@ -42,10 +42,10 @@ export const signInAsync = createAsyncThunk<UserDTO, SignInRequest>(
 );
 
 export const fetchCurrentUser = createAsyncThunk<UserDTO>(
-    'account/fetchCurrentUser',
+    'user/fetchCurrentUser',
     async (_, thunkAPI) => {
         try {
-            const user = await agent.Account.currentUser();
+            const user = await agent.User.currentUser();
             localStorage.setItem('user', JSON.stringify(user));
             return user;
         } catch (error: any) {
@@ -60,10 +60,10 @@ export const fetchCurrentUser = createAsyncThunk<UserDTO>(
 )
 
 export const logOutAsync = createAsyncThunk(
-    'account/logOut',
+    'user/logOut',
     async (_, thunkAPI) => {
         try {
-            const response = await agent.Account.logOut();
+            const response = await agent.User.logOut();
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -72,10 +72,10 @@ export const logOutAsync = createAsyncThunk(
 )
 
 export const handleForgetPassword = createAsyncThunk<void, ForgetPasswordDTO>(
-    'account/forgetPassword',
+    'user/forgetPassword',
     async (data, thunkAPI) => {
         try {
-            const response = await agent.Account.forgetPassword(data);
+            const response = await agent.User.forgetPassword(data);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -87,7 +87,7 @@ export const handleResetPassword = createAsyncThunk<void, ResetPasswordDTO>(
     'account/resetPasssword',
     async (data, thunkAPI) => {
         try {
-            const response = await agent.Account.resetPassword(data);
+            const response = await agent.User.resetPassword(data);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -99,7 +99,7 @@ export const updateUserProfile = createAsyncThunk<UserDTO, UserProfileUpdate>(
     'account/update-user-profile',
     async (data, thunkAPI) => {
         try {
-            const response = await agent.Account.updateUserProfile(data);
+            const response = await agent.User.updateUserProfile(data);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -111,7 +111,7 @@ export const changePassword = createAsyncThunk<void, ChangePasswordDTO>(
     'account/changePassword',
     async(data, thunkAPI) => {
         try {
-            const response = await agent.Account.changePassword(data);
+            const response = await agent.User.changePassword(data);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -119,7 +119,7 @@ export const changePassword = createAsyncThunk<void, ChangePasswordDTO>(
     }
 )
 
-export const accountSlice = createSlice({
+export const userSlice = createSlice({
     name: 'account',
     initialState,
     reducers: {
@@ -270,4 +270,4 @@ export const accountSlice = createSlice({
 });
 
 
-export const {ssignOut, setUser} = accountSlice.actions;
+export const {ssignOut, setUser} = userSlice.actions;

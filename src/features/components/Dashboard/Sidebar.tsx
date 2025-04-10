@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const Sidebar = ({onSetPage, page, sidebars} : Props) => {
-    const {user} = useAppSelector(state => state.account);
+    const {user} = useAppSelector(state => state.user);
     
     return (
         <SidebarStyle>
