@@ -18,38 +18,6 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
     const [districts, setDistricts] = useState<DropdownData[]>([]);
     const [wards, setWards] = useState<DropdownData[]>([]);
 
-    async function fetchDistricts(cityCode: number) {
-        try {
-            const response = await agent.Location.getDistricts(cityCode);
-            if(response) {
-                setDistricts(prevState => {
-                    return response.map((d: any) => {
-                        return {title: d.name, value: d.code};
-                    })
-                });
-            }
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function fetchWards(districtCode: number) {
-        try {
-            const response = await agent.Location.getWards(districtCode);
-            if(response) {
-                setWards(prevState => {
-                    return response.map((d: any) => {
-                        return {title: d.name, value: d.code};
-                    })
-                });
-            }
-        } 
-        catch (error) {
-            console.error(error);
-        }
-    }
-
     useEffect(() => {
         async function fetchCities() {
             try {
@@ -66,19 +34,61 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
                 console.error(error);
             }
         }
-        fetchCities();      
+        fetchCities();
     }, []);
+
+    useEffect(() => {
+        async function fetchDistricts(cityCode: number) {
+            try {
+                const response = await agent.Location.getDistricts(cityCode);
+                if(response) {
+                    setDistricts(prevState => {
+                        return response.map((d: any) => {
+                            return {title: d.name, value: d.code};
+                        })
+                    });
+                }
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+
+        const cityCode = cities.find(c => c.title === userAddress.city)?.value;
+        cityCode && fetchDistricts(+cityCode);
+
+    }, [cities, userAddress.city]);
+
+    useEffect(() => {
+        async function fetchWards(districtCode: number) {
+            try {
+                const response = await agent.Location.getWards(districtCode);
+                if(response) {
+                    setWards(prevState => {
+                        return response.map((d: any) => {
+                            return {title: d.name, value: d.code};
+                        })
+                    });
+                }
+            } 
+            catch (error) {
+                console.error(error);
+            }
+        }
+
+        const districtCode = districts.find(c => c.title === userAddress.district)?.value;
+        districtCode && fetchWards(+districtCode);
+
+    }, [districts, userAddress.district]);
     
     const handleGetDataChange = (e: any, key: string) => {
         let newValue = e.target.value;
         switch (key) {
             case 'city':
-                fetchDistricts(+newValue);
                 const cityName = cities.find(c => c.value === +newValue)?.title;                
                 newValue = cityName;
                 break;
             case 'district':
-                fetchWards(+newValue);
                 const districtName = districts.find(c => c.value === +newValue)?.title;                
                 newValue = districtName;
                 break;
@@ -131,7 +141,6 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
                 data={districts} 
                 currentSelectedValue={districts.find(c => c.title === userAddress.district)?.value} 
                 onGetDataChange={e => handleGetDataChange(e, 'district')}
-                backgroundColor=""
             />
 
             <Dropdown 

@@ -5,14 +5,17 @@ import { useAppDispatch, useAppSelector } from "../../../app/store/configureStor
 import { useEffect, useState } from "react"
 import { UserAddressDTO, UserDTO } from "../../../app/models/User"
 import { UserAddressRow } from "./UserAdressRow"
-import { ImageUploadDTO } from "../../../app/models/ImageUpload"
+import { ImageUploadResult, SingleImageUploadDTO } from "../../../app/models/ImageUpload"
+import { updateUser } from "../../../app/store/userSlice"
+import agent from "../../../app/api/agent"
 
 const defaultUserDTO : UserDTO = {
     userName: '',
     fullName: '',
     email: '',
     token: '',
-    role: '',   
+    role: '',
+    publicId: '',
     dob: new Date(),
     phoneNumber: '',
     imageUrl: '',
@@ -30,22 +33,33 @@ const defaultUserAdressDTO : UserAddressDTO = {
     postalCode: ''
 }
 
-const initUpload : ImageUploadDTO = {
-    files: null,
+const initUpload : SingleImageUploadDTO = {
+    file: null,
     folderPath: '',
-    publicIds: '',
+    publicId: '',
     imageDisplay: ''
 }
 
 export const UserProfile = () => {
     const {user: currentUser} = useAppSelector(state => state.user);
     const [userDTO, setUserDTO] = useState<UserDTO>(defaultUserDTO);
-    const [upload, setUpload] = useState<ImageUploadDTO>(initUpload);
+    const [upload, setUpload] = useState<SingleImageUploadDTO>(initUpload);
     const dispatch = useAppDispatch();
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
         if(currentUser) {
             setUserDTO(currentUser);
+            setUpload(prev => {
+                return {
+                    ...prev
+                    , folderPath: `users/${currentUser.userName.trim().toLowerCase()}`
+                    , publicIds: currentUser.publicId
+
+                    // reference for UploadComponent
+                    , imageDisplay: currentUser.imageUrl
+                }
+            });
         }
     }, [currentUser]);
 
@@ -86,11 +100,10 @@ export const UserProfile = () => {
     }
 
     const handleGetDataChange = (e: any, key: string) => {
-        let changedValue = e.target.value;
         switch(key) {
             case 'imageUrl':
                 setUpload(prev => {
-                    return {...prev, files: e };
+                    return {...prev, file: e };
                 });
                 break;
             case 'fullName':
@@ -99,7 +112,7 @@ export const UserProfile = () => {
                 setUserDTO(prev => {
                     return {
                         ...prev
-                        , [key]: changedValue
+                        , [key]: e.target.value
                     }
                 })
                 break;
@@ -107,15 +120,31 @@ export const UserProfile = () => {
         }
     }
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        console.log(userDTO);
-        
-        //dispatch(updateUserProfile(userProfile));
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();    
+        try {
+            setIsSubmitting(true);
+            let uploadResult : ImageUploadResult = await agent.Upload.uploadSingle(upload);
+            if (!uploadResult) {
+                console.log('Update Image has some problems !');
+                setIsSubmitting(false);
+                return;
+            }
+            const updateUserDTO : UserDTO = {
+                ...userDTO
+                , imageUrl: uploadResult.imageUrl || userDTO.imageUrl
+                , publicId: uploadResult.publicId || userDTO.publicId
+            }
+            dispatch(updateUser(updateUserDTO));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsSubmitting(false);
+        }
     }
     
     return (
-        <Style>
+        <Style disabled={isSubmitting}>
             <h1>Profile Information</h1>
             <form onSubmit={handleSubmit} >
                 <div className="form_header" >
@@ -159,7 +188,7 @@ export const UserProfile = () => {
                 </div>
 
                 <div className="form_footer" >
-                    <button type="submit" >
+                    <button type="submit" disabled={isSubmitting} >
                         Save
                     </button>
                 </div>
@@ -168,8 +197,11 @@ export const UserProfile = () => {
     )
 }
 
-const Style = styled.div `
+const Style = styled.div<{ disabled: boolean }> `
     padding: 3vh 2vw;
+    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+    pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+
     h1 {
         color: orangered;
         font-style: italic;
@@ -236,6 +268,10 @@ const Style = styled.div `
                     opacity: 1;
                     cursor: pointer;
                 }
+            }
+
+            &:disabled {
+                cursor: block;
             }
         }
 

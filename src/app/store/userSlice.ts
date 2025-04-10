@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ChangePasswordDTO, ForgetPasswordDTO, ResetPasswordDTO, SignInRequest, SignUpRequest, UserDTO, UserProfileUpdate } from "../models/User";
+import { ChangePasswordDTO, ForgetPasswordDTO, ResetPasswordDTO, SignInRequest, SignUpRequest, UserDTO } from "../models/User";
 import agent from "../api/agent";
 import { router } from "../router/Routes";
 
@@ -84,7 +84,7 @@ export const handleForgetPassword = createAsyncThunk<void, ForgetPasswordDTO>(
 )
 
 export const handleResetPassword = createAsyncThunk<void, ResetPasswordDTO>(
-    'account/resetPasssword',
+    'user/resetPasssword',
     async (data, thunkAPI) => {
         try {
             const response = await agent.User.resetPassword(data);
@@ -95,11 +95,11 @@ export const handleResetPassword = createAsyncThunk<void, ResetPasswordDTO>(
     }
 )
 
-export const updateUserProfile = createAsyncThunk<UserDTO, UserProfileUpdate>(
-    'account/update-user-profile',
+export const updateUser = createAsyncThunk<UserDTO, UserDTO>(
+    'user/update-user',
     async (data, thunkAPI) => {
         try {
-            const response = await agent.User.updateUserProfile(data);
+            const response = await agent.User.updateUser(data);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
@@ -108,7 +108,7 @@ export const updateUserProfile = createAsyncThunk<UserDTO, UserProfileUpdate>(
 )
  
 export const changePassword = createAsyncThunk<void, ChangePasswordDTO>(
-    'account/changePassword',
+    'user/changePassword',
     async(data, thunkAPI) => {
         try {
             const response = await agent.User.changePassword(data);
@@ -120,7 +120,7 @@ export const changePassword = createAsyncThunk<void, ChangePasswordDTO>(
 )
 
 export const userSlice = createSlice({
-    name: 'account',
+    name: 'user',
     initialState,
     reducers: {
         setUser : (state, action) => {        
@@ -236,21 +236,16 @@ export const userSlice = createSlice({
         });
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        builder.addCase(updateUserProfile.pending, (state, action) => {
-            state.loadingState = true;
+        builder.addCase(updateUser.pending, (state, action) => {
+
         });
 
-        builder.addCase(updateUserProfile.fulfilled, (state, action) => {
-            state.loadingState = false;
-
-            // set user -> updated user
-            state.user = action.payload;
+        builder.addCase(updateUser.fulfilled, (state, action) => {
             console.log(action.payload);
-            
+            state.user = action.payload;
         });
 
-        builder.addCase(updateUserProfile.rejected, (state, action) => {
-            state.loadingState = false;
+        builder.addCase(updateUser.rejected, (state, action) => {
         });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

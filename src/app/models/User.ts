@@ -2,14 +2,14 @@ export interface UserDTO {
     userName: string;
     fullName: string;
     email: string;
-    token: string;
-    role?: string;
-
+    imageUrl: string;
+    publicId: string;
     dob: Date;
     phoneNumber: string;
-    imageUrl: string;
+    
+    token: string;
     basketId?: number;
-
+    role?: string;
     userAddresses: UserAddressDTO[];
 }
 
@@ -22,13 +22,6 @@ export interface UserAddressDTO {
     streetAddress: string;
     postalCode: string;
     country: string;
-}
-
-export interface UserProfileUpdate {
-    fullName: string;
-    dob: Date | null | undefined;
-    phoneNumber: string;
-    imageUrl: File | undefined | null;
 }
 
 export interface SignInRequest {

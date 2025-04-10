@@ -5,6 +5,13 @@ export interface ImageUploadDTO {
     imageDisplay: string;
 }
 
+export interface SingleImageUploadDTO {
+    file: File[] | undefined | null;
+    folderPath: string;
+    publicId: string;
+    imageDisplay: string;
+}
+
 export interface ImageUploadResult {
     imageUrl: string;
     publicId: string;

@@ -5,9 +5,9 @@ import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
 import { Brand } from "../models/Brand";
-import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserAddressDTO, UserProfileUpdate } from "../models/User";
+import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserDTO } from "../models/User";
 import { store } from "../store/configureStore";
-import { ImageUploadDTO } from "../models/ImageUpload";
+import { ImageUploadDTO, SingleImageUploadDTO } from "../models/ImageUpload";
 import { WarehouseSearch } from "../models/Warehouse";
 import { StockUpsertDTO } from "../models/Stock";
 import { BasketUpsertParam } from "../models/Basket";
@@ -119,7 +119,8 @@ const getFormData = (data: any) => {
 }
 
 const Upload = {
-    upload: (params: ImageUploadDTO) => requests.postForm('uploads/upload-images', getFormData(params))
+    upload: (params: ImageUploadDTO) => requests.postForm('uploads/upload-images', getFormData(params)),
+    uploadSingle: (params: SingleImageUploadDTO) => requests.postForm('uploads/upload-image', getFormData(params))
 }
 
 const Product = {
@@ -170,10 +171,10 @@ const User = {
     ////////////////////////////////////////////////////////////////////////////////
     forgetPassword: (request: ForgetPasswordDTO) => requests.post(`users/forget-password`, request),
     resetPassword: (request: ResetPasswordDTO) => requests.post(`users/reset-password`, request),
+    changePassword: (passwordDTO: ChangePasswordDTO) => requests.post(`users/change-password`, passwordDTO),
 
     //////////////////////////////////////////////////////////////////////////////////
-    updateUserProfile: (userProfileDTO: UserProfileUpdate) => requests.putForm(`users/update-profile`, getFormData(userProfileDTO)),
-    changePassword: (passwordDTO: ChangePasswordDTO) => requests.post(`users/change-password`, passwordDTO),
+    updateUser: (userDTO: UserDTO) => requests.put(`users/update-profile`, userDTO),
 }
 
 const Location = {
