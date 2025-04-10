@@ -8,6 +8,7 @@ import { UserAddressRow } from "./UserAdressRow"
 import { ImageUploadResult, SingleImageUploadDTO } from "../../../app/models/ImageUpload"
 import { updateUser } from "../../../app/store/userSlice"
 import agent from "../../../app/api/agent"
+import { Link } from "react-router-dom"
 
 const defaultUserDTO : UserDTO = {
     userName: '',
@@ -182,12 +183,21 @@ export const UserProfile = () => {
                             )
                         })
                         :
-                        <p>create address</p>
+                        <UserAddressRow userAddress={defaultUserAdressDTO} 
+                            indexRow={0} onSetUser={setUserDTO}
+                            onAddRow={handleAddRow} onRemoveRow={handleRemoveRow}
+                        />
                     }
                     </div>
                 </div>
 
                 <div className="form_footer" >
+                    <Link type="button" to='/profile/change-password' >
+                        Change Password
+                    </Link>
+                    <Link type="button" to='/profile/orders' >
+                        Show Orders
+                    </Link>
                     <button type="submit" disabled={isSubmitting} >
                         Save
                     </button>
@@ -248,6 +258,15 @@ const Style = styled.div<{ disabled: boolean }> `
         }
 
         .form_footer {
+            width: 100%;
+            display: flex;
+            justify-content: right;
+            margin-top: 1vh;
+
+            &:disabled {
+                cursor: block;
+            }
+
             button {
                 width: fit-content;
                 padding: 5px 15px;
@@ -256,9 +275,11 @@ const Style = styled.div<{ disabled: boolean }> `
                 border: none;
                 outline: none;
     
-                background: darkred;
                 color: #fff;
                 opacity: 0.5;
+                min-width: 25vw;
+                margin-left: 1vw;
+                background: darkred;
     
                 &:focus {
                     opacity: 1;
@@ -270,8 +291,34 @@ const Style = styled.div<{ disabled: boolean }> `
                 }
             }
 
-            &:disabled {
-                cursor: block;
+            a {
+                text-decoration: none;
+                display: inline-block;
+                width: fit-content;
+                padding: 5px 15px;
+                font-size: 1.2rem;
+                border-radius: 5px;
+                border: none;
+                outline: none;
+    
+                color: #fff;
+                opacity: 0.5;
+                min-width: 25vw;
+                text-align: center;
+
+                &:hover {
+                    opacity: 1;
+                    cursor: pointer;
+                }
+
+                &:first-child {
+                    background: #acac2c;
+                    margin-right: 1vw;
+                }
+
+                &:nth-child(2) {
+                    background: green;
+                }
             }
         }
 

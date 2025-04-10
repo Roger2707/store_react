@@ -22,6 +22,8 @@ import { BasketPage } from "../../features/pages/Cart/BasketPage";
 import { Order } from "../../features/pages/Orders/Order";
 import { AdminStock } from "../../features/pages/Admin/AdminStock";
 import { UserProfile } from "../../features/pages/User/UserProfile";
+import { OrdersInfo } from "../../features/pages/User/OrdersInfo";
+import { ChangePassword } from "../../features/pages/User/ChangePassword";
 
 export const router = createBrowserRouter(([
     {
@@ -63,7 +65,10 @@ export const router = createBrowserRouter(([
             // AUTHENTICATED ROUTES
             {
                 element: <RequireAuth />, children: [
-                    { path: 'profile', element: <UserProfile/> },             
+                    { path: 'profile', element: <UserProfile/>, children: [
+                        { path: 'orders', element: <OrdersInfo/> },
+                        { path: 'change-password', element: <ChangePassword/> },
+                    ] },
                     { path: 'basket', element: <BasketPage/> },
                     { path: 'orders', element: <Order/> },
                 ]

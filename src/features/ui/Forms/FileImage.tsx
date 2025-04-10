@@ -35,7 +35,7 @@ export const FileImage = ({value, onGetDataChange}: Props) => {
                 accept="image/*" 
                 onChange={handleChangeImage}
             />
-            <label htmlFor="imageUpload" >Upload</label>
+            <label htmlFor="imageUpload" >Choose Image</label>
             <div className="preview" >
                 {(previewUrl || value )
                     &&
@@ -47,6 +47,7 @@ export const FileImage = ({value, onGetDataChange}: Props) => {
 }
 
 const Style = styled.div `
+    position: relative;
     input {
         display: none;
     }
@@ -55,9 +56,29 @@ const Style = styled.div `
         display: inline-block;
         padding: 0.5vh 0.5vw;
         color: #fff;
-        background-color: #191970;
-        border-radius: 5px;
-        cursor: pointer;
+        background-color: #5f5c5c;
+        
+        position: absolute;
+        bottom: 1%;
+        left: 25%;
+        width: 50%;
+        height: 10%;
+        z-index: 100;
+        opacity: 0;
+        
+        text-align: center;
+        font-size: 0.6rem;
+        font-style: italic;
+        letter-spacing: 1px;
+
+        border-bottom-left-radius: 80%;
+        border-bottom-right-radius: 80%;
+
+        &:hover {
+            opacity: 1;
+            cursor: pointer;
+            transition: 0.3s;
+        }
     }
 
     .preview {
@@ -72,6 +93,7 @@ const Style = styled.div `
         img {
             width: 100%;
             height: 100%;
+            border-radius: 50%;
         }
     }
 `
