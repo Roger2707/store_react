@@ -1,7 +1,9 @@
 import styled from "styled-components"
 import { Link } from "react-router-dom";
 import { ReactNode } from "react";
-import { useAppSelector } from "../../../app/store/configureStore";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
+import { MdLogout } from "react-icons/md";
+import { logOutAsync } from "../../../app/store/userSlice";
 
 interface Props {
     onSetPage: (path: string) => void;
@@ -11,6 +13,7 @@ interface Props {
 
 export const Sidebar = ({onSetPage, page, sidebars} : Props) => {
     const {user} = useAppSelector(state => state.user);
+    const dispatch = useAppDispatch();
     
     return (
         <SidebarStyle>
@@ -31,6 +34,9 @@ export const Sidebar = ({onSetPage, page, sidebars} : Props) => {
                     })
                 }
             </div>
+            <button type="button" onClick={() => dispatch(logOutAsync())} >
+                <MdLogout />
+            </button>
         </SidebarStyle>
     )
 }
@@ -41,6 +47,10 @@ const SidebarStyle = styled.div`
     border-right: 3px solid #BDB5D5;
     padding: 10% 0;
     height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     .account_info {
         width: 100%;
@@ -90,6 +100,26 @@ const SidebarStyle = styled.div`
 
         .active {
             background-color: #6F8FAF;
+        }
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+
+        padding: 1.8vh 2.5vw;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        opacity: 0.6;
+        background-color: #E97451;
+        color: #fff;
+        font-size: 1.2rem;
+
+        &:hover {
+            opacity: 1;
+            transition: 0.3s;
+            cursor: pointer;
         }
     }
 

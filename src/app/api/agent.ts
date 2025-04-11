@@ -74,10 +74,9 @@ axios.interceptors.response.use(async response => {
             console.log(data.title);
             break;
         case 403:
-            console.log('You are not allowed to do that!');
+            toast.error(data.Message, {icon: icons.error});
             break;
         case 404:
-            
             break;
         case 500:
             router.navigate('/server-error', {state: {error: data}});
