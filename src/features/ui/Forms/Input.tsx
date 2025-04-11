@@ -13,10 +13,10 @@ interface Props {
     width?: string;
     disable?: boolean;
     marginTop?: string;
+    forCheckboxTitle?: string;
 }
 
-export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, onGetDataEnter, readonly, width, marginTop, disable}, ref) => {   
-    
+export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, onGetDataEnter, readonly, width, marginTop, disable, forCheckboxTitle = false}, ref) => {   
     return (
         <Style className="input_container" >
             <input 
@@ -26,27 +26,20 @@ export const Input = forwardRef<HTMLInputElement, Props>(({id, value, placeholde
                 onKeyDown={e => e.key === 'Enter' && onGetDataEnter && onGetDataEnter(e)}
                 readOnly={readonly ? true: false}
                 style={{width : `${width ? width : '100%'}`, marginTop: `${marginTop ? marginTop : '0'}`}}
-                disabled={disable ? disable : false}
-            />
-            <span ></span>
+                disabled={disable ? disable : false} checked={value}
+            /> 
+            <span >{forCheckboxTitle}</span>
         </Style>
     )
 })
 
 const Style = styled.div`
-    
-    label {
-        display: block;
-    }
-
     input {
         padding: 5px 8px;
         border-radius: 5px;
         border: none;
         outline: none;
-
         font-size: 1rem;
-        
     }
 
     input[readonly] {
@@ -61,6 +54,11 @@ const Style = styled.div`
         color: #999; 
         cursor: not-allowed; 
         opacity: 0.6; 
+    }
+
+    span {
+        font-size: 0.8rem;
+        font-style: italic;
     }
 
     .error-message {

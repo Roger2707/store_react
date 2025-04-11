@@ -163,7 +163,7 @@ export const AdminStock = () => {
                 <div className="stock-products" >
                     <div className="stock-products-header" >
                         <Input
-                            id="productDetailId"
+                            id="productId"
                             placeholder="ProductDetailID..."
                             type="text"
                             width="100%"

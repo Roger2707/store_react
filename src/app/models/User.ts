@@ -22,6 +22,8 @@ export interface UserAddressDTO {
     streetAddress: string;
     postalCode: string;
     country: string;
+
+    guidId: string;
 }
 
 export interface SignInRequest {

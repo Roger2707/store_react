@@ -8,7 +8,7 @@ import { Brand } from "../models/Brand";
 import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserDTO } from "../models/User";
 import { store } from "../store/configureStore";
 import { ImageUploadDTO, SingleImageUploadDTO } from "../models/ImageUpload";
-import { WarehouseSearch } from "../models/Warehouse";
+import { Warehouse, WarehouseSearch } from "../models/Warehouse";
 import { StockUpsertDTO } from "../models/Stock";
 import { BasketUpsertParam } from "../models/Basket";
 
@@ -41,18 +41,17 @@ axios.interceptors.response.use(async response => {
             if(data.errors) {
                 const validationErrors = convertKeysToLowerCase(data.errors);
                 Object.keys(validationErrors).forEach(field => {
-                    const errorMessage = validationErrors[field][0]; // get first error in array              
+                    const errorMessage = validationErrors[field][0]; // get first error in array
                     // get input has error by Id
                     if(field.includes('.')) field = field.split('.')[1];
                     const inputElement = document.getElementById(field);
-
-                    console.log(inputElement);
-                    console.log(field);
-                              
                     if (inputElement) {
                       // Display error
                       const errorElement = inputElement.nextElementSibling;
+                      
                       if(errorElement) {
+                        console.log(errorElement);
+                        
                         errorElement.textContent = errorMessage;
                         errorElement.classList.add('error-message');
 
@@ -198,10 +197,14 @@ const Order = {
     create: (userAddressId: number) => requests.post(`orders/create-order?userAddressId=${userAddressId}`, {}),
 }
 
-const Warehouse = {
+const Warehouses = {
     list: () => requests.get(`warehouses/get-all`),
     listByCondition: (params: WarehouseSearch) => requests.get(`warehouses/get-all-by-condition`, params),
     detail: (id: string) => requests.get(`warehouses/get-warehouse-detail?warehouseId=${id}`),
+
+    create: (warehouse: Warehouse) => requests.postForm('warehouses/create', getFormData(warehouse)),
+    update: (warehouse: Warehouse) => requests.putForm(`warehouses/update`, getFormData(warehouse)),
+    delete: (id: string) => requests.del(`warehouses/delete?warehouseId=${id}`),
 
     // 
     productQuantity: (productDetailId: string) => requests.get(`warehouses/get-product-quantity-in-warehouse?productDetailId=${productDetailId}`),
@@ -224,7 +227,7 @@ const agent = {
     Basket,
     Order,
     Technology,
-    Warehouse,
+    Warehouses,
     Stocks
 }
 

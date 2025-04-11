@@ -6,6 +6,7 @@ import { promotionSlice } from "./promotionSlice";
 import { userSlice } from "./userSlice";
 import { basketSlice } from "./basketSlice";
 import { orderSlice } from "./orderSlice";
+import { warehouseslice } from "./warehouseSlice";
 
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
         brand: brandSlice.reducer,
         promotion: promotionSlice.reducer,
         user: userSlice.reducer,
+        warehouse: warehouseslice.reducer,
         basket: basketSlice.reducer,
         order: orderSlice.reducer,
     }

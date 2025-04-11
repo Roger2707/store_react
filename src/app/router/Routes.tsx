@@ -24,6 +24,7 @@ import { AdminStock } from "../../features/pages/Admin/AdminStock";
 import { UserProfile } from "../../features/pages/User/UserProfile";
 import { OrdersInfo } from "../../features/pages/User/OrdersInfo";
 import { ChangePassword } from "../../features/pages/User/ChangePassword";
+import { AdminWarehouse } from "../../features/pages/Admin/AdminWarehouse";
 
 export const router = createBrowserRouter(([
     {
@@ -56,6 +57,7 @@ export const router = createBrowserRouter(([
                             { path: 'brands', element: <AdminBrand/> },
                             { path: 'promotions', element: <AdminPromotion/> },
                             { path: 'stocks', element: <AdminStock/> },
+                            { path: 'warehouses', element: <AdminWarehouse/> },
                             { path: 'orders', element: <AdminOrder/> },
                         ]
                     },

@@ -16,9 +16,10 @@ interface Props<T> {
     onSetOpenForm: (value: boolean) => void;
     onDeleteItem: (id: any) => void;
     onSetIsCreateMode?: (value: boolean) => void;
+    isPermitAction?: boolean;
 }
 
-export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode} : Props<T>) {   
+export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode, isPermitAction} : Props<T>) {   
     
     const handleUpdate = (row: T) => {
         // Set Current Id is Id of Selected Row
@@ -70,8 +71,8 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
 
                                     <td>
                                         <div className="btn-container" >
-                                            <button onClick={() => handleUpdate(row)} ><span><RiEditBoxFill/></span></button>
-                                            <button onClick={() => handleDelete(row)} ><span><MdDelete/></span></button>
+                                            <button disabled={!isPermitAction} onClick={() => handleUpdate(row)} ><span><RiEditBoxFill/></span></button>
+                                            <button disabled={!isPermitAction} onClick={() => handleDelete(row)} ><span><MdDelete/></span></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -146,6 +147,11 @@ const Style = styled.div`
                                 }
                                 span {
                                     display: inline-block;
+                                }
+
+                                &:disabled {
+                                    cursor: not-allowed;
+                                    opacity: 0.2;
                                 }
                             }
                         }

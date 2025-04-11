@@ -16,7 +16,7 @@ export const SearchWareHouseStock = ({onReceiveProps}: Props) => {
 
         try {
             setIsSearch(true);
-            const data : Warehouse[] = await agent.Warehouse.list();
+            const data : Warehouse[] = await agent.Warehouses.list();
             setwarehouseSearchData(data);
         }
         catch(error: any) {

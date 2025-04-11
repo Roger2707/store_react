@@ -2,6 +2,7 @@ export interface Warehouse {
     id: string;
     name: string;
     location: string;
+    isSuperAdminOnly: boolean;
 }
 
 export interface WarehouseSearch {

@@ -1,8 +1,8 @@
 import { CiSquareMore } from "react-icons/ci";
 import { AiFillProduct, AiOutlineHome } from "react-icons/ai";
-import { FaCheck, FaHackerNews, FaKey } from "react-icons/fa";
+import { FaCheck, FaHackerNews, FaKey, FaWarehouse } from "react-icons/fa";
 import { RiPhoneFindFill } from "react-icons/ri";
-import { MdDashboard, MdSportsTennis, MdManageAccounts, MdCategory, MdBrandingWatermark, MdDiscount, MdDescription, MdOutlineAccountCircle     } from "react-icons/md";
+import { MdDashboard, MdSportsTennis, MdManageAccounts, MdCategory, MdBrandingWatermark, MdDiscount, MdOutlineAccountCircle, MdInventory } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";
 import { FaTruckFast, FaX } from "react-icons/fa6";
 
@@ -101,10 +101,16 @@ export const adminSidebars = [
         id: 6,
         title: 'Stocks',
         path: '/admin/stocks',
-        icon: <MdDescription  />
+        icon: <MdInventory />
     },
     {
         id: 7,
+        title: 'Warehouses',
+        path: '/admin/warehouses',
+        icon: <FaWarehouse />
+    },
+    {
+        id: 8,
         title: 'Orders',
         path: '/admin/orders',
         icon: <TbTruckDelivery />

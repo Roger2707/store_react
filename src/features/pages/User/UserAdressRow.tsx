@@ -85,7 +85,7 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
         let newValue = e.target.value;
         switch (key) {
             case 'city':
-                const cityName = cities.find(c => c.value === +newValue)?.title;                
+                const cityName = cities.find(c => c.value === +newValue)?.title;
                 newValue = cityName;
                 break;
             case 'district':
@@ -111,7 +111,7 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
         };
         
         onSetUser(prev => {
-            let index = prev.userAddresses.findIndex(p => p.id === userAddress.id);
+            let index = prev.userAddresses.findIndex(p => p.guidId === userAddress.guidId);     
             const updatedUserAddresses = [...prev.userAddresses];
             updatedUserAddresses[index] = updatedUserAddress;
 
