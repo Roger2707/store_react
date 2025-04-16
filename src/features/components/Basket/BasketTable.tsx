@@ -8,7 +8,6 @@ interface Props {
 }
 
 export const BasketTable = ({basket} : Props) => {
-    
     return (
         <Table>
             <thead>

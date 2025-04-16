@@ -25,6 +25,7 @@ import { UserProfile } from "../../features/pages/User/UserProfile";
 import { OrdersInfo } from "../../features/pages/User/OrdersInfo";
 import { ChangePassword } from "../../features/pages/User/ChangePassword";
 import { AdminWarehouse } from "../../features/pages/Admin/AdminWarehouse";
+import { CheckoutPage } from "../../features/pages/CheckOut/CheckoutPage";
 
 export const router = createBrowserRouter(([
     {
@@ -72,6 +73,7 @@ export const router = createBrowserRouter(([
                     { path: 'change-password', element: <ChangePassword/> },
                     { path: 'basket', element: <BasketPage/> },
                     { path: 'orders', element: <Order/> },
+                    { path: 'checkout/:clientSecret', element: <CheckoutPage/> },
                 ]
             },
         ]

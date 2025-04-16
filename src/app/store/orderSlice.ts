@@ -6,12 +6,16 @@ interface OrderState {
     orders: OrderDTO[] | null;
     isLoadOrders: boolean;
     orderSelected: OrderDTO | null;
+
+    //////////////////////////////
+    clientSecret: string;
 }
 
 const initialState : OrderState = {
     orders: null,
     isLoadOrders: false,
     orderSelected: null,
+    clientSecret: ''
 }
 
 export const fetchOrdersAsync = createAsyncThunk<OrderDTO[]>(
@@ -42,6 +46,9 @@ export const orderSlice = createSlice({
     name: 'orders',
     initialState,
     reducers: {
+        setNewClientSecret: (state, action) => {
+            state.clientSecret = action.payload;
+        },
         updateOrderStatus: (state, action: PayloadAction<{orderId: number, status: number}>) => {
             if(!state.orders) return;
             const index = state.orders.findIndex(order => order.id === action.payload.orderId);  
@@ -92,4 +99,4 @@ export const orderSlice = createSlice({
     }
 });
 
-export const { updateOrderStatus } = orderSlice.actions;
+export const { setNewClientSecret, updateOrderStatus } = orderSlice.actions;

@@ -4,8 +4,6 @@ import { useState } from "react"
 import { ChangePasswordDTO } from "../../../app/models/User"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
 import { changePassword } from "../../../app/store/userSlice"
-import { toast } from "react-toastify"
-import { icons } from "../../../app/utils/helper"
 
 const changePwImage = require('../../assets/images/change-pw.png');
 const IMG = styled.div`
@@ -38,10 +36,10 @@ export const ChangePassword = () => {
         })
     }
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         try {
-            dispatch(changePassword(changePasswordModel));
+            await dispatch(changePassword(changePasswordModel));
             setChangePasswordModel(prev => {
                 return {
                     currentPassword: '',
@@ -49,7 +47,6 @@ export const ChangePassword = () => {
                     confirmedNewPassword: ''
                 }
             });
-            toast.success('Change password successfully !', {icon: icons.success});
         } catch (error) {
 
         }

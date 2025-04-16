@@ -1,19 +1,12 @@
 import styled from "styled-components"
-import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
-import { useEffect } from "react";
-import { getBasket } from "../../../app/store/basketSlice";
+import { useAppSelector } from "../../../app/store/configureStore"
 import { BasketTable } from "../../components/Basket/BasketTable";
 import { BasketSummary } from "../../components/Basket/BasketSummary";
 import { BasketEmpty } from "../../components/Basket/BasketEmpty";
+import { BasketUserAddresses } from "../../components/Basket/BasketUserAddresses";
 
 export const BasketPage = () => {
-    const { isLoadBasket, basket } = useAppSelector(state => state.basket);
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        if(!isLoadBasket) dispatch(getBasket());
-    }, [isLoadBasket, dispatch]);
-
+    const { basket } = useAppSelector(state => state.basket);
     return (
         <Styled>
             {
@@ -25,7 +18,7 @@ export const BasketPage = () => {
 
                         <div className="basket-summary" >
                             <BasketSummary/>
-                            {/* <ConfirmAddress/> */}
+                            <BasketUserAddresses/>
                         </div>
                     </div>
                 </>

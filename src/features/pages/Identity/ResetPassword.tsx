@@ -5,12 +5,9 @@ import { useLocation } from "react-router-dom";
 import { Input } from "../../ui/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import { handleResetPassword } from "../../../app/store/userSlice";
-import { toast } from "react-toastify";
-import { icons } from "../../../app/utils/helper";
 
 const logo = require('../../assets/images/change-pw.png');
 
-// Test Change User Git
 export const ResetPassword = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -52,7 +49,6 @@ export const ResetPassword = () => {
 
         try {
             dispatch(handleResetPassword(resetPasswordDTO));
-            toast.success('Reset password successfully !', {icon: icons.success});
         } catch (error) {
             console.log(error);
         }

@@ -115,7 +115,7 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setUser : (state, action) => {        
+        setUser : (state, action) => {
                        
             const payloadBase64 = action.payload.token.split('.')[1]; 
             const decodedPayload = atob(payloadBase64);
