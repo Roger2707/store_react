@@ -5,7 +5,17 @@ import { ForgetPasswordDTO } from "../../../app/models/User";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import { handleForgetPassword } from "../../../app/store/userSlice";
 
-const logo = require('../../assets/images/mainLogo.jpg');
+const logo = require('../../assets/images/change-pw.png');
+const IMG = styled.div`
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+    background-image: url(${logo});
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+`
 
 export const ForgotPassword = () => {
     const [forgetPasswordDTO, setForgetPasswordDTO] = useState<ForgetPasswordDTO>({email: ''});
@@ -22,14 +32,14 @@ export const ForgotPassword = () => {
         e.preventDefault();
 
         try {
-            dispatch(handleForgetPassword(forgetPasswordDTO));  
+            dispatch(handleForgetPassword(forgetPasswordDTO));
         } catch (error) {
             console.log(error);
         }
     }
 
     return (
-        <Style>
+        <Style disabled={loadingState} >
             <form onSubmit={handleSubmit} >
                 {
                     message === 'success'  ?
@@ -60,18 +70,7 @@ export const ForgotPassword = () => {
     )
 }
 
-const IMG = styled.div`
-    width: 100px;
-    height: 100px;
-
-    border-radius: 50%;
-    background-image: url(${logo});
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-`
-
-const Style = styled.div`
+const Style = styled.div<{ disabled: boolean }>`
     background: #E5E4E2;
     width: 100%;
     height: calc(100vh - 10vh);
@@ -79,6 +78,9 @@ const Style = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
+    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+    pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; 
 
     form {
         background: #E6E6FA;

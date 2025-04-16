@@ -5,8 +5,10 @@ import { useLocation } from "react-router-dom";
 import { Input } from "../../ui/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import { handleResetPassword } from "../../../app/store/userSlice";
+import { toast } from "react-toastify";
+import { icons } from "../../../app/utils/helper";
 
-const logo = require('../../assets/images/mainLogo.jpg');
+const logo = require('../../assets/images/change-pw.png');
 
 // Test Change User Git
 export const ResetPassword = () => {
@@ -50,13 +52,14 @@ export const ResetPassword = () => {
 
         try {
             dispatch(handleResetPassword(resetPasswordDTO));
+            toast.success('Reset password successfully !', {icon: icons.success});
         } catch (error) {
             console.log(error);
         }
     }
   
     return (
-        <Style>
+        <Style disabled={loadingState}>
             <form onSubmit={handleSubmit} >
                 <div className="identity_container" >
                     <div className="form_heading" >
@@ -64,8 +67,15 @@ export const ResetPassword = () => {
                         <h1>Reset Password:</h1>
                     </div>
                     <div className="form_content" >
-                        <Input id="newPassword" placeholder="New Password..." type="password" value={resetPasswordDTO.newPassword} onGetDataChange={e => handleChangeData(e, 'newPassword')} />
-                        <Input id="confirmNewPassword" placeholder="Confirm Password..." type="password" value={resetPasswordDTO.confirmNewPassword} onGetDataChange={e => handleChangeData(e, 'confirmNewPassword')} />
+                        <Input 
+                            id="newPassword" placeholder="New Password..." type="password" 
+                            value={resetPasswordDTO.newPassword} onGetDataChange={e => handleChangeData(e, 'newPassword')} 
+                        />
+
+                        <Input 
+                            id="confirmNewPassword" placeholder="Confirm Password..." type="password" marginTop="1vh"
+                            value={resetPasswordDTO.confirmNewPassword} onGetDataChange={e => handleChangeData(e, 'confirmNewPassword')} 
+                        />
                     </div>
                     <div className="form_footer" >
                         <button disabled={loadingState} type="submit" >
@@ -89,7 +99,7 @@ const IMG = styled.div`
     background-position: center;
 `
 
-const Style = styled.div`
+const Style = styled.div<{ disabled: boolean }>`
     background: #E5E4E2;
     width: 100%;
     height: calc(100vh - 10vh);
@@ -97,6 +107,9 @@ const Style = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
+    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+    pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; 
 
     form {
         background: #E6E6FA;

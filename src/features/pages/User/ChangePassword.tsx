@@ -4,6 +4,8 @@ import { useState } from "react"
 import { ChangePasswordDTO } from "../../../app/models/User"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
 import { changePassword } from "../../../app/store/userSlice"
+import { toast } from "react-toastify"
+import { icons } from "../../../app/utils/helper"
 
 const changePwImage = require('../../assets/images/change-pw.png');
 const IMG = styled.div`
@@ -47,14 +49,14 @@ export const ChangePassword = () => {
                     confirmedNewPassword: ''
                 }
             });
-            
+            toast.success('Change password successfully !', {icon: icons.success});
         } catch (error) {
-            
+
         }
     }
 
     return (
-        <Style>
+        <Style disabled={loadingState} >
             <IMG/>
             <h1>Change Password</h1>
             <form onSubmit={handleSubmit} >
@@ -81,12 +83,15 @@ export const ChangePassword = () => {
     )
 }
 
-const Style = styled.div `
+const Style = styled.div<{ disabled: boolean }> `
     margin-top: 5vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+    pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; 
 
     h1 {
         color: #6082B6;

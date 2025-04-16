@@ -39,7 +39,7 @@ export const SignUp = () => {
     }
 
     return (
-        <Style>
+        <Style disabled={loadingState} >
             <form onSubmit={handleSubmit} >
                 <div className="identity_container" >
                     <div className="form_heading" >
@@ -93,7 +93,7 @@ const IMG = styled.div`
     background-position: center;
 `
 
-const Style = styled.div`
+const Style = styled.div<{ disabled: boolean }>`
     background: #E5E4E2;
     color: #333;
     width: 100%;
@@ -102,6 +102,9 @@ const Style = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
+    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+    pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; 
 
     form {
         background: #E6E6FA;
