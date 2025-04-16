@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styled from "styled-components"
 import { RiEditBoxFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
+import { useAppSelector } from "../../../app/store/configureStore";
 
 interface Column<T> {
     key: string,
@@ -16,11 +17,20 @@ interface Props<T> {
     onSetOpenForm: (value: boolean) => void;
     onDeleteItem: (id: any) => void;
     onSetIsCreateMode?: (value: boolean) => void;
-    isPermitAction?: boolean;
 }
 
-export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode, isPermitAction} : Props<T>) {   
-    
+export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode} : Props<T>) {   
+
+    const {user} = useAppSelector(state => state.user);
+    const [displayButton, setDisplayButton] = useState<boolean>(true);
+
+    useEffect(() => {
+        if(user) {
+            if(user?.role === 'SuperAdmin') setDisplayButton(prev => true);
+            else setDisplayButton(prev => false);
+        }
+    }, [user]);
+
     const handleUpdate = (row: T) => {
         // Set Current Id is Id of Selected Row
         onSetCurrentId(row['id' as keyof T]);
@@ -44,7 +54,7 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
                 <thead>
                     <tr>
                         {columns.map((h, index) => <th key={index} >{h.title}</th>)}
-                        <th></th>
+                        <th style={{display: `${displayButton ? 'inline-block' : 'none'}`}}></th>
                     </tr>
                 </thead>
 
@@ -69,10 +79,10 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
                                         })
                                     }
 
-                                    <td>
+                                    <td style={{display: `${displayButton ? 'inline-block' : 'none'}`}} >
                                         <div className="btn-container" >
-                                            <button disabled={!isPermitAction} onClick={() => handleUpdate(row)} ><span><RiEditBoxFill/></span></button>
-                                            <button disabled={!isPermitAction} onClick={() => handleDelete(row)} ><span><MdDelete/></span></button>
+                                            <button onClick={() => handleUpdate(row)} ><span><RiEditBoxFill/></span></button>
+                                            <button onClick={() => handleDelete(row)} ><span><MdDelete/></span></button>
                                         </div>
                                     </td>
                                 </tr>

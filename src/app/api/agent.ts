@@ -162,7 +162,6 @@ const Promotions = {
 const User = {
     signIn: (request: SignInRequest) => requests.post(`users/log-in`, request),
     signUp: (request: SignUpRequest) => requests.post(`users/sign-up`, request),
-    logOut: () => requests.post(`users/log-out`, {}),
     currentUser: () => requests.get(`users/current-user`),
     oAuthLogin: (request: GoogleAuthRequest) => requests.post(`users/external-login`, request),
 

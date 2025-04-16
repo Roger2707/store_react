@@ -44,6 +44,7 @@ export const signInAsync = createAsyncThunk<UserDTO, SignInRequest>(
 export const fetchCurrentUser = createAsyncThunk<UserDTO>(
     'user/fetchCurrentUser',
     async (_, thunkAPI) => {
+        thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)));
         try {
             const user = await agent.User.currentUser();
             localStorage.setItem('user', JSON.stringify(user));
@@ -54,19 +55,10 @@ export const fetchCurrentUser = createAsyncThunk<UserDTO>(
     },
     {
         condition: () => {
-            if(!localStorage.getItem('user')) return false;
-        }
-    }
-)
-
-export const logOutAsync = createAsyncThunk(
-    'user/logOut',
-    async (_, thunkAPI) => {
-        try {
-            const response = await agent.User.logOut();
-            return response;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue({error: error.data});
+            if(!localStorage.getItem('user')) {
+                console.log('User NULL');
+                return false;
+            }
         }
     }
 )
@@ -131,7 +123,7 @@ export const userSlice = createSlice({
             state.user = {...action.payload, role};
 
             localStorage.setItem('user', JSON.stringify(action.payload));
-            router.navigate('/');
+            //router.navigate('/');
         },
 
         ssignOut: (state, action) => {
@@ -185,25 +177,6 @@ export const userSlice = createSlice({
                 var role = JSON.parse(decodedPayload)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
                 state.user = {...action.payload, role};
             }   
-        });
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-
-        builder.addCase(logOutAsync.pending, (state, action) => {
-            state.loadingState = true;
-        });
-
-        builder.addCase(logOutAsync.fulfilled, (state, action) => {
-            state.user = null;
-            localStorage.removeItem('user');
-
-            state.loadingState = false;
-            router.navigate('/');
-        });
-
-        builder.addCase(logOutAsync.rejected, (state, action) => {
-            state.loadingState = false;
-            console.log('Log-Out error !');
         });
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

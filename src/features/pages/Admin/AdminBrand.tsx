@@ -2,13 +2,13 @@ import styled from "styled-components";
 import { EmptyData } from "../../ui/Layout/EmptyData";
 import DataTable from "../../ui/Data/DataTable";
 import { Loading } from "../../ui/Common/Loading";
-import { FaPlus } from "react-icons/fa";
 import { Modal } from "../../ui/Layout/Modal";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import agent from "../../../app/api/agent";
 import { fetchBrandsAsync, setBrandsDelete } from "../../../app/store/brandSlice";
 import { BrandUpsertForm } from "../../components/Brands/BrandUpsertForm";
+import { ButtonCreateAdmin } from "./UI/ButtonCreateAdmin";
 
 export const AdminBrand = () => {
     const {brands, status} = useAppSelector(state => state.brand);
@@ -62,10 +62,7 @@ export const AdminBrand = () => {
 
             <h1>Brands</h1>
             <div className="heading" >
-                <button id='btn-create' onClick={handleOpenCreateForm} >
-                    <span className="btn-icon" ><FaPlus/></span>
-                    <span className="btn-title" >Create</span>
-                </button>
+                <ButtonCreateAdmin onOpenCreateForm={handleOpenCreateForm} />
             </div>
 
             {
@@ -99,32 +96,6 @@ const Style = styled.div`
         align-items: center;
         justify-content: space-between;
         margin-top: 3vh;
-
-        #btn-create {
-            padding: 15px 15px;
-            border-radius: 20px;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            color: #fff;
-            background-color: #F88379;
-            margin-right: 10vw;
-
-            .btn-icon {
-                display: inline-block;
-                margin-right: 5px;
-            }
-
-            .btn-title {
-                font-size: 1.2rem;
-                text-transform: capitalize;
-                line-height: 1rem;
-                letter-spacing: 1px;
-                word-spacing: 1px;
-            }
-        }
     }
 
 

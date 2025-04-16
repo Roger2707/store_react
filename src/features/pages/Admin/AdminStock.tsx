@@ -30,7 +30,6 @@ const defaulStockDTO : StockDTO = {
     stockDetail : []
 }
 
-// 5F3C3A57-1F41-4E32-9C7A-12D4686DBF8B
 export const AdminStock = () => {
     const [stockUpsertDTO, setStockUpsertDTO] = useState<StockUpsertDTO>(defaultStockUpsertDTO);
     const [stockDTO, setStockDTO] = useState<StockDTO>(defaulStockDTO);
@@ -128,12 +127,18 @@ export const AdminStock = () => {
                 ...stockUpsertDTO
                 , stockId: stockDTO.stockDetail.find(s => s.warehouseId === stockUpsertDTO.warehouseId)?.stockId || ''
             }     
-            
             await agent.Stocks.upsertStock(newStockUpsert);
-            handleClearData();
-            
-        } catch (error) {
-            console.log(error);
+            handleClearData();     
+        } catch (error: any) {
+            // Log the full error response
+            console.log('Error response:', error);
+            console.log('Error data:', error.data);
+            if (error.data?.errors) {
+                console.log('Validation errors:', error.data.errors);
+            }
+            if (error.data?.title) {
+                console.log('Error title:', error.data.title);
+            }
         } finally {
             setIsSaving(false);
         }

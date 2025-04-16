@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ReactNode } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import { MdLogout } from "react-icons/md";
-import { logOutAsync } from "../../../app/store/userSlice";
+import { ssignOut } from "../../../app/store/userSlice";
 
 interface Props {
     onSetPage: (path: string) => void;
@@ -34,7 +34,7 @@ export const Sidebar = ({onSetPage, page, sidebars} : Props) => {
                     })
                 }
             </div>
-            <button type="button" onClick={() => dispatch(logOutAsync())} >
+            <button type="button" onClick={() => dispatch(ssignOut(null))} >
                 <MdLogout />
             </button>
         </SidebarStyle>

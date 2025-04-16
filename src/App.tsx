@@ -29,7 +29,6 @@ function App() {
     }
   }, [user, dispatch]);
   
-
   useEffect(() => {
       initApp().then(() => setLoadingApp(false));
   }, [initApp]);
@@ -40,9 +39,7 @@ function App() {
         loadingApp ? <Loading message='Initializing App...' />
         :
         <React.Fragment>
-          {
-            !location.pathname.includes('admin') && <Header/>
-          }      
+          {!location.pathname.includes('admin') && <Header/>}
           {
             location.pathname === '/' ?
             <Home/>
