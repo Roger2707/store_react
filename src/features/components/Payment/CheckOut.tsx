@@ -40,18 +40,41 @@ export const CheckOut = () => {
     }, [message, navigate]);
 
     return (
-        <Style>
-            <form onSubmit={handleSubmit}>
+        <Style disabled={loading} >
+            <form onSubmit={handleSubmit} >
                 <PaymentElement />
                 <button type="submit" disabled={!stripe || loading} style={{ marginTop: 10 }}>
                     {loading ? "Processing..." : "Check Out"}
                 </button>
                 {message && <p>{message}</p>}
             </form>
+
+            
         </Style>
     );
 }
 
-const Style = styled.div`
-    
+const Style = styled.div<{ disabled: boolean }>`
+    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+    pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; 
+    padding: 10vh 20vw;
+
+    form {
+
+        button {
+            padding: 1.1vh 1.2vw;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            opacity: 0.6;
+            color: #fff;
+            background-color: palevioletred;
+            font-size: 1.2rem;
+            border-radius: 3px;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
 `

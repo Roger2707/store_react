@@ -31,8 +31,8 @@ root.render(
             pauseOnFocusLoss={false}
             draggable
             pauseOnHover={false}
-            toastClassName="custom-toast" // Áp dụng lớp tùy chỉnh cho toast
-            bodyClassName="custom-toast-body" // Lớp tùy chỉnh cho nội dung của toast
+            toastClassName="custom-toast" 
+            bodyClassName="custom-toast-body" 
             progressClassName="custom-toast-progress" 
           />
           <RouterProvider router={router} />

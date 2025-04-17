@@ -15,7 +15,7 @@ export const OAuthIdentity = () => {
         onSuccess: async (response: any) => {
             console.log(response);
             setErrorMessage(null);
-            try {            
+            try { 
                 const request: GoogleAuthRequest = {authCode: response.code};
                 const user = await agent.User.oAuthLogin(request);
                 console.log("Login Success:", user);
