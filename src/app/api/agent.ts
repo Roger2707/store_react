@@ -191,6 +191,7 @@ const Basket = {
 
 const Order = {
     get : (orderId: number) => requests.get(`orders/get-order?orderId=${orderId}`),
+    getByClientSecret: (clientSecret: string) => requests.get(`orders/get-order-by-client-secret?clientSecret=${clientSecret}`),
     list : () => requests.get(`orders/get-orders`),
     create: (userAddressId: number) => requests.post(`orders/create-order?userAddressId=${userAddressId}`, {}),
 }

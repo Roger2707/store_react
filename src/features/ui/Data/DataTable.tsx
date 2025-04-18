@@ -13,30 +13,35 @@ interface Column<T> {
 interface Props<T> {
     data: T[] | undefined;
     columns: Column<T>[];
-    onSetCurrentId: (id: any) => void;
-    onSetOpenForm: (value: boolean) => void;
-    onDeleteItem: (id: any) => void;
+    onSetCurrentId?: (id: any) => void;
+    onSetOpenForm?: (value: boolean) => void;
+    onDeleteItem?: (id: any) => void;
     onSetIsCreateMode?: (value: boolean) => void;
+    isCrudMode?: boolean;
 }
 
-export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode} : Props<T>) {   
+export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode, isCrudMode} : Props<T>) {   
 
     const {user} = useAppSelector(state => state.user);
     const [displayButton, setDisplayButton] = useState<boolean>(true);
 
     useEffect(() => {
+        if(!isCrudMode) {
+            setDisplayButton(false);
+            return;
+        }
         if(user) {
             if(user?.role === 'SuperAdmin') setDisplayButton(prev => true);
             else setDisplayButton(prev => false);
         }
-    }, [user]);
+    }, [user, isCrudMode]);
 
     const handleUpdate = (row: T) => {
         // Set Current Id is Id of Selected Row
-        onSetCurrentId(row['id' as keyof T]);
+        onSetCurrentId && onSetCurrentId(row['id' as keyof T]);
 
         // Set Open Form
-        onSetOpenForm(true);
+        onSetOpenForm && onSetOpenForm(true);
 
         // SetIsCreateMode
         if(onSetIsCreateMode){
@@ -45,7 +50,7 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
     }
 
     const handleDelete = (row: T) => {
-        onDeleteItem(row['id' as keyof T]);
+        onDeleteItem && onDeleteItem(row['id' as keyof T]);
     }
     
     return (

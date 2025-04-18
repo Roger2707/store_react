@@ -63,11 +63,10 @@ export const basketSlice = createSlice({
 
         builder.addCase(getBasket.fulfilled, (state, action) => {
             state.basket = action.payload;
-            state.isLoadBasket = true;
         });
 
         builder.addCase(getBasket.rejected, (state, action) => {
-            state.isLoadBasket = true;
+
         });
 
         ///////////////////////////////////////////////////////////////////////////////

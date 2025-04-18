@@ -1,7 +1,3 @@
-export interface Order {
-
-}
-
 export interface OrderDTO {
     id: number;
     userId: number;
@@ -38,4 +34,19 @@ export interface OrderResponseDTO {
     orderStatus: number;
     createAt: Date;
     clientSecret: string;
+}
+
+export interface OrderItemDapperRow {
+    id: number
+    orderDate: Date
+    orderStatus: string
+    deliveryFee: number
+    clientSecret: string
+    orderItemId: number
+    productDetailId: string
+    productName: string
+    productImageUrl: string
+    quantity: number
+    subTotal: number
+    grandTotal: number
 }

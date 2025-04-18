@@ -57,12 +57,10 @@ export const CheckOut = () => {
 const Style = styled.div<{ disabled: boolean }>`
     opacity: ${(props) => (props.disabled ? 0.6 : 1)};
     pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; 
-    padding: 10vh 20vw;
 
     form {
-
         button {
-            padding: 1.1vh 1.2vw;
+            padding: 1vh 1vw;
             border: none;
             outline: none;
             cursor: pointer;
