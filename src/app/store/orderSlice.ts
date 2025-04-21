@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import agent from "../api/agent";
-import { OrderDTO } from "../models/Order";
+import { CurrentOrder, OrderDTO } from "../models/Order";
 
 interface OrderState {
     orders: OrderDTO[] | null;
@@ -9,13 +9,17 @@ interface OrderState {
 
     //////////////////////////////
     clientSecret: string;
+    currentOrder : CurrentOrder | null
 }
 
 const initialState : OrderState = {
     orders: null,
     isLoadOrders: false,
     orderSelected: null,
-    clientSecret: ''
+
+    ////////////////////////////////
+    clientSecret: '',
+    currentOrder: null
 }
 
 export const fetchOrdersAsync = createAsyncThunk<OrderDTO[]>(
@@ -49,6 +53,13 @@ export const orderSlice = createSlice({
         setNewClientSecret: (state, action) => {
             state.clientSecret = action.payload;
         },
+        updateCurrentOrder: (state, action: PayloadAction<CurrentOrder>) => {
+            state.currentOrder = action.payload
+        },
+        removeCurrentOrder: (state, action) => {
+            state.currentOrder = null;
+        },
+        ///////////////////////////////////////////////////////////////////////////////////////////
         updateOrderStatus: (state, action: PayloadAction<{orderId: number, status: number}>) => {
             if(!state.orders) return;
             const index = state.orders.findIndex(order => order.id === action.payload.orderId);  
@@ -99,4 +110,4 @@ export const orderSlice = createSlice({
     }
 });
 
-export const { setNewClientSecret, updateOrderStatus } = orderSlice.actions;
+export const { setNewClientSecret, updateOrderStatus, updateCurrentOrder, removeCurrentOrder } = orderSlice.actions;

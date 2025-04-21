@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom"
 import styled from "styled-components"
+import { useAppSelector } from "../../../app/store/configureStore"
 
 export const CheckOutSuccess = () => {
+    const {currentOrder} = useAppSelector(state => state.order);
+    
     return (
         <Style>
             <div className="checkout-success-text" >
                 <h1>Thank you for shopping ! Your Order is successfully check out 😎😍😂</h1>
-                <p>For detail you can check status in Your Orders</p>
+                <p>Your Order : {currentOrder?.orderId} - {currentOrder?.orderStatus === 0 ? 'Pending' : 'Shipping'}</p>
                 <p>See your Order Page: <Link to='/orders' children='Click Here'/></p>
                 <p>Home Page: <Link to='/' children='Click Here' /></p>
             </div>

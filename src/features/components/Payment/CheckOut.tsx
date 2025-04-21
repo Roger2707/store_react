@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import styled from "styled-components"
 import { icons } from "../../../app/utils/helper";
 import { useSignalIROrderStatusHub } from "../../Hooks/useSignalIROrderStatusHub";
+import { useAppDispatch } from "../../../app/store/configureStore";
+import { updateCurrentOrder } from "../../../app/store/orderSlice";
 
 interface Props {
     orderId: number;
@@ -17,6 +19,7 @@ export const CheckOut = ({orderId} : Props) => {
     const [message, setMessage] = useState<string>('');
     const navigate = useNavigate();
     const connection = useSignalIROrderStatusHub();
+    const dispatch = useAppDispatch();
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,17 +41,6 @@ export const CheckOut = ({orderId} : Props) => {
         else if (paymentIntent?.status === "succeeded") {
             setMessage("Check out successfully !");
             toast.success('Check out successfully !', {icon: icons.success});
-
-            const orderUpdateMessage = {
-                Id: orderId,
-                OrderStatus: "Shipping", 
-            };
-
-            if (connection) {
-                await connection.invoke('SendOrderUpdateToAdmin', orderUpdateMessage);
-                await connection.invoke('SendOrderUpdateToUser', orderUpdateMessage);
-            }
-
             navigate('/checkout-success');
         } 
         else {
@@ -57,16 +49,11 @@ export const CheckOut = ({orderId} : Props) => {
         setLoading(false);
     };
 
-    const updateOrderStatus = (message: { id: number; orderStatus: string }) => {
-        // Update in orderSlice
-        console.log(message);
-    };
-
     useEffect(() => {
         if (!connection) return;
     
-        const handleOrderUpdate = (message: { id: number; orderStatus: string }) => {
-            updateOrderStatus(message);
+        const handleOrderUpdate = (message: { orderId: number; orderStatus: number }) => {
+            dispatch(updateCurrentOrder(message));
         };
     
         // Params -> BE call 
@@ -75,7 +62,7 @@ export const CheckOut = ({orderId} : Props) => {
         return () => {
             connection.off("ReceiveOrderUpdate", handleOrderUpdate);
         };
-    }, [connection]);   
+    }, [connection, dispatch]);   
 
     return (
         <Style disabled={loading} >

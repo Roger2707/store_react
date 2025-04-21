@@ -3,7 +3,7 @@ import styled from "styled-components";
 import agent from "../../../app/api/agent";
 import { OrderResponseDTO } from "../../../app/models/Order";
 import { useAppDispatch } from "../../../app/store/configureStore";
-import { setNewClientSecret } from "../../../app/store/orderSlice";
+import { setNewClientSecret, updateCurrentOrder } from "../../../app/store/orderSlice";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -21,6 +21,8 @@ export const OrderProcessing = ({userAddressId} : Props) => {
         try {
             const orderResponse : OrderResponseDTO = await agent.Order.create(userAddressId);    
             setClientSecret(orderResponse.clientSecret);
+            dispatch(updateCurrentOrder({orderId: orderResponse.id, orderStatus: 1}));
+
         } catch (error) {
             
         }

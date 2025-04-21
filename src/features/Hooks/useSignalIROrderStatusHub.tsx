@@ -7,17 +7,16 @@ export const useSignalIROrderStatusHub = () => {
     useEffect(() => {
         const connect = async () => {
             const conn = new HubConnectionBuilder()
-                .withUrl('/orderStatusHub')  
+                .withUrl("http://localhost:5110/orderStatusHub") 
+                .withAutomaticReconnect()
                 .build();
 
             conn.on('ReceiveOrderUpdate', (orderUpdateMessage) => {
-                // Xử lý thông báo nhận được từ server (cập nhật trạng thái đơn hàng)
                 console.log('Order Update:', orderUpdateMessage);
             });
 
             try {
                 await conn.start();
-                console.log("SignalR connection established");
                 setConnection(conn);
             } catch (err) {
                 console.error("SignalR connection failed", err);
@@ -32,7 +31,9 @@ export const useSignalIROrderStatusHub = () => {
                 connection.stop();
             }
         };
-    }, [connection]);
+
+    // eslint-disable-next-line
+    }, []);
 
     return connection;
 }
