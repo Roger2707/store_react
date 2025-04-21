@@ -1,7 +1,9 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components"
+import { icons } from "../../../app/utils/helper";
 
 export const CheckOut = () => {
     const stripe = useStripe();
@@ -25,19 +27,18 @@ export const CheckOut = () => {
 
         if (error) {
             setMessage(error.message || "Check out failed !");
-        } else if (paymentIntent?.status === "succeeded") {
+            toast.error(error.message, {icon: icons.error});
+        } 
+        else if (paymentIntent?.status === "succeeded") {
             setMessage("Check out successfully !");
-        } else {
+            toast.success('Check out successfully !', {icon: icons.success});
+            navigate('/checkout-success');
+        } 
+        else {
             setMessage("Check out Incompleted !");
         }
         setLoading(false);
     };
-
-    useEffect(() => {
-        if(message.includes('successfully')) {
-            navigate('/orders');
-        }
-    }, [message, navigate]);
 
     return (
         <Style disabled={loading} >
@@ -47,9 +48,7 @@ export const CheckOut = () => {
                     {loading ? "Processing..." : "Check Out"}
                 </button>
                 {message && <p>{message}</p>}
-            </form>
-
-            
+            </form>          
         </Style>
     );
 }
