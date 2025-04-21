@@ -1,17 +1,23 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components"
 import { icons } from "../../../app/utils/helper";
+import { useSignalIROrderStatusHub } from "../../Hooks/useSignalIROrderStatusHub";
 
-export const CheckOut = () => {
+interface Props {
+    orderId: number;
+}
+
+export const CheckOut = ({orderId} : Props) => {
     const stripe = useStripe();
     const elements = useElements();
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>('');
     const navigate = useNavigate();
-
+    const connection = useSignalIROrderStatusHub();
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!stripe || !elements) return;
@@ -32,6 +38,17 @@ export const CheckOut = () => {
         else if (paymentIntent?.status === "succeeded") {
             setMessage("Check out successfully !");
             toast.success('Check out successfully !', {icon: icons.success});
+
+            const orderUpdateMessage = {
+                Id: orderId,
+                OrderStatus: "Shipping", 
+            };
+
+            if (connection) {
+                await connection.invoke('SendOrderUpdateToAdmin', orderUpdateMessage);
+                await connection.invoke('SendOrderUpdateToUser', orderUpdateMessage);
+            }
+
             navigate('/checkout-success');
         } 
         else {
@@ -39,6 +56,26 @@ export const CheckOut = () => {
         }
         setLoading(false);
     };
+
+    const updateOrderStatus = (message: { id: number; orderStatus: string }) => {
+        // Update in orderSlice
+        console.log(message);
+    };
+
+    useEffect(() => {
+        if (!connection) return;
+    
+        const handleOrderUpdate = (message: { id: number; orderStatus: string }) => {
+            updateOrderStatus(message);
+        };
+    
+        // Params -> BE call 
+        connection.on("ReceiveOrderUpdate", handleOrderUpdate);
+    
+        return () => {
+            connection.off("ReceiveOrderUpdate", handleOrderUpdate);
+        };
+    }, [connection]);   
 
     return (
         <Style disabled={loading} >
