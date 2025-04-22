@@ -19,10 +19,9 @@ import RequireAuth from "./RequireAuth";
 import { ForgotPassword } from "../../features/pages/Identity/ForgotPassword";
 import { ResetPassword } from "../../features/pages/Identity/ResetPassword";
 import { BasketPage } from "../../features/pages/Cart/BasketPage";
-import { Order } from "../../features/pages/Orders/Order";
 import { AdminStock } from "../../features/pages/Admin/AdminStock";
 import { UserProfile } from "../../features/pages/User/UserProfile";
-import { OrdersInfo } from "../../features/pages/User/OrdersInfo";
+import { OrdersSummary } from "../../features/pages/User/OrdersSummary";
 import { ChangePassword } from "../../features/pages/User/ChangePassword";
 import { AdminWarehouse } from "../../features/pages/Admin/AdminWarehouse";
 import { CheckoutPage } from "../../features/pages/CheckOut/CheckoutPage";
@@ -70,10 +69,9 @@ export const router = createBrowserRouter(([
             {
                 element: <RequireAuth />, children: [
                     { path: 'profile', element: <UserProfile/>, },
-                    { path: 'orders', element: <OrdersInfo/> },
+                    { path: 'orders', element: <OrdersSummary/> },
                     { path: 'change-password', element: <ChangePassword/> },
                     { path: 'basket', element: <BasketPage/> },
-                    { path: 'orders', element: <Order/> },
                     { path: 'checkout/:clientSecret', element: <CheckoutPage/> },
                     { path: 'checkout-success', element: <CheckOutSuccess/> },
                 ]

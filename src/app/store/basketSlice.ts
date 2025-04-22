@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BasketDTO, BasketItemDTO, BasketUpsertParam } from "../models/Basket";
+import { BasketDTO, BasketUpsertParam } from "../models/Basket";
 import agent from "../api/agent";
 
 interface BasketState {
-    basket: BasketDTO | null,
+    basket: BasketDTO | null | undefined,
     isLoadBasket: boolean,
 }
 
@@ -24,12 +24,12 @@ export const getBasket = createAsyncThunk<BasketDTO>(
     }
 );
 
-export const upsertBasket = createAsyncThunk<BasketItemDTO, BasketUpsertParam>(
+export const upsertBasket = createAsyncThunk<BasketDTO, BasketUpsertParam>(
     'basket/upsert-basket',
     async(basketUpsertDTO, thunkAPI) => {
         try {
-            const basketItem = await agent.Basket.upsert(basketUpsertDTO);     
-            return basketItem;
+            const basketDTO = await agent.Basket.upsert(basketUpsertDTO);   
+            return basketDTO;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
         }
@@ -75,35 +75,9 @@ export const basketSlice = createSlice({
 
         });
 
-        builder.addCase(upsertBasket.fulfilled, (state, action) => {         
-            const currentBasket : BasketDTO = JSON.parse(JSON.stringify(state.basket));
-            if (!currentBasket) {
-                state.basket = {
-                    id: '',
-                    items: [action.payload],
-                    userId: 0,
-                    grandTotal: 0
-                };
-                return;
-            }
-
-            // Now use currentBasket instead of state.basket for checking
-            const existedItem = currentBasket.items?.find(i => i.productDetailId === action.payload.productDetailId);
-            
-            if(existedItem) {
-                // Update the existing item's quantity
-                const updatedItems = currentBasket?.items?.map(item => 
-                    item.productDetailId === action.payload.productDetailId 
-                        ? { ...item, quantity: action.payload.quantity }
-                        : item
-                );
-                state.basket = { ...currentBasket, items: updatedItems };
-            } else {
-                // Add new item
-                const existedItems = currentBasket.items || [];
-                state.basket = { ...currentBasket, items: [...existedItems, action.payload] };
-            }
-        });
+        builder.addCase(upsertBasket.fulfilled, (state, action) => {
+            state.basket = action.payload;
+        });       
 
         builder.addCase(upsertBasket.rejected, (state, action) => {
 
@@ -118,10 +92,10 @@ export const basketSlice = createSlice({
         builder.addCase(toggleStatusItem.fulfilled, (state, action) => {
 
             if (!state.basket || !state.basket.items) return;
-            const index = state.basket?.items.findIndex(item => item.basketItemId === action.payload);
+            const index = state.basket.items.findIndex(item => item.basketItemId === action.payload);
 
-            if(index !== undefined && index !== -1) {
-                state.basket.items[index].status = !state.basket?.items[index].status;
+            if(index !== -1) {
+                state.basket.items[index].status = !state.basket.items[index].status;
             }
         });
 

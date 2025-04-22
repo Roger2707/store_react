@@ -5,6 +5,7 @@ import { OrderResponseDTO } from "../../../app/models/Order";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { setNewClientSecret, updateCurrentOrder } from "../../../app/store/orderSlice";
 import { useNavigate } from "react-router-dom";
+import { getBasket } from "../../../app/store/basketSlice";
 
 interface Props {
     userAddressId : number;
@@ -22,7 +23,9 @@ export const OrderProcessing = ({userAddressId} : Props) => {
             const orderResponse : OrderResponseDTO = await agent.Order.create(userAddressId);    
             setClientSecret(orderResponse.clientSecret);
             dispatch(updateCurrentOrder({orderId: orderResponse.id, orderStatus: 1}));
-
+            
+            // Update Basket
+            dispatch(getBasket());
         } catch (error) {
             
         }

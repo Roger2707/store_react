@@ -70,9 +70,7 @@ export const CheckoutPage = () => {
                     <Style>
                         <div>
                             <Elements options={{ clientSecret }} stripe={stripePromise}>
-                                {
-                                    order && order[0].id && <CheckOut orderId={order[0].id} />
-                                }
+                                <CheckOut/>
                             </Elements>
                             <IMG/>
                         </div>

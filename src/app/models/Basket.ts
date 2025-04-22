@@ -1,7 +1,7 @@
 export interface BasketDTO {
     id: string,
     userId: number,
-    items?: BasketItemDTO[],
+    items: BasketItemDTO[],
     grandTotal: number,
 }
 

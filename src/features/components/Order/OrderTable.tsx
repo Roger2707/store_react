@@ -1,67 +1,66 @@
 import styled from "styled-components"
 import { OrderDTO } from "../../../app/models/Order"
-import { useAppDispatch } from "../../../app/store/configureStore";
-import { fetchOrderDetailAsync } from "../../../app/store/orderSlice";
 import { useState } from "react";
 
 interface Props {
     orders: OrderDTO[] | null;
+    onSetSelectedOrderId: any;
 }
 
-export const OrderTable = ({orders}: Props) => {
+export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
     const [orderId, setOrderId] = useState<number>(0);
-    const dispatch = useAppDispatch();
-
     const handleShowOrderDetail = (orderId: number) => {
-        dispatch(fetchOrderDetailAsync(orderId));
         setOrderId(orderId);
+        onSetSelectedOrderId(orderId);
     }
 
     return (
         <OrderTableStyle>
-        <thead>
-            <tr>
-                <th>Order Id</th>
-                <th>Contact</th>
-                <th>Order Date</th>
-                <th>Shipping Address</th>
-                <th>Grand Total</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        {
-            orders && orders.length > 0 &&
-            <tbody>
-                {
-                    orders.map((order: OrderDTO, index) => {
-                        return (
-                            <tr key={index} className={`${order.id === orderId && 'order-active'}`}>
-                                <td >{order.id}</td>
-                                <td>
-                                    <span className="order-contact" >{order.email}</span>
-                                    <span className="order-contact" >{order.phoneNumber}</span>
-                                </td>
-                                <td>{order.orderDate && order.orderDate.toString().split('T')[0]}</td>
-                                <td style={{ whiteSpace: "pre-line" }}>
-                                    <span className="order-address" >{order.userAddress.streetAddress}</span>
-                                    <span className="order-address">{order.userAddress.district}</span>
-                                    <span className="order-address">{order.userAddress.ward}</span>
-                                    <span className="order-address">{order.userAddress.city}</span>
-                                </td>
-                                <td>{order.grandTotal.toLocaleString('vi-VN')} VND</td>
-                                <td>
-                                    <span className={`order-status order-status-${order.status.includes('Pending') ? 'pending' : order.status.includes('Completed') ? 'completed' : 'error'}`} >{order.status}</span>
-                                </td>
-                                <td>
-                                    <button onClick={() => handleShowOrderDetail(order.id)}>Detail</button>
-                                </td>
-                            </tr>
-                        )
-                    })
-                }
-            </tbody>
-        }
+            <thead>
+                <tr>
+                    <th>Order Id</th>
+                    <th>Contact</th>
+                    <th>Order Date</th>
+                    <th>Shipping Address</th>
+                    <th>Grand Total</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {
+                orders && orders.length > 0 &&
+                <tbody>
+                    {
+                        orders.map((order: OrderDTO, index) => {
+                            return (
+                                <tr key={index} className={`${order.id === orderId && 'order-active'}`}>
+                                    <td >{order.id}</td>
+                                    <td>
+                                        <span className="order-contact" >Email address: <span style={{color: 'goldenrod'}} >{order.email}</span></span>
+                                        <span className="order-contact" >Phone number: <span style={{color: 'goldenrod'}} >{order.phoneNumber}</span></span>
+                                    </td>
+                                    <td>{order.orderDate && order.orderDate.toString().split('T')[0]}</td>
+                                    <td style={{ whiteSpace: "pre-line" }}>
+                                        <span className="order-address" >{order.userAddress.streetAddress}</span>
+                                        <span className="order-address">{order.userAddress.district}</span>
+                                        <span className="order-address">{order.userAddress.ward}</span>
+                                        <span className="order-address">{order.userAddress.city}</span>
+                                    </td>
+                                    <td><span style={{color: 'red'}} >{order.grandTotal.toLocaleString('vi-VN')} VND</span></td>
+                                    <td>
+                                        <span className={`order-status order-status-${order.status.includes('Pending') ? 'pending' : order.status.includes('Completed') ? 'completed' : order.status.includes('Cancelled') ? 'cancelled' : order.status.includes('Shipping') ? 'shipping' : 'refund'}`} >
+                                            {order.status}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleShowOrderDetail(order.id)}>More</button>
+                                    </td>
+                                </tr>
+                            )
+                        })
+                    }
+                </tbody>
+            }
         </OrderTableStyle>
     )
 }
@@ -71,14 +70,17 @@ const OrderTableStyle = styled.table `
     border: 1px solid #333;
     text-align: center;
     border-collapse: collapse;
+    background-color: #fff;
 
     thead {
         tr {
             th {
                 font-size: 1.2rem;
-                font-weight: 700;
+                font-weight: 500;
+                color: #eb4242;
                 text-transform: capitalize;
                 padding: 1vh 1vw;
+                font-style: italic;
         
                 border-right: 1px solid #333;
 
@@ -125,16 +127,22 @@ const OrderTableStyle = styled.table `
                 .order-status-completed {
                     background-color: #41c741;
                 }
-                .order-status-pending {
+                .order-status-shipping {
+                    background-color: #FF7F50;
+                }
+                .order-status-cancelled {
                     background-color: #eb4242;
+                }
+                .order-status-refund {
+                    background-color: #4682B4;
                 }
 
                 button {
                     padding: 1vh 1vw;
                     border-radius: 5px;
                     cursor: pointer;
-                    background-color: darkblue;
-                    color: white;
+                    background-color: lightblue;
+                    color: #333;
                     font-style: italic;
                     border: none;
                     outline: none;
@@ -144,8 +152,8 @@ const OrderTableStyle = styled.table `
         }
 
         .order-active {
-            background-color: #7F00FF;
-            color: white;
+            background-color: #E6E6FA;
+            color: #333;
             border: solid 2px #8b5a5a;
         }
     }

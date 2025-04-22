@@ -5,7 +5,6 @@ import { CurrentOrder, OrderDTO } from "../models/Order";
 interface OrderState {
     orders: OrderDTO[] | null;
     isLoadOrders: boolean;
-    orderSelected: OrderDTO | null;
 
     //////////////////////////////
     clientSecret: string;
@@ -15,7 +14,6 @@ interface OrderState {
 const initialState : OrderState = {
     orders: null,
     isLoadOrders: false,
-    orderSelected: null,
 
     ////////////////////////////////
     clientSecret: '',
@@ -26,25 +24,13 @@ export const fetchOrdersAsync = createAsyncThunk<OrderDTO[]>(
     'orders/fetchOrderAsync'
     , async(_, thunkAPI) => {
         try {
-            const response = await agent.Order.list(); 
+            const response = await agent.Order.getAll(); 
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
         }
     }
 );
-
-export const fetchOrderDetailAsync = createAsyncThunk<OrderDTO, number>(
-    'orders/fetchOrderDetailAsync'
-    , async(orderId, thunkAPI) => {
-        try {
-            const response = await agent.Order.get(orderId); 
-            return response;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue({error: error.data});
-        }
-    }
-)
 
 export const orderSlice = createSlice({
     name: 'orders',
@@ -93,19 +79,6 @@ export const orderSlice = createSlice({
 
         builder.addCase(fetchOrdersAsync.rejected, (state, action) => {
             state.isLoadOrders = true;            
-        });
-
-        ////////////////////////////////////////////////////////////////////////
-        builder.addCase(fetchOrderDetailAsync.pending, (state, action) => {
-
-        });
-
-        builder.addCase(fetchOrderDetailAsync.fulfilled, (state, action) => {         
-            state.orderSelected = action.payload;
-        });
-
-        builder.addCase(fetchOrderDetailAsync.rejected, (state, action) => {
-            
         });
     }
 });

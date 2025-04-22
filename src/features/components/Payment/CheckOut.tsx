@@ -8,11 +8,7 @@ import { useSignalIROrderStatusHub } from "../../Hooks/useSignalIROrderStatusHub
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { updateCurrentOrder } from "../../../app/store/orderSlice";
 
-interface Props {
-    orderId: number;
-}
-
-export const CheckOut = ({orderId} : Props) => {
+export const CheckOut = () => {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +22,7 @@ export const CheckOut = ({orderId} : Props) => {
         if (!stripe || !elements) return;
 
         setLoading(true);
-        setMessage("");
+        setMessage('');
 
         const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
