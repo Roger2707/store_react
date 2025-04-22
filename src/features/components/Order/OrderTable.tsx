@@ -9,9 +9,14 @@ interface Props {
 
 export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
     const [orderId, setOrderId] = useState<number>(0);
+
     const handleShowOrderDetail = (orderId: number) => {
         setOrderId(orderId);
         onSetSelectedOrderId(orderId);
+    }
+
+    const handleRefundOrder = (orderId: number) => {
+        
     }
 
     return (
@@ -54,6 +59,7 @@ export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
                                     </td>
                                     <td>
                                         <button onClick={() => handleShowOrderDetail(order.id)}>More</button>
+                                        <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#C3B1E1'}} >Refund</button>
                                     </td>
                                 </tr>
                             )
