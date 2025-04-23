@@ -17,7 +17,6 @@ export const ProductItem = ({product} : Props) => {
                 <div className="product-item-detail" >
                     <div className="product-heading">
                         <p>{name}</p>
-                        <span>Id: #{id.toString().padStart(6, '0')}</span>
                     </div>
                     <div className="product-desc">
                         <div className="product-prices" >
@@ -43,6 +42,7 @@ const ProductItemStyle = styled.div `
     width: 100%;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     border-radius: 5px;
+    height: 45vh;
     overflow: hidden;
 
     a {

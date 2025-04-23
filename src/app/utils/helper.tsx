@@ -160,7 +160,7 @@ export const productStatus = [
         value: 1,
     },
     {
-        title: 'In - Active',
+        title: 'Non - Active',
         value: 0,
     }
 ]
@@ -213,15 +213,15 @@ export const sortOptions = [
     },
     {
         title: 'Name DESC',
-        value: 'NameDesc',
+        value: 'nameDesc',
     },
     {
         title: 'Price ASC',
-        value: 'priceASC',
+        value: 'priceAsc',
     },
     {
         title: 'Price DESC',
-        value: 'priceDESC',
+        value: 'priceDesc',
     },
 ];
 
