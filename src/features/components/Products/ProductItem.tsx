@@ -1,7 +1,7 @@
-import { FaRegStar } from "react-icons/fa";
 import { Product } from "../../../app/models/Product"
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { ProductRatings } from "../Rating/ProductRatings";
 
 interface Props {
     product: Product;
@@ -24,13 +24,7 @@ export const ProductItem = ({product} : Props) => {
                             {details[0].discountPrice !== 0 && <p className="product-discount">{details[0].discountPrice.toLocaleString('vi-VN')}</p>}
                         </div>
 
-                        <div className="product-ratings" >
-                            <span className="rating-icon" ><FaRegStar/></span>
-                            <span className="rating-icon" ><FaRegStar/></span>
-                            <span className="rating-icon" ><FaRegStar/></span>
-                            <span className="rating-icon" ><FaRegStar/></span>
-                            <span className="rating-icon" ><FaRegStar/></span>
-                        </div>
+                        <ProductRatings productId = {id} />
                     </div>
                 </div>
             </Link>

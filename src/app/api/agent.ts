@@ -11,6 +11,7 @@ import { ImageUploadDTO, SingleImageUploadDTO } from "../models/ImageUpload";
 import { Warehouse, WarehouseSearch } from "../models/Warehouse";
 import { StockUpsertDTO } from "../models/Stock";
 import { BasketUpsertParam } from "../models/Basket";
+import { RatingDTO } from "../models/Rating";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
@@ -216,6 +217,12 @@ const Stocks = {
     upsertStock: (request: StockUpsertDTO) => requests.post(`stocks/upsert-stock`, request)
 }
 
+const Rating = {
+    getProductRating: (productId: string) => requests.get(`ratings/get-product-rating?productId=${productId}`),
+    getProductDetailRating: (productDetailId: string) => requests.get(`ratings/get-product-detail-rating?productDetailId=${productDetailId}`),
+    set: (p : RatingDTO) => requests.post(`ratings/gset-rating`, p),
+}
+
 const agent = {
     Upload,
     Product,
@@ -228,7 +235,8 @@ const agent = {
     Order,
     Technology,
     Warehouses,
-    Stocks
+    Stocks,
+    Rating
 }
 
 export default agent;
