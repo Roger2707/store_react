@@ -36,10 +36,11 @@ const NavAuthStyles = styled.div`
         text-decoration: none;
         span {
             display: inline-block;
-            color: white;
+            color: #fff;
             text-transform: lowercase;
             font-size: 15px;
             font-style: italic;
+            font-family: 'Courier New', Courier, monospace;
             letter-spacing: 0.5px;
             word-spacing: 1px;
             margin: 0 5px;

@@ -41,8 +41,9 @@ const Style = styled.div `
     p {
         display: inline-block;
         font-size: 1.1rem;
+        font-family: 'Courier New', Courier, monospace;
         font-weight: 700;
-        color: orangered;
+        color: #e61d1d;
         cursor: pointer;
     }
 

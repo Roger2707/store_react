@@ -39,8 +39,9 @@ const NavContainer = styled.div`
         align-items: center;
 
         text-decoration: none;
-        color: white;
-
+        color: #fff;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 700;
         margin: 0 10px;
 
         span {
@@ -54,6 +55,6 @@ const NavContainer = styled.div`
     }
 
     .nav-active {
-        color: goldenrod;
+        color: #6082B6;
     }
 `

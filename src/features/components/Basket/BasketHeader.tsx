@@ -40,7 +40,7 @@ const BasketStyles = styled.div`
         }
 
         .basket-icon.basket-active {
-            color: goldenrod;
+            color: #6082B6;
             font-size: 35px;
         }
 
@@ -60,8 +60,8 @@ const BasketStyles = styled.div`
         }
 
         .basket-items.basket-active {
-            background-color: goldenrod;
-            color: #28282B;
+            background-color: #6082B6;
+            color: #fff;
         }
     }
 `

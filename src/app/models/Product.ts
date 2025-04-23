@@ -12,6 +12,7 @@ export interface Product {
     brandId: string;
     brandName: string;
     brandCountry: string;
+    stars: number
     details: ProductDetail[],
 }
 

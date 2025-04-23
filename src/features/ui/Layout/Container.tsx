@@ -10,10 +10,7 @@ export const Container = ({children} : Props) => {
 
 const ContainerStyle = styled.div`
     width: 100vw;
-
     padding: 0 10%;
-
     overflow-x: hidden;
-
-    padding-bottom: 100px;
+    //padding-bottom: 100px;
 `

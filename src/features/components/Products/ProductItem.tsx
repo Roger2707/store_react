@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const ProductItem = ({product} : Props) => {
-    const {id, name, imageUrl, details} = product;
+    const {id, name, imageUrl, details, stars} = product;
 
     return (
         <ProductItemStyle>
@@ -24,7 +24,7 @@ export const ProductItem = ({product} : Props) => {
                             {details[0].discountPrice !== 0 && <p className="product-discount">{details[0].discountPrice.toLocaleString('vi-VN')}</p>}
                         </div>
 
-                        <ProductRatings productId = {id} />
+                        <ProductRatings stars = {stars} />
                     </div>
                 </div>
             </Link>
@@ -36,7 +36,8 @@ const ProductItemStyle = styled.div `
     width: 100%;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     border-radius: 5px;
-    height: 45vh;
+    height: 42vh;
+    background: #FAF9F6;
     overflow: hidden;
 
     a {
@@ -58,24 +59,12 @@ const ProductItemStyle = styled.div `
         .product-heading {
             p {
                 text-align: center;
-                font-weight: 500;
-                color: gray;
                 font-style: italic;
                 font-size: 1.2rem;
-
-                line-height: 1.2rem;
-                height: 1.2rem;
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
                 overflow: hidden;
-            }
-            margin: 0.3rem 0;
-
-            span {
-                display: block;
-                font-weight: 500;
-                color: gray;
-                font-style: italic;
-
-                margin-top: 5px;
+                height: 1.2rem;
+                margin: 0.3rem 0;
             }
         }
 
@@ -92,6 +81,7 @@ const ProductItemStyle = styled.div `
                 }
     
                 .price-line {
+                    font-size: 0.9rem;
                     text-decoration: line-through;
                 }
     

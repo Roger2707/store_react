@@ -1,27 +1,11 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components"
-import agent from "../../../app/api/agent";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 interface Props {
-    productId: string;
+    stars: number;
 }
 
-export const ProductRatings = ({productId}: Props) => {
-    const [star, setStar] = useState<number>(0);
-
-
-
-    useEffect(() => {
-        const fetchProductStar = async () => {
-            const data = await agent.Rating.getProductRating(productId);
-            setStar(data);
-        }
-        if(productId) {
-            fetchProductStar();
-        }
-    }, [productId]);
-
+export const ProductRatings = ({stars}: Props) => {
     const renderStars = (rating: number) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
@@ -38,12 +22,14 @@ export const ProductRatings = ({productId}: Props) => {
 
     return (
         <Style>
-            <div className="rating-container">{renderStars(star)}</div>
+            <div className="rating-container">{renderStars(stars)}</div>
         </Style>
     )
 }
 
 const Style = styled.div`
+    display: flex;
+    justify-content: right;
     .rating-container {
         display: inline-block;
         margin: 4px 0;

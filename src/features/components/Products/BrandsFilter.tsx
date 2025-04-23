@@ -29,7 +29,7 @@ export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
     
     return (
         <Style className="filter_brands-container" >
-            <p>Brands:</p>
+            <p>Brands</p>
             <div className="brands-list" >
                 {
                     data?.map((item: Brand) => 
@@ -45,24 +45,37 @@ export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
 }
 
 const Style = styled.div ` 
-    background-color: #2c2c2c;
     width: 100%;
-    padding: 10% 0;
+    padding: 10% 5%;
+    position: relative;
+    top: 25%;
 
     p {
+        font-family: 'Courier New', Courier, monospace;
         font-size: 1.2rem;
-        color: #fff;
         font-style: italic;
-        margin: 0 10% 3% 10%;
-        text-decoration: underline;
+        text-align: center;
+        padding: 2px;
+        background-color: #fff;
+        z-index: 5;
+        position: absolute;
+        top: 0%;
+        left: 30%;
     }
 
     .brands-list
     {
+        position: absolute;
+        top: 50%;
+        z-index: 3;
+
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: 2vh;
+        border: 1px solid #333;
+        padding: 10px 0;
+
+        width: 90%;
 
         button {
             font-size: 1rem;
@@ -70,9 +83,6 @@ const Style = styled.div `
             padding: 5px 10px;
             font-family: 'Courier New', Courier, monospace;
             text-transform: capitalize;
-            color: #fff;
-            background-color: #2c2c2c;
-
             width: 95%;
             border: none;
             outline: none;
@@ -80,12 +90,14 @@ const Style = styled.div `
             cursor: pointer;
             margin-bottom: 1%;
             &:hover {
-                background-color: rgba(255,255,255,0.2);
+                background-color: #6082B6;
+                color: #fff;
             }
         }
 
         .selected {
-            background-color: rgba(255,255,255,0.2);
+            background-color: #6082B6;
+            color: #fff;
         }
     }
 `

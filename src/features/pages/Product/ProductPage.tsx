@@ -79,11 +79,10 @@ const ProductsStyle = styled.div `
     grid-template-columns: 1.5fr 8.5fr;
 
     .products-filter-container {
-        background-color: #2c2c2c;
+        background-color: #dedbe2;
         min-height: 90vh;
         width: 100%;
         height: 100%;
-        padding-left: 50%;
 
         display: flex;
         flex-direction: column;
@@ -95,7 +94,7 @@ const ProductsStyle = styled.div `
             margin-top: 2vh;
             width: 100%;
             height: fit-content;
-            padding: 0 5%;
+            padding-left: 5%;
 
             display: flex;
             justify-content: space-between;
@@ -103,7 +102,7 @@ const ProductsStyle = styled.div `
         }
 
         .products-content {
-            padding: 30px 100px 0 50px;
+            padding: 30px 0px 0 50px;
         }
     }
 `
