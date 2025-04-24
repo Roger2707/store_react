@@ -8,14 +8,14 @@ interface Props {
 }
 
 export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
-    const [orderId, setOrderId] = useState<number>(0);
+    const [orderId, setOrderId] = useState<string>('');
 
-    const handleShowOrderDetail = (orderId: number) => {
+    const handleShowOrderDetail = (orderId: string) => {
         setOrderId(orderId);
         onSetSelectedOrderId(orderId);
     }
 
-    const handleRefundOrder = (orderId: number) => {
+    const handleRefundOrder = (orderId: string) => {
         
     }
 
