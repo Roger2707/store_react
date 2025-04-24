@@ -29,7 +29,7 @@ export interface OrderItemDTO {
 }
 
 export interface OrderItemDapperRow {
-    id: number
+    id: string
     orderDate: Date
     orderStatus: string
     deliveryFee: number

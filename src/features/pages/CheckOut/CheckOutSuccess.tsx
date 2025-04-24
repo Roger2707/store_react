@@ -16,6 +16,8 @@ export const CheckOutSuccess = () => {
         }
         if(clientSecret) {
             getOrder();
+            console.log(clientSecret);
+            
         }
     }, [clientSecret])
 
@@ -23,8 +25,8 @@ export const CheckOutSuccess = () => {
         <Style>
             <div className="checkout-success-text" >
                 <h1>Thank you for shopping ! Your Order is successfully check out 😎😍😂</h1>
-                <p>Your Order : {orderItems[0]?.id} - {orderItems[0]?.orderStatus}</p>
-                <p>See your Order Page: <Link to='/orders' children='Click Here'/></p>
+                <p>Order Id: {orderItems.length > 0 && orderItems[0].id}</p>
+                <p>Check your Order Status: <Link to='/orders' children='Click Here'/></p>
                 <p>Home Page: <Link to='/' children='Click Here' /></p>
             </div>
         </Style>
@@ -32,13 +34,10 @@ export const CheckOutSuccess = () => {
 }
 
 const Style = styled.div`
-    width: 100vw;
-    height: 90vh;
-
     display: flex;
     flex-direction: column;
+    height: 88vh;
     justify-content: center;
-    align-items: center;
 
     .checkout-success-text {
         background-color: #4e67b3;

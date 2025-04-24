@@ -59,7 +59,7 @@ export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
                                     </td>
                                     <td>
                                         <button onClick={() => handleShowOrderDetail(order.id)}>More</button>
-                                        <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#C3B1E1'}} >Refund</button>
+                                        <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#0096FF'}} >Refund</button>
                                     </td>
                                 </tr>
                             )
@@ -147,12 +147,27 @@ const OrderTableStyle = styled.table `
                     padding: 1vh 1vw;
                     border-radius: 5px;
                     cursor: pointer;
-                    background-color: lightblue;
+                    background-color: #FA8072;
                     color: #333;
                     font-style: italic;
                     border: none;
                     outline: none;
                     font-size: 0.8rem;
+                }
+
+                &:last-child {
+                    button {
+                        min-width: 5vw;
+                        opacity: 0.8;
+
+                        &:last-child {
+                            margin-top: .5vh;
+                        }
+
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
                 }
             }
         }

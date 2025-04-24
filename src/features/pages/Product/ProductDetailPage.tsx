@@ -93,7 +93,7 @@ export const ProductDetailPage = () => {
 }
 
 const Style = styled.div`
-    padding: 10vh 10vw;
+    padding: 10vh 0;
     width: 100%;
 
     .product-detail-layout {

@@ -38,7 +38,7 @@ export const OrdersSummary = () => {
     return (
         <Style>
             {isLoading && <Loading message='Loading orders ...' />}
-            <h1>Orders Infomations</h1>
+            <h1>Orders Summary</h1>
             <div className="order-grid" >
                 <OrderTable orders={orders?.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} />
                 <OrderDetail items={items} />
@@ -58,7 +58,6 @@ export const OrdersSummary = () => {
 }
 
 const Style = styled.div`
-    padding: 0 5vw;
     h1 {
         font-size: 1.8rem;
         color: saddlebrown;

@@ -31,7 +31,7 @@ export const BasketPage = () => {
 }
 
 const Styled = styled.div`
-    padding: 5vh 10%;
+    padding: 5vh 0;
     h2 {
         font-size: 2rem;
         font-weight: 500;
