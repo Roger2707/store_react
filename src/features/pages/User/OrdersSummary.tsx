@@ -10,7 +10,7 @@ export const OrdersSummary = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<OrderDTO[] | null>(null);
     const [items, setItems] = useState<OrderItemDTO[] | null>(null);
-    const [orderIdSelected, setOrderIdSelected] = useState<number>(0);
+    const [orderIdSelected, setOrderIdSelected] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     useEffect(() => {     
@@ -29,10 +29,10 @@ export const OrdersSummary = () => {
     }, []);
     
     useEffect(() => {
-        if(orderIdSelected !== 0) {
+        if(orderIdSelected !== '') {
             setItems(prev => orders?.find(o => o.id === orderIdSelected)?.items!);
         }
-        if(orderIdSelected === 0) setItems(null);
+        if(orderIdSelected === '') setItems(null);
     }, [orderIdSelected, orders])
 
     return (
@@ -48,7 +48,7 @@ export const OrdersSummary = () => {
                     Array.from({ length: orders.length / 5 }, (_, i) => (
                         <button key={i} className={`${currentPage === i + 1 && 'page-active'}`} onClick={() => {
                             setCurrentPage(i + 1);
-                            setOrderIdSelected(0);
+                            setOrderIdSelected('');
                         }} >{i + 1}</button>
                     ))
                 }

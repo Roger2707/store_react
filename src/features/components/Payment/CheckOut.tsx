@@ -1,12 +1,10 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components"
 import { icons } from "../../../app/utils/helper";
-import { useSignalIROrderStatusHub } from "../../Hooks/useSignalIROrderStatusHub";
-import { useAppDispatch } from "../../../app/store/configureStore";
-import { updateCurrentOrder } from "../../../app/store/orderSlice";
+import { useAppSelector } from "../../../app/store/configureStore";
 
 export const CheckOut = () => {
     const stripe = useStripe();
@@ -14,8 +12,7 @@ export const CheckOut = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const navigate = useNavigate();
-    const connection = useSignalIROrderStatusHub();
-    const dispatch = useAppDispatch();
+    const {clientSecret} = useAppSelector(state => state.order)
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,28 +34,13 @@ export const CheckOut = () => {
         else if (paymentIntent?.status === "succeeded") {
             setMessage("Check out successfully !");
             toast.success('Check out successfully !', {icon: icons.success});
-            navigate('/checkout-success');
+            navigate('/checkout-success', {state : {clientSecret}});
         } 
         else {
             setMessage("Check out Incompleted !");
         }
         setLoading(false);
     };
-
-    useEffect(() => {
-        if (!connection) return;
-    
-        const handleOrderUpdate = (message: { orderId: number; orderStatus: number }) => {
-            dispatch(updateCurrentOrder(message));
-        };
-    
-        // Params -> BE call 
-        connection.on("ReceiveOrderUpdate", handleOrderUpdate);
-    
-        return () => {
-            connection.off("ReceiveOrderUpdate", handleOrderUpdate);
-        };
-    }, [connection, dispatch]);   
 
     return (
         <Style disabled={loading} >

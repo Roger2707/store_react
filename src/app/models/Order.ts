@@ -1,5 +1,5 @@
 export interface OrderDTO {
-    id: number;
+    id: string;
     userId: number;
     fullName: string;
     email: string;
@@ -28,14 +28,6 @@ export interface OrderItemDTO {
     subTotal: number;
 }
 
-export interface OrderResponseDTO {
-    id: number;
-    grandTotal: number;
-    orderStatus: number;
-    createAt: Date;
-    clientSecret: string;
-}
-
 export interface OrderItemDapperRow {
     id: number
     orderDate: Date
@@ -49,9 +41,4 @@ export interface OrderItemDapperRow {
     quantity: number
     subTotal: number
     grandTotal: number
-}
-
-export interface CurrentOrder {
-    orderId: number
-    orderStatus: number
 }

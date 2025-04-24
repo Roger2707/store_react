@@ -191,11 +191,13 @@ const Basket = {
 }
 
 const Order = {
-    getAll: () => requests.get(`orders/get-all`),
     getOrdersOwn : () => requests.get(`orders/get-orders-of-user`),
-    getByOrderId : (orderId: number) => requests.get(`orders/get-order?orderId=${orderId}`),
+    getByOrderId : (orderId: string) => requests.get(`orders/get-order?orderId=${orderId}`),
     getByClientSecret: (clientSecret: string) => requests.get(`orders/get-order-by-client-secret?clientSecret=${clientSecret}`),
-    create: (userAddressId: number) => requests.post(`orders/create-order?userAddressId=${userAddressId}`, {}),
+}
+
+const Payment = {
+    createClientSecret : (userAddressId : number) => requests.post(`payments/create-client-secret?userAddressId=${userAddressId}`, {}),
 }
 
 const Warehouses = {
@@ -233,6 +235,7 @@ const agent = {
     Location,
     Basket,
     Order,
+    Payment,
     Technology,
     Warehouses,
     Stocks,

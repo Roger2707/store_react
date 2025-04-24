@@ -3,21 +3,15 @@ import styled from "styled-components"
 import { CheckOut } from "../../components/Payment/CheckOut"
 import { loadStripe } from "@stripe/stripe-js";
 import { useParams } from "react-router-dom";
-import { ReactNode, useEffect, useState } from "react";
-import agent from "../../../app/api/agent";
+import { ReactNode } from "react";
 import DataTable from "../../ui/Data/DataTable";
-import { OrderItemDapperRow } from "../../../app/models/Order";
-import { Loading } from "../../ui/Common/Loading";
+import { useAppSelector } from "../../../app/store/configureStore";
 
 const logo = require('../../assets/images/stripe.jpg');
 
 const columns = [
-    {
-        key: 'id',
-        title: 'ID',
-    },
     { 
-        key: 'productImageUrl',
+        key: 'productFirstImage',
         title: 'Photo', 
         render: (link: any) => {
             if (!link) return <p>No Image</p>;
@@ -34,8 +28,8 @@ const columns = [
         title: 'Quantity'
     },
     {
-        key: 'subTotal',
-        title: 'SubTotal',
+        key: 'discountPrice',
+        title: 'Price',
         render: (price: any) => {
             return <p>{price.toLocaleString('vi-VN')}</p> as ReactNode;
         }
@@ -45,47 +39,28 @@ const columns = [
 export const CheckoutPage = () => {
     const stripePromise = loadStripe("pk_test_51Q2DiyHB9Jej2CgzeyBT0Mh7iFaN7oOBZ2IUrOX0jtsCmLyZcNu3a2ESysNhTzGOTn0d4Ha04mKOSsEnn7qBIMo000DX1UUK28");
     const {clientSecret} = useParams();
-    const [order, setOrder] = useState<OrderItemDapperRow[] | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-
-    useEffect(() => {
-        if(!clientSecret) return;
-
-        const fetchOrder = async () => {        
-            const orderDTO : OrderItemDapperRow[] = await agent.Order.getByClientSecret(clientSecret);
-            setOrder(prev => orderDTO);
-            setLoading(false);
-        }
-        fetchOrder();
-    }, [clientSecret]);
+    const {basket} = useAppSelector(state => state.basket);
 
     return (
         <>
-            {
-                loading ?
-                <Loading message="Loading..." />
-                :
-                <>
-                    <h2 style={{fontSize: '1.8rem', fontStyle: 'italic', letterSpacing: '1px', wordSpacing: '1px', textAlign: 'center', marginTop: '2vh', color: '#191970'}} >Check out:</h2>                
-                    <Style>
-                        <div>
-                            <Elements options={{ clientSecret }} stripe={stripePromise}>
-                                <CheckOut/>
-                            </Elements>
-                            <IMG/>
-                        </div>
+            <h2 style={{fontSize: '1.8rem', fontStyle: 'italic', letterSpacing: '1px', wordSpacing: '1px', textAlign: 'center', marginTop: '2vh', color: '#191970'}} >Check out:</h2>                
+            <Style>
+                <div>
+                    <Elements options={{ clientSecret }} stripe={stripePromise}>
+                        <CheckOut/>
+                    </Elements>
+                    <IMG/>
+                </div>
 
-                        <StyleOrder>
-                            <h3>Items Detail:</h3>
-                            <DataTable 
-                                columns={columns}
-                                data={order!}
-                                isCrudMode={false}
-                            />
-                        </StyleOrder>
-                    </Style>
-                </>
-            }
+                <StyleOrder>
+                    <h3>Items:</h3>
+                    <DataTable 
+                        columns={columns}
+                        data={basket?.items!}
+                        isCrudMode={false}
+                    />
+                </StyleOrder>
+            </Style>
         </>
     )
 }

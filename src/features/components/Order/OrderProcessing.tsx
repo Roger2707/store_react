@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import agent from "../../../app/api/agent";
-import { OrderResponseDTO } from "../../../app/models/Order";
 import { useAppDispatch } from "../../../app/store/configureStore";
-import { setNewClientSecret, updateCurrentOrder } from "../../../app/store/orderSlice";
+import { setNewClientSecret } from "../../../app/store/orderSlice";
 import { useNavigate } from "react-router-dom";
-import { getBasket } from "../../../app/store/basketSlice";
 
 interface Props {
     userAddressId : number;
@@ -20,12 +18,8 @@ export const OrderProcessing = ({userAddressId} : Props) => {
     const handleOrderProcess = async () => {
         setLoading(true);
         try {
-            const orderResponse : OrderResponseDTO = await agent.Order.create(userAddressId);    
-            setClientSecret(orderResponse.clientSecret);
-            dispatch(updateCurrentOrder({orderId: orderResponse.id, orderStatus: 1}));
-            
-            // Update Basket
-            dispatch(getBasket());
+            const {clientSecret} = await agent.Payment.createClientSecret(userAddressId);    
+            setClientSecret(clientSecret);
         } catch (error) {
             
         }

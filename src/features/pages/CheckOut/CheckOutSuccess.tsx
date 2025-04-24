@@ -1,15 +1,29 @@
-import { Link } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom"
 import styled from "styled-components"
-import { useAppSelector } from "../../../app/store/configureStore"
+import agent from "../../../app/api/agent";
+import { OrderItemDapperRow } from "../../../app/models/Order";
 
 export const CheckOutSuccess = () => {
-    const {currentOrder} = useAppSelector(state => state.order);
-    
+    const location = useLocation();
+    const clientSecret = location.state?.clientSecret;
+    const [orderItems, setOrderItems] = useState<OrderItemDapperRow[]>([]);
+
+    useEffect(() => {
+        const getOrder = async () => {
+            const result : OrderItemDapperRow[] = await agent.Order.getByClientSecret(clientSecret);
+            setOrderItems(prev => result);
+        }
+        if(clientSecret) {
+            getOrder();
+        }
+    }, [clientSecret])
+
     return (
         <Style>
             <div className="checkout-success-text" >
                 <h1>Thank you for shopping ! Your Order is successfully check out 😎😍😂</h1>
-                <p>Your Order : {currentOrder?.orderId} - {currentOrder?.orderStatus === 0 ? 'Pending' : 'Shipping'}</p>
+                <p>Your Order : {orderItems[0]?.id} - {orderItems[0]?.orderStatus}</p>
                 <p>See your Order Page: <Link to='/orders' children='Click Here'/></p>
                 <p>Home Page: <Link to='/' children='Click Here' /></p>
             </div>
