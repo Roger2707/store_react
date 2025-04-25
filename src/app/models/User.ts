@@ -24,7 +24,12 @@ export interface ShippingAdress {
 
 export interface UserAddressDTO {
     id: number; // primary key
-    shippingAddress: ShippingAdress;
+    city : string;
+    district: string;
+    ward: string;
+    streetAddress: string;
+    postalCode: string;
+    country: string;
     guidId: string;
 }
 

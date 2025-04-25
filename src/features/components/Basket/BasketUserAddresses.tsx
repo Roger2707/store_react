@@ -24,7 +24,7 @@ export const BasketUserAddresses = () => {
                 </Modal>
             )}
             {
-                user?.userAddresses[0].shippingAddress.city === null ? 
+                user?.userAddresses[0].city === null ? 
                     <button type='button' onClick={() => setIsOpenForm(true)}
                         style={{
                                 padding: '1vh 1.5vw', fontSize: '1rem', border: 'none', borderRadius: '2px',
@@ -41,7 +41,7 @@ export const BasketUserAddresses = () => {
                             <h3>Shipping Address</h3>
                             {
                                 user.userAddresses?.map(address => {
-                                    const {city, district, ward, streetAddress} = address.shippingAddress;
+                                    const {city, district, ward, streetAddress} = address;
                                     const addressInfo = `${streetAddress}, ${district}, ${ward}, ${city}`;
                                     return (
                                         <li key={address.id} className="address-item" >

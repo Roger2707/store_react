@@ -26,14 +26,12 @@ const defaultUserDTO : UserDTO = {
 
 const defaultUserAdressDTO : UserAddressDTO = {
     id: 0,
-    shippingAddress: {
-        city: '',
-        district: '',
-        ward: '',
-        streetAddress: '',
-        country: '',
-        postalCode: '',
-    },
+    city: '',
+    district: '',
+    ward: '',
+    streetAddress: '',
+    country: '',
+    postalCode: '',
     guidId: crypto.randomUUID(),
 }
 
@@ -129,6 +127,7 @@ export const UserProfile = () => {
         e.preventDefault();    
         try {
             setIsSubmitting(true);
+            
             let uploadResult : ImageUploadResult = await agent.Upload.uploadSingle(upload);
             if (!uploadResult) {
                 console.log('Update Image has some problems !');
@@ -140,6 +139,7 @@ export const UserProfile = () => {
                 , imageUrl: uploadResult.imageUrl || userDTO.imageUrl
                 , publicId: uploadResult.publicId || userDTO.publicId
             }
+            console.log(updateUserDTO);
             dispatch(updateUser(updateUserDTO));
         } catch (error) {
             console.log(error);
