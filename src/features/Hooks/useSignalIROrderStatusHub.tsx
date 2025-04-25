@@ -1,7 +1,7 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
 
-export const useSignalIROrderStatusHub = () => {
+export const useSignalIROrderStatusHub = (clientSecret: string) => {
     const [connection, setConnection] = useState<HubConnection | null>(null);
 
     useEffect(() => {
@@ -11,12 +11,13 @@ export const useSignalIROrderStatusHub = () => {
                 .withAutomaticReconnect()
                 .build();
 
-            conn.on('ReceiveOrderUpdate', (orderUpdateMessage) => {
-                console.log('Order Update:', orderUpdateMessage);
+            conn.on('OrderCreated', (orderUpdateMessage) => {
+                console.log('Order Message:', orderUpdateMessage);
             });
 
             try {
                 await conn.start();
+                await conn.invoke("JoinGroup", clientSecret); 
                 setConnection(conn);
             } catch (err) {
                 console.error("SignalR connection failed", err);

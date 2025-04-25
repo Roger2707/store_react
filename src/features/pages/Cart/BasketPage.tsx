@@ -35,7 +35,7 @@ const Styled = styled.div`
     h2 {
         font-size: 2rem;
         font-weight: 500;
-        color: #7F00FF;
+        color: #722F37;
         font-style: italic;
         letter-spacing: 1px;
         margin-bottom: 2vh;

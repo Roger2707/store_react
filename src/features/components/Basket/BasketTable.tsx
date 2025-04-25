@@ -10,15 +10,6 @@ interface Props {
 export const BasketTable = ({basket} : Props) => {
     return (
         <Table>
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Detail</th>
-                    <th>Quantity</th>
-                    <th>Sub Total</th>
-                    <th></th>
-                </tr>
-            </thead>
             <tbody>
                 {
                     basket && 
@@ -65,25 +56,9 @@ const Table = styled.table`
     border-collapse: collapse;
     height: fit-content;
 
-    thead {
-        tr {
-            th {
-                font-size: 1.2rem;
-                font-weight: 700;
-                text-transform: capitalize;
-                padding: 1vh 1vw;
-        
-                border-right: 1px solid #333;
-
-                &:last-child {
-                    border-right: none;
-                }
-            }
-        }
-    }
-
     tbody {
         width: 100%;
+        background-color: #FFF5EE;
 
         tr{
             td {
