@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useAppSelector } from "../../../app/store/configureStore";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { OrderProcessing } from "../Order/OrderProcessing";
+import { Modal } from "../../ui/Layout/Modal";
+import { ShippingAddressForm } from "../Order/ShippingAddressForm";
 
 export const BasketUserAddresses = () => {
     const {user} = useAppSelector(state => state.user);
     const {basket} = useAppSelector(state => state.basket);
     const selectedItem = basket?.items?.filter(item => item.status === true)?.length || 0;
     const [selectedAddress, setSelectedAddress] = useState<number>(0);
+    const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
 
     const handleChooseAddress = (value: number) => {
         setSelectedAddress(value);
@@ -16,63 +18,67 @@ export const BasketUserAddresses = () => {
 
     return (
         <>
+            {isOpenForm && (
+                <Modal title="Shipping Address" onSetOpen={setIsOpenForm} >
+                    <ShippingAddressForm />
+                </Modal>
+            )}
             {
-            user?.userAddresses[0].city === null ? 
-                <Link 
-                    to='/profile' 
-                    style={{
-                            padding: '1vh 1.5vw', fontSize: '1rem', border: 'none', borderRadius: '2px',
-                            backgroundColor: '#144153', color: 'white', opacity: '0.8', textDecoration: 'none',
-                            textTransform: 'uppercase',textAlign: 'center',width: 'fit-content',cursor: 'pointer',
-                            display: 'inline-block', marginTop: '2vh'
-                        }} >Add Shipping Address
-                </Link>
-            :
-            <Style>
-                {
-                    user?.userAddresses && user.userAddresses.length > 0 &&
-                    <ul className="address-list" >
-                        <h3>Shipping Address</h3>
-                        {
-                            user.userAddresses?.map(address => {
-                                const addressInfo = `${address.streetAddress}, ${address.district}, ${address.ward}, ${address.city}`;
-                                return (
-                                    <li key={address.id} className="address-item" >
-                                        <input  type="radio" value={address.id} name="shippingAddress" 
-                                                checked={selectedAddress === address.id}
-                                                onChange={(e) => handleChooseAddress(address.id)} 
-                                        /> <span>{addressInfo}</span>
-                                    </li>
-                                )
-                            })
-                        }
-                        <>
+                user?.userAddresses[0].shippingAddress.city === null ? 
+                    <button type='button' onClick={() => setIsOpenForm(true)}
+                        style={{
+                                padding: '1vh 1.5vw', fontSize: '1rem', border: 'none', borderRadius: '2px',
+                                backgroundColor: '#144153', color: 'white', opacity: '0.8', textDecoration: 'none',
+                                textTransform: 'uppercase',textAlign: 'center',width: 'fit-content',cursor: 'pointer',
+                                display: 'inline-block', marginTop: '2vh'
+                            }} >Add Shipping Address
+                    </button>
+                :
+                <Style>
+                    {
+                        user?.userAddresses && user.userAddresses.length > 0 &&
+                        <ul className="address-list" >
+                            <h3>Shipping Address</h3>
                             {
-                                selectedAddress <= 0 || selectedItem < 0 ?
-                                <Link 
-                                    to='/profile' 
-                                    style={{
-                                            padding: '1vh 1.5vw', fontSize: '1rem', border: 'none', borderRadius: '2px',
-                                            backgroundColor: '#144153', color: 'white', opacity: '0.8', textDecoration: 'none',
-                                            textTransform: 'uppercase',textAlign: 'center',width: 'fit-content',cursor: 'pointer',
-                                            display: 'inline-block', marginTop: '2vh'
-                                        }} >Use Another Shipping Address
-                                </Link>
-
-                                : ''
+                                user.userAddresses?.map(address => {
+                                    const {city, district, ward, streetAddress} = address.shippingAddress;
+                                    const addressInfo = `${streetAddress}, ${district}, ${ward}, ${city}`;
+                                    return (
+                                        <li key={address.id} className="address-item" >
+                                            <input  type="radio" value={address.id} name="shippingAddress" 
+                                                    checked={selectedAddress === address.id}
+                                                    onChange={(e) => handleChooseAddress(address.id)} 
+                                            /> <span>{addressInfo}</span>
+                                        </li>
+                                    )
+                                })
                             }
-                        </>
-                    </ul>
-                }
-                {
-                    selectedAddress > 0 && selectedItem > 0 &&
-                    (
-                        <div className="btn-order-container" >                
-                            <OrderProcessing userAddressId = {selectedAddress} />
-                        </div>
-                    )
-                }
-            </Style>
+                            <>
+                                {
+                                    selectedAddress <= 0 || selectedItem < 0 ?
+                                    <button type='button' onClick={() => setIsOpenForm(true)}
+                                        style={{
+                                                padding: '1vh 1.5vw', fontSize: '1rem', border: 'none', borderRadius: '2px',
+                                                backgroundColor: '#144153', color: 'white', opacity: '0.8', textDecoration: 'none',
+                                                textTransform: 'uppercase',textAlign: 'center',width: 'fit-content',cursor: 'pointer',
+                                                display: 'inline-block', marginTop: '2vh'
+                                            }} >Use Another Shipping Address
+                                    </button>
+
+                                    : ''
+                                }
+                            </>
+                        </ul>
+                    }
+                    {
+                        selectedAddress > 0 && selectedItem > 0 &&
+                        (
+                            <div className="btn-order-container" >                
+                                <OrderProcessing userAddressId = {selectedAddress} />
+                            </div>
+                        )
+                    }
+                </Style>
             }
         </>
     )

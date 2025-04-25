@@ -13,16 +13,18 @@ export interface UserDTO {
     userAddresses: UserAddressDTO[];
 }
 
-export interface UserAddressDTO {
-    id: number; // primary key
-
+export interface ShippingAdress {
     city : string;
     district: string;
     ward: string;
     streetAddress: string;
     postalCode: string;
     country: string;
+}
 
+export interface UserAddressDTO {
+    id: number; // primary key
+    shippingAddress: ShippingAdress;
     guidId: string;
 }
 

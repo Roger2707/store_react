@@ -54,10 +54,10 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
             }
         }
 
-        const cityCode = cities.find(c => c.title === userAddress.city)?.value;
+        const cityCode = cities.find(c => c.title === userAddress.shippingAddress.city)?.value;
         cityCode && fetchDistricts(+cityCode);
 
-    }, [cities, userAddress.city]);
+    }, [cities, userAddress.shippingAddress.city]);
 
     useEffect(() => {
         async function fetchWards(districtCode: number) {
@@ -76,10 +76,10 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
             }
         }
 
-        const districtCode = districts.find(c => c.title === userAddress.district)?.value;
+        const districtCode = districts.find(c => c.title === userAddress.shippingAddress.district)?.value;
         districtCode && fetchWards(+districtCode);
 
-    }, [districts, userAddress.district]);
+    }, [districts, userAddress.shippingAddress.district]);
     
     const handleGetDataChange = (e: any, key: string) => {
         let newValue = e.target.value;
@@ -132,31 +132,31 @@ export const UserAddressRow = ({userAddress, onSetUser, indexRow, onAddRow, onRe
             <Dropdown 
                 field="city" 
                 data={cities} 
-                currentSelectedValue={cities.find(c => c.title === userAddress.city)?.value} 
+                currentSelectedValue={cities.find(c => c.title === userAddress.shippingAddress.city)?.value} 
                 onGetDataChange={e => handleGetDataChange(e, 'city')}
             />
 
             <Dropdown 
                 field="district" 
                 data={districts} 
-                currentSelectedValue={districts.find(c => c.title === userAddress.district)?.value} 
+                currentSelectedValue={districts.find(c => c.title === userAddress.shippingAddress.district)?.value} 
                 onGetDataChange={e => handleGetDataChange(e, 'district')}
             />
 
             <Dropdown 
                 field="ward" 
                 data={wards} 
-                currentSelectedValue={wards.find(c => c.title === userAddress.ward)?.value} 
+                currentSelectedValue={wards.find(c => c.title === userAddress.shippingAddress.ward)?.value} 
                 onGetDataChange={e => handleGetDataChange(e, 'ward')}
             />
 
-            <Input id='streetAddress' value={userAddress.streetAddress || ''} placeholder="Street..." type="text" 
+            <Input id='streetAddress' value={userAddress.shippingAddress.streetAddress || ''} placeholder="Street..." type="text" 
                 onGetDataChange={(e) => handleGetDataChange(e, 'streetAddress')} 
             />            
-            <Input id='postalCode' value={userAddress.postalCode || ''} placeholder="Postal Code City..." type="text" 
+            <Input id='postalCode' value={userAddress.shippingAddress.postalCode || ''} placeholder="Postal Code City..." type="text" 
                 onGetDataChange={(e) => handleGetDataChange(e, 'postalCode')} 
             />            
-            <Input id='country' value={userAddress.country || ''} placeholder="Country..." type="text" 
+            <Input id='country' value={userAddress.shippingAddress.country || ''} placeholder="Country..." type="text" 
                 onGetDataChange={(e) => handleGetDataChange(e, 'country')} 
             />
         </Row>

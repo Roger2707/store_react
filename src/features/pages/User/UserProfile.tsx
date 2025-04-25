@@ -26,13 +26,14 @@ const defaultUserDTO : UserDTO = {
 
 const defaultUserAdressDTO : UserAddressDTO = {
     id: 0,
-    city: '',
-    district: '',
-    ward: '',
-    streetAddress: '',
-    country: '',
-    postalCode: '',
-
+    shippingAddress: {
+        city: '',
+        district: '',
+        ward: '',
+        streetAddress: '',
+        country: '',
+        postalCode: '',
+    },
     guidId: crypto.randomUUID(),
 }
 
@@ -176,20 +177,6 @@ export const UserProfile = () => {
                     <h3>Shipping Address Details:</h3>
                     <div className="user_address-details" >
                     {
-                        // userDTO?.userAddresses ?
-                        // userDTO?.userAddresses?.map((address, index) => {
-                        //     return (
-                        //         <UserAddressRow key={index} userAddress={address} 
-                        //             indexRow={index} onSetUser={setUserDTO}
-                        //             onAddRow={handleAddRow} onRemoveRow={handleRemoveRow}
-                        //         />
-                        //     )
-                        // })
-                        // :
-                        // <UserAddressRow userAddress={defaultUserAdressDTO} 
-                        //     indexRow={0} onSetUser={setUserDTO}
-                        //     onAddRow={handleAddRow} onRemoveRow={handleRemoveRow}
-                        // />
                         userDTO?.userAddresses?.map((address, index) => {
                             return (
                                 <UserAddressRow key={index} userAddress={address} 
