@@ -153,11 +153,11 @@ const OrderTableStyle = styled.table `
                     border: none;
                     outline: none;
                     font-size: 0.8rem;
+                    min-width: 6vw;
                 }
 
                 &:last-child {
                     button {
-                        min-width: 5vw;
                         opacity: 0.8;
 
                         &:last-child {

@@ -1,12 +1,13 @@
 import { Link, Navigate, useLocation } from "react-router-dom"
 import styled from "styled-components"
+import { OrderStatusSignal } from "../../../app/models/Order";
 
 
 export const CheckOutSuccess = () => {
     const location = useLocation();
-    const orderUpdateMessage = location.state?.orderUpdateMessage;
+    const orderStatusResponse : OrderStatusSignal = location.state?.response;
 
-    if (!orderUpdateMessage) {
+    if (!orderStatusResponse) {
         return <Navigate to="/" replace />;
     }
 
@@ -14,7 +15,7 @@ export const CheckOutSuccess = () => {
         <Style>
             <div className="checkout-success-text" >
                 <h1>Thank you for shopping ! Your Order is successfully check out 😎😍😂</h1>
-                <p>Order Id: {orderUpdateMessage?.orderId} --- {orderUpdateMessage?.status}</p>
+                <p>Order Id: {orderStatusResponse?.orderId} --- {orderStatusResponse?.status === 0 ? 'Pending' : ''}</p>
                 <p>Check your Orders: <Link to='/orders' children='Click Here'/></p>
                 <p>Home Page: <Link to='/' children='Click Here' /></p>
             </div>

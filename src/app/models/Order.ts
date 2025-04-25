@@ -42,3 +42,8 @@ export interface OrderItemDapperRow {
     subTotal: number
     grandTotal: number
 }
+
+export interface OrderStatusSignal {
+    orderId: string
+    status: number
+}

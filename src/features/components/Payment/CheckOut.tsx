@@ -6,6 +6,7 @@ import styled from "styled-components"
 import { icons } from "../../../app/utils/helper";
 import { useAppSelector } from "../../../app/store/configureStore";
 import { useSignalIROrderStatusHub } from "../../Hooks/useSignalIROrderStatusHub";
+import { OrderStatusSignal } from "../../../app/models/Order";
 
 export const CheckOut = () => {
     const stripe = useStripe();
@@ -16,20 +17,28 @@ export const CheckOut = () => {
     const {clientSecret} = useAppSelector(state => state.order);
     const connection = useSignalIROrderStatusHub(clientSecret);
 
-    useEffect(() => {
-        if (!connection || !clientSecret) return;
+    console.log(loading);
+    console.log(connection);
     
-        const handleOrderUpdate = (orderUpdateMessage: any) => {
-          if (orderUpdateMessage?.status === "Pending") {
+    
+
+    useEffect(() => {
+        if (!connection) return;
+    
+        const handleOrderUpdate = (response: OrderStatusSignal) => {
+            setLoading(false);
+
+          if (response?.status === 0) {
             toast.success('Order created successfully via SignalR!', { icon: icons.success });
-            navigate('/checkout-success', { state: { orderUpdateMessage } });
+            navigate('/checkout-success', { state: {response} });
           }
         };
         connection.on("OrderCreated", handleOrderUpdate); 
+
         return () => {
             connection.off("OrderCreated", handleOrderUpdate);
         };
-      }, [connection, clientSecret, navigate]);
+      }, [connection, navigate]);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,17 +54,18 @@ export const CheckOut = () => {
         });
 
         if (error) {
+            setLoading(false);
             setMessage(error.message || "Check out failed !");
             toast.error(error.message, {icon: icons.error});
         } 
         else if (paymentIntent?.status === "succeeded") {
             setMessage("Waiting for order creation...");
-            toast.success("Payment confirmed. Waiting for order...");
+            toast.success("Payment confirmed. Waiting for order...", { icon: icons.success });
         } 
         else {
+            setLoading(false);
             setMessage("Check out Incompleted !");
         }
-        setLoading(false);
     };
 
     return (
@@ -83,7 +93,7 @@ const Style = styled.div<{ disabled: boolean }>`
             cursor: pointer;
             opacity: 0.6;
             color: #fff;
-            background-color: palevioletred;
+            background-color: #FF4433;
             font-size: 1.2rem;
             border-radius: 3px;
 
