@@ -13,13 +13,14 @@ export interface UserDTO {
     userAddresses: UserAddressDTO[];
 }
 
-export interface ShippingAdress {
+export interface ShippingAdressDTO {
     city : string;
     district: string;
     ward: string;
     streetAddress: string;
     postalCode: string;
     country: string;
+    isSaveAddress: boolean;
 }
 
 export interface UserAddressDTO {

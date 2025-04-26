@@ -4,22 +4,38 @@ import styled from "styled-components";
 import { OrderProcessing } from "../Order/OrderProcessing";
 import { Modal } from "../../ui/Layout/Modal";
 import { ShippingAddressForm } from "../Order/ShippingAddressForm";
+import { ShippingAdressDTO } from "../../../app/models/User";
 
 export const BasketUserAddresses = () => {
     const {user} = useAppSelector(state => state.user);
     const {basket} = useAppSelector(state => state.basket);
     const selectedItem = basket?.items?.filter(item => item.status === true)?.length || 0;
+
     const [selectedAddress, setSelectedAddress] = useState<number>(0);
+    const [selectedAddressDTO, setSelectedAddressDTO] = useState<ShippingAdressDTO>();
     const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
 
     const handleChooseAddress = (value: number) => {
         setSelectedAddress(value);
+        const address = user?.userAddresses.find(a => a.id === value);
+        if(address) {
+            let addressDTO : ShippingAdressDTO = {
+                city: address.city,
+                district: address.district,
+                ward: address.ward,
+                streetAddress: address.streetAddress,
+                postalCode: address.postalCode,
+                country: address.country,
+                isSaveAddress: false
+            }
+            setSelectedAddressDTO(addressDTO);
+        }
     }
 
     return (
         <>
             {isOpenForm && (
-                <Modal title="Shipping Address" onSetOpen={setIsOpenForm} >
+                <Modal title="Shipping Address" onSetOpen={setIsOpenForm} height="39%" >
                     <ShippingAddressForm />
                 </Modal>
             )}
@@ -71,10 +87,10 @@ export const BasketUserAddresses = () => {
                         </ul>
                     }
                     {
-                        selectedAddress > 0 && selectedItem > 0 &&
+                        selectedAddress > 0 && selectedItem > 0 && selectedAddressDTO &&
                         (
                             <div className="btn-order-container" >                
-                                <OrderProcessing userAddressId = {selectedAddress} />
+                                <OrderProcessing shippingAddress={selectedAddressDTO} />
                             </div>
                         )
                     }

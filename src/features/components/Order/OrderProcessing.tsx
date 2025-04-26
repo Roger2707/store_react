@@ -4,12 +4,13 @@ import agent from "../../../app/api/agent";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { setNewClientSecret } from "../../../app/store/orderSlice";
 import { useNavigate } from "react-router-dom";
+import { ShippingAdressDTO } from "../../../app/models/User";
 
 interface Props {
-    userAddressId : number;
+    shippingAddress : ShippingAdressDTO;
 }
 
-export const OrderProcessing = ({userAddressId} : Props) => {
+export const OrderProcessing = ({shippingAddress} : Props) => {
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
@@ -17,8 +18,8 @@ export const OrderProcessing = ({userAddressId} : Props) => {
 
     const handleOrderProcess = async () => {
         setLoading(true);
-        try {
-            const {clientSecret} = await agent.Payment.createClientSecret(userAddressId);    
+        try {       
+            const {clientSecret} = await agent.Payment.createClientSecret(shippingAddress);
             setClientSecret(clientSecret);
         } catch (error) {
             

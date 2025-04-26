@@ -26,9 +26,6 @@ export const Modal = ({title, onSetOpen, children, width, height} : Props) => {
                 <div className="modal_content" >
                     {children}
                 </div>
-                <div className="modal_footer" >
-
-                </div>
             </div>
         </Style>
     )
@@ -55,7 +52,6 @@ const Style = styled.div`
 
         border-radius: 10px;
         overflow: hidden;
-        min-height: 50%;
 
         .modal_header {
             display: flex;
@@ -89,10 +85,6 @@ const Style = styled.div`
         
         .modal_content {
             margin-top: 3vh;
-        }
-
-        .modal_footer {
-
         }
     }
 

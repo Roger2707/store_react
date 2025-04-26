@@ -5,7 +5,7 @@ import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
 import { Brand } from "../models/Brand";
-import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, SignInRequest, SignUpRequest, UserDTO } from "../models/User";
+import { ChangePasswordDTO, ForgetPasswordDTO, GoogleAuthRequest, ResetPasswordDTO, ShippingAdressDTO, SignInRequest, SignUpRequest, UserDTO } from "../models/User";
 import { store } from "../store/configureStore";
 import { ImageUploadDTO, SingleImageUploadDTO } from "../models/ImageUpload";
 import { Warehouse, WarehouseSearch } from "../models/Warehouse";
@@ -197,7 +197,7 @@ const Order = {
 }
 
 const Payment = {
-    createClientSecret : (userAddressId : number) => requests.post(`payments/create-client-secret?userAddressId=${userAddressId}`, {}),
+    createClientSecret : (shippingAdressDTO : ShippingAdressDTO) => requests.post(`payments/create-client-secret`, shippingAdressDTO),
 }
 
 const Warehouses = {
