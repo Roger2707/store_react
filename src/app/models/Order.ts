@@ -10,13 +10,7 @@ export interface OrderDTO {
     grandTotal: number;
     clientSecret: string;
     items: OrderItemDTO[];
-    userAddress : {
-        city: string;
-        district: string;
-        ward: string;
-        streetAddress: string;
-        country: string;
-    }
+    shippingAddress: ShippingAdress;
 }
 
 export interface OrderItemDTO {
@@ -28,22 +22,16 @@ export interface OrderItemDTO {
     subTotal: number;
 }
 
-export interface OrderItemDapperRow {
-    id: string
-    orderDate: Date
-    orderStatus: string
-    deliveryFee: number
-    clientSecret: string
-    orderItemId: number
-    productDetailId: string
-    productName: string
-    productImageUrl: string
-    quantity: number
-    subTotal: number
-    grandTotal: number
-}
-
 export interface OrderStatusSignal {
     orderId: string
     status: number
+}
+
+export interface ShippingAdress {
+    city : string;
+    district: string;
+    ward: string;
+    streetAddress: string;
+    postalCode: string;
+    country: string;
 }

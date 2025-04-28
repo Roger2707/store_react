@@ -17,16 +17,13 @@ export const CheckOut = () => {
     const {clientSecret} = useAppSelector(state => state.order);
     const connection = useSignalIROrderStatusHub(clientSecret);
 
-    console.log(loading);
-    console.log(connection);
-    
-    
-
     useEffect(() => {
         if (!connection) return;
     
         const handleOrderUpdate = (response: OrderStatusSignal) => {
             setLoading(false);
+            console.log(response);
+            
 
           if (response?.status === 0) {
             toast.success('Order created successfully via SignalR!', { icon: icons.success });

@@ -192,8 +192,6 @@ const Basket = {
 
 const Order = {
     getOrdersOwn : () => requests.get(`orders/get-orders-of-user`),
-    getByOrderId : (orderId: string) => requests.get(`orders/get-order?orderId=${orderId}`),
-    getByClientSecret: (clientSecret: string) => requests.get(`orders/get-order-by-client-secret?clientSecret=${clientSecret}`),
 }
 
 const Payment = {

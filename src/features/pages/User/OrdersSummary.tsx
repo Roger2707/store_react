@@ -19,6 +19,8 @@ export const OrdersSummary = () => {
                 setIsLoading(true);
                 const data = await agent.Order.getOrdersOwn();
                 setOrders(data);
+                console.log(data);
+                
             } catch (error) {
                 console.log(error);
             } finally {

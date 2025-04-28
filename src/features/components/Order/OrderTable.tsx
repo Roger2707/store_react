@@ -46,10 +46,10 @@ export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
                                     </td>
                                     <td>{order.orderDate && order.orderDate.toString().split('T')[0]}</td>
                                     <td style={{ whiteSpace: "pre-line" }}>
-                                        <span className="order-address" >{order.userAddress.streetAddress}</span>
-                                        <span className="order-address">{order.userAddress.district}</span>
-                                        <span className="order-address">{order.userAddress.ward}</span>
-                                        <span className="order-address">{order.userAddress.city}</span>
+                                        <span className="order-address" >{order.shippingAddress.streetAddress}</span>
+                                        <span className="order-address">{order.shippingAddress.district}</span>
+                                        <span className="order-address">{order.shippingAddress.ward}</span>
+                                        <span className="order-address">{order.shippingAddress.city}</span>
                                     </td>
                                     <td><span style={{color: 'red'}} >{order.grandTotal.toLocaleString('vi-VN')} VND</span></td>
                                     <td>
