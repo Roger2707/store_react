@@ -1,27 +1,27 @@
-import { Product } from "../../../app/models/Product"
+import { ProductDetailDisplayDTO } from "../../../app/models/Product"
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { ProductRatings } from "../Rating/ProductRatings";
 
 interface Props {
-    product: Product;
+    product: ProductDetailDisplayDTO;
 }
 
 export const ProductItem = ({product} : Props) => {
-    const {id, name, imageUrl, details, stars} = product;
+    const { productId, productName, imageUrl, price, discountPrice, stars} = product;
 
     return (
         <ProductItemStyle>
-            <Link to={`${id}`} className="product-item" >
+            <Link to={`${productId}`} className="product-item" >
                 <img src={imageUrl.split(',')[0]} alt="img" />
                 <div className="product-item-detail" >
                     <div className="product-heading">
-                        <p>{name}</p>
+                        <p>{productName}</p>
                     </div>
                     <div className="product-desc">
                         <div className="product-prices" >
-                            <p className={`product-price ${details[0].price !== 0 && 'price-line'}`} >{details[0].price.toLocaleString('vi-VN')}</p>
-                            {details[0].discountPrice !== 0 && <p className="product-discount">{details[0].discountPrice.toLocaleString('vi-VN')}</p>}
+                            <p className={`product-price ${price !== 0 && 'price-line'}`} >{price.toLocaleString('vi-VN')}</p>
+                            {discountPrice !== 0 && <p className="product-discount">{discountPrice.toLocaleString('vi-VN')}</p>}
                         </div>
 
                         <ProductRatings stars = {stars} />

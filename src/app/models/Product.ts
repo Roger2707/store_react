@@ -1,3 +1,18 @@
+export interface ProductDetailDisplayDTO {
+    productId: number
+    productDetailId: string
+    productName: string
+    imageUrl: string
+    color: string
+    price: number
+    discountPrice: number
+    categoryName: string
+    brandName: string
+    brandCountry: string
+    created: Date
+    stars: number
+}
+
 export interface Product {
     id: string;
     name: string;

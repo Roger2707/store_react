@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 export const columns = [
-    { key: 'id', title: 'Id'}, 
-    { key: 'name', title: 'Name'},  
+    { key: 'productId', title: 'ProductId'}, 
+    { key: 'productName', title: 'Name'},  
     { 
         key: 'imageUrl',
         title: 'Photo', 
@@ -23,4 +23,5 @@ export const columns = [
     { key: 'categoryName', title: 'Category'},
     { key: 'brandName', title: 'Brand'},
     { key: 'brandCountry', title: 'Origin'},
+    { key: 'stars', title: 'Stars'},
 ];

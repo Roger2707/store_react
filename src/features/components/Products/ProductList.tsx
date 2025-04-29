@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { Product } from "../../../app/models/Product"
+import { ProductDetailDisplayDTO } from "../../../app/models/Product"
 import { ProductItem } from "./ProductItem";
 import { EmptyData } from "../../ui/Layout/EmptyData";
 
 interface Props {
-    products: Product[] | undefined;
+    products: ProductDetailDisplayDTO[] | undefined;
 }
 
 export const ProductList = ({products} : Props) => {     
@@ -16,7 +16,7 @@ export const ProductList = ({products} : Props) => {
             :
             <ProductGridContainerStyle>
                 {products.map(p => {
-                    return <ProductItem key={p.id} product={p}/>
+                    return <ProductItem key={p.productDetailId} product={p}/>
                 })}
             </ProductGridContainerStyle>
         }
