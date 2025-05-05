@@ -124,6 +124,7 @@ const Upload = {
 
 const Product = {
     list: (params: ProductParams) => requests.get('products/get-products-page', params),
+    bestSeller: () => requests.get('products/get-products-best-seller'),
     singleDTO: (id: string) => requests.get(`products/get-product-dto?id=${id}`),
 
     detail: (id: string) => requests.get(`products/get-product-single-detail?productDetailId=${id}`),

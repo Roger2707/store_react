@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from './app/store/configureStore';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchCurrentUser } from './app/store/userSlice';
 import { Loading } from './features/ui/Common/Loading';
-import React from 'react';
 import { getBasket } from './app/store/basketSlice';
 import { Container } from './features/ui/Layout/Container';
+import { Footer } from './features/ui/Layout/Footer';
 
 function App() {
   const location = useLocation();
@@ -54,7 +54,7 @@ function App() {
               </Container>
             )
           }
-          {/* <Footer/> */}
+          <Footer/>
         </>
       }
       </AppStyle>

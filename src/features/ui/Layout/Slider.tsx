@@ -64,15 +64,15 @@ export const Slider = ({data} : Props) => {
 }
 
 const SliderStyle = styled.div `
+    position: relative;
     width: 100vw;
     height: 70vh;
-    overflow: hidden;
-
     .slide-container {
-        width: 300vw;
+        width: 296%;
         height: 100%;
         display: flex;
         background-color: rgba(0,0,0,0.6);
+        padding: 1vh;
         
         .slide-item {
             width: 100%;
@@ -100,7 +100,7 @@ const SliderStyle = styled.div `
 
     .slide-buttons {
         position: absolute;
-        top: 40%;
+        top: 50%;
         left: 0;
 
         width: 100%;
@@ -113,13 +113,22 @@ const SliderStyle = styled.div `
         z-index: 5;
 
         button {
-            padding: 5px 10px;
+            padding: 1vh 0.8vw;
             border-radius: 50%;
+            border: none;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: cornflowerblue;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
 
             &:hover {
-                cursor: pointer;
-                transform: scale(1.05);
-            }
+                background-color: #fff;
+                color: cornflowerblue;
+            }   
         }
     }
 
