@@ -6,6 +6,7 @@ export interface UserDTO {
     publicId: string;
     dob: Date;
     phoneNumber: string;
+    provider: string;
     
     token: string;
     basketId?: number;

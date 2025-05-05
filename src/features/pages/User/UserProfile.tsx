@@ -17,6 +17,7 @@ const defaultUserDTO : UserDTO = {
     token: '',
     role: '',
     publicId: '',
+    provider: 'System',
     dob: new Date(),
     phoneNumber: '',
     imageUrl: '',
@@ -190,9 +191,14 @@ export const UserProfile = () => {
                 </div>
 
                 <div className="form_footer" >
-                    <Link type="button" to='/change-password' >
-                        Change Password
-                    </Link>
+                    {
+                        userDTO.provider === 'System' &&
+                        (
+                            <Link type="button" to='/change-password' >
+                                Change Password
+                            </Link>
+                        )
+                    }
                     <Link type="button" to='/orders' >
                         Show Orders
                     </Link>

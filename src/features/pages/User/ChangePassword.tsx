@@ -1,9 +1,10 @@
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChangePasswordDTO } from "../../../app/models/User"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
 import { changePassword } from "../../../app/store/userSlice"
+import { useNavigate } from "react-router-dom"
 
 const changePwImage = require('../../assets/images/change-pw.png');
 const IMG = styled.div`
@@ -18,6 +19,13 @@ const IMG = styled.div`
 `
 
 export const ChangePassword = () => {
+    const {user} = useAppSelector(state => state.user);
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        if(!user) return;
+        if(user?.provider !== 'System') navigate('/');
+    }, [user, navigate])
 
     const [changePasswordModel, setChangePasswordModel] = useState<ChangePasswordDTO>({
         currentPassword: '',
