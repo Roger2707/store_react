@@ -26,6 +26,10 @@ export const CategoryFilter = ({categoriesFilter, onSetCategoriesFilter}: Props)
         onSetCategoriesFilter(prev => ({...prev, filterByCategory: categoriesSelected.toString()}));
     }, [categoriesSelected, onSetCategoriesFilter])
 
+    useEffect(() => {
+        if(categoriesFilter === '') setCategoriesSelected([]);      
+    }, [categoriesFilter])
+    
     return(
         <Style className="filter_category-container" >
             <p>Categories</p>

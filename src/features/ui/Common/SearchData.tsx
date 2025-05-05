@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components"
 import { ProductParams } from "../../../app/models/Product";
 
@@ -9,16 +9,30 @@ interface Props {
 }
 
 export const SearchData = ({searchKey, onSetSearchKey, placeholder}: Props) => {
-    return(
+    const [inputValue, setInputValue] = useState(searchKey);
+
+    // debounce
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            onSetSearchKey(prev => ({ ...prev, searchBy: inputValue }));
+        }, 1500);
+        return () => clearTimeout(timeout); // cancelling timeOut if user keep on typing
+    }, [inputValue, onSetSearchKey]);
+
+    useEffect(() => {
+        if(searchKey === '') setInputValue('');
+    }, [searchKey])
+
+    return (
         <Style>
-            <input 
-                name='search' 
-                placeholder={placeholder} 
-                value={searchKey} 
-                onChange={(e) => onSetSearchKey(prev => ({...prev, searchBy: e.target.value}))} 
+            <input
+                name='search'
+                placeholder={placeholder}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
             />
         </Style>
-    )
+    );
 }
 
 const Style = styled.div `

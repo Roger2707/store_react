@@ -18,14 +18,5 @@ export const useProducts = (params: ProductParams) => {
     return useQuery<PaginationData<ProductDetailDisplayDTO>>({
         queryKey: ['products', params],
         queryFn: () => fetchProductsAsync(params),
-        //keepPreviousData: true,
-        // staleTime: Infinity, 
-        initialData: {
-            dataInCurrentPage: [],
-            currentPage: 1,
-            rowInPage: 0,
-            totalRow: 0,
-            totalPage: 0,
-        } as PaginationData<ProductDetailDisplayDTO>,
     });
 };

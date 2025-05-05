@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ProductList } from "../../components/Products/ProductList";
 import { Pagination } from "../../ui/Common/Pagination";
-import { Loading } from "../../ui/Common/Loading";
 import { SearchData } from "../../ui/Common/SearchData";
 import { SortData } from "../../ui/Common/SortData";
 import { ProductParams } from "../../../app/models/Product";
@@ -10,17 +9,18 @@ import { useProducts } from "../../Hooks/useProducts";
 import { CategoryFilter } from "../../components/Products/CategoryFilter";
 import { BrandsFilter } from "../../components/Products/BrandsFilter";
 import { sortOptions } from "../../../app/utils/helper";
+import { ProductSkeleton } from "../../components/Products/ProductSkeleton";
 
 export const ProductPage = () => {
-    const scrolltargetRef = useRef<HTMLDivElement>(null);
-    const [productParams, setProductParams] = useState<ProductParams>({
+    const defaultProductParam : ProductParams = {
         currentPage: 1,
         filterByBrand: '',
         filterByCategory: '',
         orderBy: '',
         searchBy: ''
-    });
-
+    }
+    const scrolltargetRef = useRef<HTMLDivElement>(null);
+    const [productParams, setProductParams] = useState<ProductParams>(defaultProductParam);
     const { data, isLoading, isError } = useProducts(productParams);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export const ProductPage = () => {
             scrolltargetRef.current.scrollIntoView({ behavior: 'smooth' });
         }     
     }, [data]);
-
+    
     return (
         <>
             <ProductsStyle ref={scrolltargetRef} >
@@ -42,6 +42,10 @@ export const ProductPage = () => {
                         brandsFilter={productParams.filterByBrand}
                         onSetBrandsFilter={setProductParams}
                     />
+
+                    <div className="clear-container" >
+                        <button onClick={() => setProductParams(defaultProductParam)} >Clear Filter</button>
+                    </div>
 
                 </div>
                 <div className="products-display" >
@@ -59,13 +63,22 @@ export const ProductPage = () => {
                         />
                     </div>
                     {
-                        !isLoading ? 
-                        <div className="products-content" >
-                            <ProductList products={data?.dataInCurrentPage} /> 
-                            <Pagination totalPage={data?.totalPage || 0} params={productParams} onSetParams={setProductParams}/>
-                        </div>            
-                        : 
-                        <Loading message="Loading Products ..."/>
+                        isLoading || !data ? (
+                            <div className="product-skeleton-container">
+                                {Array.from({ length: 10 }).map((_, i) => (
+                                    <ProductSkeleton key={i} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="products-content">
+                                <ProductList products={data?.dataInCurrentPage} />
+                                <Pagination
+                                    totalPage={data?.totalPage || 0}
+                                    params={productParams}
+                                    onSetParams={setProductParams}
+                                />
+                            </div>
+                        )
                     }
                     {isError && <p>Error fetching products ❌</p>}
                 </div>
@@ -87,6 +100,28 @@ const ProductsStyle = styled.div `
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        .clear-container {
+            position: relative;
+            top: 39%;
+
+            button {
+                padding: 1vh 1vw;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                background-color: #6363f7;
+                color: white;
+                border-radius: 3px;
+                transition: 0.2s;
+
+                &:hover {
+                    border: 1px solid #6363f7;
+                    background-color: transparent;
+                    color: #6363f7;
+                }
+            }
+        }
     }
 
     .products-display {
@@ -102,6 +137,14 @@ const ProductsStyle = styled.div `
         }
 
         .products-content {
+            padding: 30px 0px 0 50px;
+        }
+
+        .product-skeleton-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-column-gap: 2vw;
+            grid-row-gap: 3vh;
             padding: 30px 0px 0 50px;
         }
     }

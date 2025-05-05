@@ -26,6 +26,10 @@ export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
     useEffect(() => {
         onSetBrandsFilter(prev => ({...prev, filterByBrand: brandsSelected.toString()}))
     }, [brandsSelected, onSetBrandsFilter])
+
+        useEffect(() => {
+            if(brandsFilter === '') setBrandsSelected([]);      
+        }, [brandsFilter])
     
     return (
         <Style className="filter_brands-container" >

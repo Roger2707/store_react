@@ -51,6 +51,12 @@ const ProductItemStyle = styled.div `
 
         display: block;
         background-color: #ccc;
+        overflow: hidden;
+        transition: 0.5s;
+
+        &:hover {
+            transform: scale(110%);
+        }
     }
 
     .product-item-detail {
