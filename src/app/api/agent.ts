@@ -12,6 +12,7 @@ import { Warehouse, WarehouseSearch } from "../models/Warehouse";
 import { StockUpsertDTO } from "../models/Stock";
 import { BasketUpsertParam } from "../models/Basket";
 import { RatingDTO } from "../models/Rating";
+import { OrderUpdatStatusRequest } from "../models/Order";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
@@ -192,7 +193,9 @@ const Basket = {
 }
 
 const Order = {
+    getAllOrders : () => requests.get(`orders/get-orders`),
     getOrdersOwn : () => requests.get(`orders/get-orders-of-user`),
+    updateOrderStatus : (request: OrderUpdatStatusRequest) => requests.post(`orders/"update-order-status`, request),
 }
 
 const Payment = {

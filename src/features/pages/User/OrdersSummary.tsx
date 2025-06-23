@@ -42,7 +42,7 @@ export const OrdersSummary = () => {
             {isLoading && <Loading message='Loading orders ...' />}
             <h1>Orders Summary</h1>
             <div className="order-grid" >
-                <OrderTable orders={orders?.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} />
+                <OrderTable orders={orders?.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} isAdmin={false} />
                 <OrderDetail items={items} />
             </div>
             <div className="paging" >

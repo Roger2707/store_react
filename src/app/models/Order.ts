@@ -22,7 +22,7 @@ export interface OrderItemDTO {
     subTotal: number;
 }
 
-export interface OrderStatusSignal {
+export interface OrderUpdatStatusRequest {
     orderId: string
     status: number
 }

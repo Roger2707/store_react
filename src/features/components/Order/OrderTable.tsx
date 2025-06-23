@@ -1,14 +1,39 @@
 import styled from "styled-components"
-import { OrderDTO } from "../../../app/models/Order"
+import { OrderDTO, OrderUpdatStatusRequest } from "../../../app/models/Order"
 import { useState } from "react";
+import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
+import agent from "../../../app/api/agent";
 
 interface Props {
     orders: OrderDTO[] | null;
     onSetSelectedOrderId: any;
+    isAdmin: boolean;
 }
 
-export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
+export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
     const [orderId, setOrderId] = useState<string>('');
+    const orderStatusData : DropdownData[] = [
+        {
+            title: 'Created',
+            value: 0
+        },
+            {
+            title: 'Prepared',
+            value: 1
+        },
+        {
+            title: 'Shipping',
+            value: 2
+        },
+        {
+            title: 'Shipped',
+            value: 3
+        },
+        {
+            title: 'Completed',
+            value: 4
+        }
+    ];
 
     const handleShowOrderDetail = (orderId: string) => {
         setOrderId(orderId);
@@ -17,6 +42,20 @@ export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
 
     const handleRefundOrder = (orderId: string) => {
         
+    }
+
+    const handleUpdateOrderStatus = async (orderId: string, selectedValue: any) => {
+        try {
+            const request : OrderUpdatStatusRequest = {
+                orderId: orderId,
+                status: +selectedValue
+            }
+
+            await agent.Order.updateOrderStatus(request);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -59,7 +98,18 @@ export const OrderTable = ({orders, onSetSelectedOrderId}: Props) => {
                                     </td>
                                     <td>
                                         <button onClick={() => handleShowOrderDetail(order.id)}>More</button>
-                                        <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#0096FF'}} >Refund</button>
+                                        {!isAdmin && <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#0096FF'}} >Refund</button>}
+                                        {isAdmin && 
+                                            <select value={orderStatusData.find(d => d.title === order.status)?.value ?? -1} onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)} >
+                                                {orderStatusData.map((status, index) => {
+                                                    return (
+                                                        <option key={index} value={status.value} style={{backgroundColor: '#425e75' }}>
+                                                            {status.title}
+                                                        </option>
+                                                    )
+                                                })}
+                                            </select>   
+                                        }
                                     </td>
                                 </tr>
                             )

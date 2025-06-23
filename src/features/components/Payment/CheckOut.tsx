@@ -1,12 +1,9 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components"
 import { icons } from "../../../app/utils/helper";
-import { useAppSelector } from "../../../app/store/configureStore";
-import { useSignalIROrderStatusHub } from "../../Hooks/useSignalIROrderStatusHub";
-import { OrderStatusSignal } from "../../../app/models/Order";
 
 export const CheckOut = () => {
     const stripe = useStripe();
@@ -14,28 +11,6 @@ export const CheckOut = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const navigate = useNavigate();
-    const {clientSecret} = useAppSelector(state => state.order);
-    const connection = useSignalIROrderStatusHub(clientSecret);
-
-    useEffect(() => {
-        if (!connection) return;
-    
-        const handleOrderUpdate = (response: OrderStatusSignal) => {
-            setLoading(false);
-            console.log(response);
-            
-
-          if (response?.status === 0) {
-            toast.success('Order created successfully via SignalR!', { icon: icons.success });
-            navigate('/checkout-success', { state: {response} });
-          }
-        };
-        connection.on("OrderCreated", handleOrderUpdate); 
-
-        return () => {
-            connection.off("OrderCreated", handleOrderUpdate);
-        };
-      }, [connection, navigate]);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,7 +32,10 @@ export const CheckOut = () => {
         } 
         else if (paymentIntent?.status === "succeeded") {
             setMessage("Waiting for order creation...");
-            toast.success("Payment confirmed. Waiting for order...", { icon: icons.success });
+            toast.success("Payment confirmed !", { icon: icons.success });
+
+            // success -> navigate notification page
+            navigate('/checkout-success');
         } 
         else {
             setLoading(false);

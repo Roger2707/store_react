@@ -9,66 +9,70 @@ import { Loading } from './features/ui/Common/Loading';
 import { getBasket } from './app/store/basketSlice';
 import { Container } from './features/ui/Layout/Container';
 import { Footer } from './features/ui/Layout/Footer';
+import { useSignalIROrderStatusHub } from './features/Hooks/useSignalIROrderStatusHub';
 
 function App() {
-  const location = useLocation();
-  const dispatch = useAppDispatch();
-  const [loadingApp, setLoadingApp] = useState<boolean>(true);
-  const {user} = useAppSelector(state => state.user);
+    const location = useLocation();
+    const dispatch = useAppDispatch();
+    const [loadingApp, setLoadingApp] = useState<boolean>(true);
+    const {user} = useAppSelector(state => state.user);
 
-  const initApp = useCallback(async () => {
-    try {
-      await dispatch(fetchCurrentUser());
-    } catch (error) {
-      console.log(error);
-    }
-  }, [dispatch]);
+    const initApp = useCallback(async () => {
+      try {
+        await dispatch(fetchCurrentUser());
+      } catch (error) {
+        console.log(error);
+      }
+    }, [dispatch]);
 
-  useEffect(() => {
-    if (user?.basketId) {
-      dispatch(getBasket());
-    }
-  }, [user, dispatch]);
-  
-  useEffect(() => {
-      initApp().then(() => setLoadingApp(false));
-  }, [initApp]);
+    useEffect(() => {
+      if (user?.basketId) {
+        dispatch(getBasket());
+      }
+    }, [user, dispatch]);
+    
+    useEffect(() => {
+        initApp().then(() => setLoadingApp(false));
+    }, [initApp]);
 
-  return (
-    <AppStyle>
+    const token = user?.token ?? null;
+    useSignalIROrderStatusHub(token);
+
+    return (
+      <AppStyle>
       {
-        loadingApp ? <Loading message='Initializing App...' />
-        :
-        <>
-          {!location.pathname.includes('admin') && <Header/>}
-          {
-            location.pathname === '/' ?
-            <Home/>
-            :
-            (
-              location.pathname.includes('admin') ?
-              <Outlet/>
+          loadingApp ? <Loading message='Initializing App...' />
+          :
+          <>
+            {!location.pathname.includes('admin') && <Header/>}
+            {
+              location.pathname === '/' ?
+              <Home/>
               :
-              <Container>
-                  <Outlet />
-              </Container>
-            )
-          }
-          <Footer/>
-        </>
+              (
+                location.pathname.includes('admin') ?
+                <Outlet/>
+                :
+                <Container>
+                    <Outlet />
+                </Container>
+              )
+            }
+            <Footer/>
+          </>
       }
       </AppStyle>
-  );
+    );
 }
 
 const AppStyle = styled.div`
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-  width: 100%;
-  min-height: 100vh;
-  background-color: #e9e6ed;
-  overflow: hidden;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #e9e6ed;
+    overflow: hidden;
 `
 
 export default App;
