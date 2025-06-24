@@ -6,11 +6,13 @@ import { icons } from "../../app/utils/helper";
 export const useSignalIROrderStatusHub = (token: string | null) => {
     const [connection, setConnection] = useState<HubConnection | null>(null);
 
-    useEffect(() => {
+    useEffect(() => {        
         if (!token) return;
 
+        let conn: HubConnection;
+
         const connect = async () => {
-            const conn = new HubConnectionBuilder()
+            conn = new HubConnectionBuilder()
                 .withUrl("http://localhost:5110/ordersHub", {
                     accessTokenFactory: () => token,
                 })
@@ -18,19 +20,29 @@ export const useSignalIROrderStatusHub = (token: string | null) => {
                 .build();
 
             conn.on('OrderUpdateStatus', (orderUpdateMessage) => {
-                const {orderId, orderStatus, notification} = orderUpdateMessage
+                const {orderId, orderStatus} = orderUpdateMessage
+                console.log(orderUpdateMessage);        
                 toast.success(`Your Order: #${orderId} has been: ${getStatusName(orderStatus)}`, { icon: icons.success });
             });
 
-            try {
-                   conn
-                    .start()
-                    .then(() => console.log("✅ SignalR connected"))
-                    .catch((err) => console.error("❌ SignalR error", err));
+            conn.onreconnecting(() => {
+                console.warn("🔄 SignalR reconnecting...");
+            });
 
+            conn.onreconnected(() => {
+                console.log("✅ SignalR reconnected");
+            });
+
+            conn.onclose((error) => {
+                console.error("❌ SignalR closed", error);
+            });
+
+            try {
+                await conn.start();
+                console.log("✅ SignalR initial connection");
                 setConnection(conn);
             } catch (err) {
-                console.error("SignalR connection failed", err);
+                console.error("❌ Initial SignalR connection failed", err);
             }
         };
 
@@ -38,18 +50,20 @@ export const useSignalIROrderStatusHub = (token: string | null) => {
 
         // Clean up
         return () => {
-            if (connection) {
-                connection.stop();
+            if (conn) {
+                conn.stop();
             }
         };
 
+    // eslint-disable-next-line
+    // add this line to avoid dependency connection- if give connection in this - useEffect loop infinity 
     }, [token]);
 
     return connection;
 }
 
 
-const getStatusName = (status: number | string) => {
+export const getStatusName = (status: number | string) => {
   switch (+status) {
     case 0: return "Created";
     case 1: return "Prepare";

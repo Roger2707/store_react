@@ -4,8 +4,10 @@ import { OrderDetail } from "../../components/Order/OrderDetail";
 import { useEffect, useState } from "react";
 import { OrderDTO, OrderItemDTO } from "../../../app/models/Order";
 import agent from "../../../app/api/agent";
+import { Loading } from "../../ui/Common/Loading";
 
 export const AdminOrder = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<OrderDTO[] | null>(null);
     const [items, setItems] = useState<OrderItemDTO[] | null>(null);
     const [orderIdSelected, setOrderIdSelected] = useState<string>('');
@@ -37,6 +39,7 @@ export const AdminOrder = () => {
     
     return (
         <Style>
+            {isLoading && <Loading message='Loading orders ...' />}
             <h1>Orders Summary:</h1>
             <div className="order-grid" >
                 <OrderTable orders={orders?.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} isAdmin={true}/>
@@ -111,7 +114,3 @@ const Style = styled.div`
         margin-top: 20px;
     }  
 `
-
-function setIsLoading(arg0: boolean) {
-    throw new Error("Function not implemented.");
-}

@@ -24,7 +24,7 @@ export interface OrderItemDTO {
 
 export interface OrderUpdatStatusRequest {
     orderId: string
-    status: number
+    orderStatus: number
 }
 
 export interface ShippingAdress {

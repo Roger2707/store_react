@@ -195,7 +195,7 @@ const Basket = {
 const Order = {
     getAllOrders : () => requests.get(`orders/get-orders`),
     getOrdersOwn : () => requests.get(`orders/get-orders-of-user`),
-    updateOrderStatus : (request: OrderUpdatStatusRequest) => requests.post(`orders/"update-order-status`, request),
+    updateOrderStatus : (request: OrderUpdatStatusRequest) => requests.post(`orders/update-order-status`, request),
 }
 
 const Payment = {

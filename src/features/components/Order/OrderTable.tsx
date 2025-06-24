@@ -1,8 +1,9 @@
 import styled from "styled-components"
 import { OrderDTO, OrderUpdatStatusRequest } from "../../../app/models/Order"
 import { useState } from "react";
-import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
+import { DropdownData } from "../../ui/Forms/Dropdown";
 import agent from "../../../app/api/agent";
+import { getStatusName } from "../../Hooks/useSignalIROrderStatusHub";
 
 interface Props {
     orders: OrderDTO[] | null;
@@ -34,6 +35,7 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
             value: 4
         }
     ];
+    const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
 
     const handleShowOrderDetail = (orderId: string) => {
         setOrderId(orderId);
@@ -41,16 +43,17 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
     }
 
     const handleRefundOrder = (orderId: string) => {
-        
+        console.log(orderId);
     }
 
     const handleUpdateOrderStatus = async (orderId: string, selectedValue: any) => {
-        try {
+        try {      
+            const status = +selectedValue;
             const request : OrderUpdatStatusRequest = {
                 orderId: orderId,
-                status: +selectedValue
+                orderStatus: status
             }
-
+            setSelectedStatus(status);
             await agent.Order.updateOrderStatus(request);
 
         } catch (error) {
@@ -92,15 +95,24 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
                                     </td>
                                     <td><span style={{color: 'red'}} >{order.grandTotal.toLocaleString('vi-VN')} VND</span></td>
                                     <td>
-                                        <span className={`order-status order-status-${order.status.includes('Pending') ? 'pending' : order.status.includes('Completed') ? 'completed' : order.status.includes('Cancelled') ? 'cancelled' : order.status.includes('Shipping') ? 'shipping' : 'refund'}`} >
-                                            {order.status}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button onClick={() => handleShowOrderDetail(order.id)}>More</button>
-                                        {!isAdmin && <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#0096FF'}} >Refund</button>}
+                                        {
+                                            !isAdmin &&
+                                            <span className={`order-status order-status-${order.status.includes('Created') ? 'created' 
+                                                : order.status.includes('Prepared') ? 'prepared' 
+                                                : order.status.includes('Shipping') ? 'shipping' 
+                                                : order.status.includes('Shipped') ? 'shipped' 
+                                                : order.status.includes('Completed') ? 'completed' 
+                                                : order.status.includes('Cancelled') ? 'cancelled' 
+                                                :'back-and-refund'}`} >
+                                                {order.status}
+                                            </span>
+                                        }
+
                                         {isAdmin && 
-                                            <select value={orderStatusData.find(d => d.title === order.status)?.value ?? -1} onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)} >
+                                            <select 
+                                                value={selectedStatus ?? orderStatusData.find(d => d.title === order.status)?.value} 
+                                                onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)} 
+                                            >
                                                 {orderStatusData.map((status, index) => {
                                                     return (
                                                         <option key={index} value={status.value} style={{backgroundColor: '#425e75' }}>
@@ -110,6 +122,10 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
                                                 })}
                                             </select>   
                                         }
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleShowOrderDetail(order.id)}>More</button>
+                                        {!isAdmin && <button onClick={() => handleRefundOrder(order.id)}  style={{background: '#0096FF'}} >Refund</button>}
                                     </td>
                                 </tr>
                             )
@@ -177,14 +193,20 @@ const OrderTableStyle = styled.table `
                     border-radius: 5px;
                 }
 
-                .order-status-pending {
-                    background-color: gray;
+                .order-status-created {
+                    background-color: gold;
                 }
-                .order-status-completed {
-                    background-color: #41c741;
+                .order-status-prepared {
+                    background-color: #4682B4;
                 }
                 .order-status-shipping {
                     background-color: #FF7F50;
+                }
+                .order-status-shipped {
+                    background-color: #8b5a5a;
+                }
+                .order-status-completed {
+                    background-color: #41c741;
                 }
                 .order-status-cancelled {
                     background-color: #eb4242;
@@ -218,6 +240,17 @@ const OrderTableStyle = styled.table `
                             opacity: 1;
                         }
                     }
+                }
+
+                select {
+                    padding: 5px;
+                    border-radius: 2px;
+                    width: 100%;
+                    font-size: 0.9rem;
+                    border: none;
+                    outline: none;
+                    height: fit-content;
+                    background-color: '#425e75'
                 }
             }
         }
