@@ -1,9 +1,8 @@
 import styled from "styled-components"
 import { OrderDTO, OrderUpdatStatusRequest } from "../../../app/models/Order"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DropdownData } from "../../ui/Forms/Dropdown";
 import agent from "../../../app/api/agent";
-import { getStatusName } from "../../Hooks/useSignalIROrderStatusHub";
 
 interface Props {
     orders: OrderDTO[] | null;
@@ -36,6 +35,15 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
         }
     ];
     const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
+    const [localOrders, setLocalOrders] = useState<OrderDTO[] | null>(orders);
+
+    useEffect(() => {
+        setLocalOrders(orders);
+    }, [orders]);
+
+    const getStatusTitleByValue = (value: number): string => {
+        return orderStatusData.find(s => s.value === value)?.title ?? 'Unknown';
+    };
 
     const handleShowOrderDetail = (orderId: string) => {
         setOrderId(orderId);
@@ -56,6 +64,14 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
             setSelectedStatus(status);
             await agent.Order.updateOrderStatus(request);
 
+            setLocalOrders(prev =>
+                prev && prev.map(order =>
+                    order.id === orderId
+                        ? { ...order, status: getStatusTitleByValue(status) }
+                        : order
+                )
+            );
+
         } catch (error) {
             console.error(error);
         }
@@ -65,9 +81,8 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
         <OrderTableStyle>
             <thead>
                 <tr>
-                    <th>Order Id</th>
+                    <th>Order Info</th>
                     <th>Contact</th>
-                    <th>Order Date</th>
                     <th>Shipping Address</th>
                     <th>Grand Total</th>
                     <th>Status</th>
@@ -75,18 +90,21 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
                 </tr>
             </thead>
             {
-                orders && orders.length > 0 &&
+                localOrders && localOrders.length > 0 &&
                 <tbody>
                     {
-                        orders.map((order: OrderDTO, index) => {
+                        localOrders.map((order: OrderDTO, index) => {
                             return (
                                 <tr key={index} className={`${order.id === orderId && 'order-active'}`}>
-                                    <td >{order.id}</td>
-                                    <td>
-                                        <span className="order-contact" >Email address: <span style={{color: 'goldenrod'}} >{order.email}</span></span>
-                                        <span className="order-contact" >Phone number: <span style={{color: 'goldenrod'}} >{order.phoneNumber}</span></span>
+                                    <td >
+                                        <span className="order-info" >ID: {order.id}</span>
+                                        <span className="order-info" >Date: {order.orderDate && order.orderDate.toString().split('T')[0]}</span>
                                     </td>
-                                    <td>{order.orderDate && order.orderDate.toString().split('T')[0]}</td>
+                                    <td>
+                                        <span className="order-contact" >Name: <span style={{color: 'goldenrod'}} >{order.fullName}</span></span>
+                                        <span className="order-contact" >Email address: <span style={{color: 'goldenrod'}} >{order.email}</span></span>
+                                        <span className="order-contact" >Phone number: <span style={{color: 'goldenrod'}} >{order.phoneNumber ?? 'Invalid phone number'}</span></span>
+                                    </td>
                                     <td style={{ whiteSpace: "pre-line" }}>
                                         <span className="order-address" >{order.shippingAddress.streetAddress}</span>
                                         <span className="order-address">{order.shippingAddress.district}</span>
@@ -109,7 +127,7 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
                                         }
 
                                         {isAdmin && 
-                                            <select 
+                                            <select style={{backgroundColor: '#425e75' }}
                                                 value={selectedStatus ?? orderStatusData.find(d => d.title === order.status)?.value} 
                                                 onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)} 
                                             >
@@ -173,16 +191,12 @@ const OrderTableStyle = styled.table `
                 border-right: 1px solid #333;
                 border-top: 1px solid #333;
 
-                .order-contact {
+                .order-contact,
+                .order-address,
+                .order-info {
                     display: block;
                     text-align: left;
                     font-style: italic;                  
-                }
-
-                .order-address {
-                    display: block;
-                    text-align: left;
-                    font-style: italic;
                 }
 
                 .order-status {
@@ -250,7 +264,6 @@ const OrderTableStyle = styled.table `
                     border: none;
                     outline: none;
                     height: fit-content;
-                    background-color: '#425e75'
                 }
             }
         }

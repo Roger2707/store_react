@@ -46,6 +46,8 @@ const Styled = styled.div`
         grid-template-columns: 6.5fr 3.5fr;
         grid-column-gap: 3vw;
 
+        min-height: 50vh;
+
         .basket-summary {
             
         }

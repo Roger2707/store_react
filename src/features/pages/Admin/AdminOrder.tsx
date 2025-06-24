@@ -19,7 +19,6 @@ export const AdminOrder = () => {
                 setIsLoading(true);
                 const data = await agent.Order.getAllOrders();
                 setOrders(data);
-                console.log(data);
                 
             } catch (error) {
                 console.log(error);

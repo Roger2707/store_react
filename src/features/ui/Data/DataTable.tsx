@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { RiEditBoxFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { useAppSelector } from "../../../app/store/configureStore";
+import { ProductDetailDisplayDTO } from "../../../app/models/Product";
 
 interface Column<T> {
     key: string,
@@ -21,7 +22,6 @@ interface Props<T> {
 }
 
 export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenForm, onDeleteItem, onSetIsCreateMode, isCrudMode} : Props<T>) {   
-
     const {user} = useAppSelector(state => state.user);
     const [displayButton, setDisplayButton] = useState<boolean>(true);
 
@@ -30,15 +30,28 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
             setDisplayButton(false);
             return;
         }
+        
+    }, [isCrudMode]);
+
+    useEffect(() => {
         if(user) {
-            if(user?.role === 'SuperAdmin') setDisplayButton(prev => true);
-            else setDisplayButton(prev => false);
+            if(user.role === 'SuperAdmin') {
+                setDisplayButton(true);
+            }
+            else setDisplayButton(false);
         }
-    }, [user, isCrudMode]);
+    }, [user])
+
+    function isProduct(obj: any): obj is ProductDetailDisplayDTO {
+        return 'productId' in obj && typeof obj.productId === 'string';
+    }
 
     const handleUpdate = (row: T) => {
-        // Set Current Id is Id of Selected Row
-        onSetCurrentId && onSetCurrentId(row['id' as keyof T]);
+        // Set Current Id is Id of Selected Row 
+        if (isProduct(row)) 
+            onSetCurrentId && onSetCurrentId(row['productId' as keyof T]);
+        else
+            onSetCurrentId && onSetCurrentId(row['id' as keyof T]);
 
         // Set Open Form
         onSetOpenForm && onSetOpenForm(true);

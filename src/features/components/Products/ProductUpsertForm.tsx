@@ -121,7 +121,7 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                             color: d.color,
                             extraName: d.extraName,
                             price: d.price,
-                            status: d.status === 'In stock' ? 1 : 0,
+                            status: d.status === 'Active' ? 1 : 0,
                         }
                     })
                 }

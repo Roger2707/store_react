@@ -36,6 +36,7 @@ export const AdminProduct = () => {
         setProductId(crypto.randomUUID());
         setIsCreateMode(true);
     }
+    
 
     const handleDeleteProduct = async (id: string) => {
         try {
