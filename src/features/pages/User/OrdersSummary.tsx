@@ -19,7 +19,6 @@ export const OrdersSummary = () => {
                 setIsLoading(true);
                 const data = await agent.Order.getOrdersOwn();
                 setOrders(data);
-                console.log(data);
                 
             } catch (error) {
                 console.log(error);
@@ -60,6 +59,7 @@ export const OrdersSummary = () => {
 }
 
 const Style = styled.div`
+    min-height: 60vh;
     h1 {
         font-size: 1.8rem;
         color: saddlebrown;

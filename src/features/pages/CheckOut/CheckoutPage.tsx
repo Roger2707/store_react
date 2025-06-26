@@ -2,10 +2,12 @@ import { Elements } from "@stripe/react-stripe-js"
 import styled from "styled-components"
 import { CheckOut } from "../../components/Payment/CheckOut"
 import { loadStripe } from "@stripe/stripe-js";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ReactNode } from "react";
 import DataTable from "../../ui/Data/DataTable";
 import { useAppSelector } from "../../../app/store/configureStore";
+import { toast } from "react-toastify";
+import { icons } from "../../../app/utils/helper";
 
 const logo = require('../../assets/images/stripe.jpg');
 
@@ -38,7 +40,9 @@ const columns = [
 
 export const CheckoutPage = () => {
     const stripePromise = loadStripe("pk_test_51Q2DiyHB9Jej2CgzeyBT0Mh7iFaN7oOBZ2IUrOX0jtsCmLyZcNu3a2ESysNhTzGOTn0d4Ha04mKOSsEnn7qBIMo000DX1UUK28");
+    const navigate = useNavigate();
     const {clientSecret} = useParams();
+    !clientSecret && toast.error(`Client secret is required !`, { icon: icons.error }) && navigate('/basket');
     const {basket} = useAppSelector(state => state.basket);
 
     return (
@@ -56,7 +60,7 @@ export const CheckoutPage = () => {
                     <h3>Items:</h3>
                     <DataTable 
                         columns={columns}
-                        data={basket?.items!}
+                        data={basket?.items.filter(i => i.status !== false)!}
                         isCrudMode={false}
                     />
                 </StyleOrder>

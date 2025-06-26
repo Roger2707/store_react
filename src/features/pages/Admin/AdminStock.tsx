@@ -86,6 +86,8 @@ export const AdminStock = () => {
 
     const handleReceiveProduct = (product: ProductSingleDetailDTO) => {
         if(product) {
+            console.log(product);
+            
             setIsOpenSearchProduct(false);
             getStockDTO(product.productDetailId);
             setStockUpsertDTO(prev => ({...prev, productDetailId: product.productDetailId}));   
