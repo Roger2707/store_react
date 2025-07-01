@@ -9,7 +9,7 @@ import { Loading } from './features/ui/Common/Loading';
 import { getBasket } from './app/store/basketSlice';
 import { Container } from './features/ui/Layout/Container';
 import { Footer } from './features/ui/Layout/Footer';
-import { useSignalIROrderStatusHub } from './features/Hooks/useSignalIROrderStatusHub';
+import { useSignalIROrderStatusHub } from './features/Hooks/useSignalRNotiHub';
 
 function App() {
     const location = useLocation();

@@ -11,19 +11,19 @@ export const BasketPage = () => {
         <Styled>
             {
                 basket?.items && basket?.items.length > 0 ?
-                <>
-                    <h2>Basket Details</h2>
-                    <div className="grid-container" >
-                        <BasketTable basket={basket} />
+                    <>
+                        <h2>Basket Details</h2>
+                        <div className="grid-container" >
+                            <BasketTable basket={basket} />
 
-                        <div className="basket-summary" >
-                            <BasketSummary/>
-                            <BasketUserAddresses/>
+                            <div className="basket-summary" >
+                                <BasketSummary />
+                                <BasketUserAddresses />
+                            </div>
                         </div>
-                    </div>
-                </>
-                :
-                <BasketEmpty/>
+                    </>
+                    :
+                    <BasketEmpty />
             }
 
         </Styled>

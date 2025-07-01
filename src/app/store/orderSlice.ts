@@ -6,25 +6,25 @@ interface OrderState {
     isLoadOrders: boolean;
 
     //////////////////////////////
-    clientSecret: string;
+    activePaymentUI: boolean;
 }
 
-const initialState : OrderState = {
+const initialState: OrderState = {
     orders: null,
     isLoadOrders: false,
 
     ////////////////////////////////
-    clientSecret: '',
+    activePaymentUI: false
 }
 
 export const orderSlice = createSlice({
     name: 'orders',
     initialState,
     reducers: {
-        setNewClientSecret: (state, action) => {
-            state.clientSecret = action.payload;
-        },
+        setActivePaymentUI: (state, action) => {
+            state.activePaymentUI = action.payload;
+        }
     }
 });
 
-export const { setNewClientSecret } = orderSlice.actions;
+export const { setActivePaymentUI } = orderSlice.actions;

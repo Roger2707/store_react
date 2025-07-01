@@ -1,23 +1,21 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components"
 import { icons } from "../../../app/utils/helper";
+import { useNavigate } from "react-router-dom";
 
 export const CheckOut = () => {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>('');
     const navigate = useNavigate();
-    
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!stripe || !elements) return;
 
         setLoading(true);
-        setMessage('');
 
         const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
@@ -27,19 +25,14 @@ export const CheckOut = () => {
 
         if (error) {
             setLoading(false);
-            setMessage(error.message || "Check out failed !");
-            toast.error(error.message, {icon: icons.error});
-        } 
+            toast.error(error.message, { icon: icons.error });
+        }
         else if (paymentIntent?.status === "succeeded") {
-            setMessage("Waiting for order creation...");
             toast.success("Payment confirmed !", { icon: icons.success });
-
-            // success -> navigate notification page
             navigate('/checkout-success');
-        } 
+        }
         else {
             setLoading(false);
-            setMessage("Check out Incompleted !");
         }
     };
 
@@ -50,8 +43,7 @@ export const CheckOut = () => {
                 <button type="submit" disabled={!stripe || loading} style={{ marginTop: 10 }}>
                     {loading ? "Processing..." : "Check Out"}
                 </button>
-                {message && <p>{message}</p>}
-            </form>          
+            </form>
         </Style>
     );
 }

@@ -1,50 +1,34 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import agent from "../../../app/api/agent";
-import { useAppDispatch } from "../../../app/store/configureStore";
-import { setNewClientSecret } from "../../../app/store/orderSlice";
-import { useNavigate } from "react-router-dom";
 import { ShippingAdressDTO } from "../../../app/models/User";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
+import { setActivePaymentUI } from "../../../app/store/orderSlice";
 
 interface Props {
-    shippingAddress : ShippingAdressDTO;
+    shippingAddress: ShippingAdressDTO;
 }
 
-export const OrderProcessing = ({shippingAddress} : Props) => {
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+export const OrderProcessing = ({ shippingAddress }: Props) => {
+    const { activePaymentUI } = useAppSelector(state => state.order);
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     const handleOrderProcess = async () => {
-        setLoading(true);
-        try {       
-            const {clientSecret} = await agent.Payment.createClientSecret(shippingAddress);
-            setClientSecret(clientSecret);
+        try {
+            dispatch(setActivePaymentUI(true));
+            await agent.Payment.createClientSecret(shippingAddress);
         } catch (error) {
-            
+            console.log(error);
         }
-        finally{
-            setLoading(false);
+        finally {
         }
     }
-
-    useEffect(() => {
-        if(clientSecret) {
-            dispatch(setNewClientSecret(clientSecret));
-            navigate(`/checkout/${clientSecret}`);
-        }
-    }, [clientSecret, dispatch, navigate]);
 
     return (
         <Style>
             {
-                !clientSecret &&
-                (
-                    <button onClick={handleOrderProcess} disabled={loading} >
-                        {loading ? "Creating Order..." : "Order Now"}
-                    </button>
-                )
+                <button onClick={handleOrderProcess} disabled={activePaymentUI} >
+                    {activePaymentUI ? "Creating Order..." : "Place Order"}
+                </button>
             }
         </Style>
     )

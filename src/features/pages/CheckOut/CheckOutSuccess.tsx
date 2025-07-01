@@ -24,7 +24,7 @@ const Style = styled.div`
     justify-content: center;
 
     .checkout-success-text {
-        background-color: #4e67b3;
+        background-color: burlywood;
         padding: 10vh 5vw;
         color: #fff;
         text-align: center;
