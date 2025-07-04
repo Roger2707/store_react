@@ -5,6 +5,7 @@ import { icons } from "../../app/utils/helper";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/store/configureStore";
 import { setActivePaymentUI } from "../../app/store/orderSlice";
+import { PaymentProcessingResponse } from "../../app/models/Payment";
 
 export const useSignalIROrderStatusHub = (token: string | null) => {
     const [connection, setConnection] = useState<HubConnection | null>(null);
@@ -28,12 +29,12 @@ export const useSignalIROrderStatusHub = (token: string | null) => {
                 toast.success(`Your Order: #${orderId} has been: ${getStatusName(orderStatus)}`, { icon: icons.success });
             });
 
-            conn.on('PaymentProcessingUpdate', (paymentProcessing) => {
+            conn.on('PaymentProcessingUpdate', (paymentProcessing: PaymentProcessingResponse) => {
                 const { requestId, clientSecret, message, status } = paymentProcessing;
                 console.log(status);
                 switch (status) {
                     case 0:
-                        toast.info(`Your Payment: #${requestId} has been created`, { icon: icons.success });
+                        toast.info(`Your Payment: #${requestId} has been created! Please waiting for processing...`);
                         break;
                     case 1:
                         toast.success(`Your Payment: #${requestId} has been completed`, { icon: icons.success });

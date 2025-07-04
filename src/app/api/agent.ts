@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import { router } from "../router/Routes";
-import { ProductParams, ProductSearch, ProductUpsert } from "../models/Product";
+import { ProductParams, ProductUpsert } from "../models/Product";
 import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
@@ -30,44 +30,44 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(async response => {
     await sleep();
-    const {data, status} = response;
-    if(status === 200) {
-        toast.success(data.title, {icon: icons.success});
+    const { data, status } = response;
+    if (status === 200) {
+        toast.success(data.title, { icon: icons.success });
     }
     return response;
 }, (error: AxiosError) => {
-    const {data, status} = error.response as AxiosResponse;
+    const { data, status } = error.response as AxiosResponse;
     switch (status) {
         case 400:
             // Validation Inputs
-            if(data.errors) {
+            if (data.errors) {
                 const validationErrors = convertKeysToLowerCase(data.errors);
                 Object.keys(validationErrors).forEach(field => {
                     const errorMessage = validationErrors[field][0]; // get first error in array
                     // get input has error by Id
-                    if(field.includes('.')) field = field.split('.')[1];
+                    if (field.includes('.')) field = field.split('.')[1];
                     const inputElement = document.getElementById(field);
                     if (inputElement) {
-                      // Display error
-                      const errorElement = inputElement.nextElementSibling;
-                      
-                      if(errorElement) {
-                        console.log(errorElement);
-                        
-                        errorElement.textContent = errorMessage;
-                        errorElement.classList.add('error-message');
+                        // Display error
+                        const errorElement = inputElement.nextElementSibling;
 
-                        setTimeout(() => {
-                            errorElement.textContent = "";
-                            errorElement.classList.remove('error-message');
-                        }, 3000);
-                      }
+                        if (errorElement) {
+                            console.log(errorElement);
+
+                            errorElement.textContent = errorMessage;
+                            errorElement.classList.add('error-message');
+
+                            setTimeout(() => {
+                                errorElement.textContent = "";
+                                errorElement.classList.remove('error-message');
+                            }, 3000);
+                        }
                     }
                 });
             }
-            else if(data.title) {  
-                toast.error(data.title, {icon: icons.error});
-            } 
+            else if (data.title) {
+                toast.error(data.title, { icon: icons.error });
+            }
             else {
                 console.log(data);
             }
@@ -76,12 +76,12 @@ axios.interceptors.response.use(async response => {
             console.log(data.title);
             break;
         case 403:
-            toast.error(data.Message, {icon: icons.error});
+            toast.error(data.Message, { icon: icons.error });
             break;
         case 404:
             break;
         case 500:
-            router.navigate('/server-error', {state: {error: data}});
+            router.navigate('/server-error', { state: { error: data } });
             break;
         default:
             break;
@@ -90,25 +90,24 @@ axios.interceptors.response.use(async response => {
 });
 
 const requests = {
-    get: (url: string, params?: any) => axios.get(url, {params}).then(responseBody),
+    get: (url: string, params?: any) => axios.get(url, { params }).then(responseBody),
     post: (url: string, body: object) => axios.post(url, body).then(responseBody),
-    put: (url: string, body: object) =>  axios.put(url, body).then(responseBody),
+    put: (url: string, body: object) => axios.put(url, body).then(responseBody),
     del: (url: string) => axios.delete(url).then(responseBody),
 
     postForm: (url: string, data: FormData) => axios.post(url, data, {
-        headers: {'Content-type': 'multipart/form-data'}
+        headers: { 'Content-type': 'multipart/form-data' }
     }).then(responseBody),
 
     putForm: (url: string, data: FormData) => axios.put(url, data, {
-        headers: {'Content-type': 'multipart/form-data'}
+        headers: { 'Content-type': 'multipart/form-data' }
     }).then(responseBody)
 }
 
 const getFormData = (data: any) => {
-    const formData = new FormData();    
-    for(const key in data)
-    {
-        if(key === 'files') {
+    const formData = new FormData();
+    for (const key in data) {
+        if (key === 'files') {
             data['files']?.forEach((file: File) => {
                 formData.append("files", file);
             })
@@ -128,9 +127,6 @@ const Product = {
     bestSeller: () => requests.get('products/get-products-best-seller'),
     singleDTO: (id: string) => requests.get(`products/get-product-dto?id=${id}`),
 
-    detail: (id: string) => requests.get(`products/get-product-single-detail?productDetailId=${id}`),
-    details: (params: ProductSearch) => requests.get(`products/get-product-single-details`, params),
-    
     create: (product: ProductUpsert) => requests.post('products/create', product),
     update: (product: ProductUpsert) => requests.put(`products/update`, product),
     changeStatus: (id: string) => requests.post(`products/change-status?id=${id}`, {})
@@ -178,9 +174,9 @@ const User = {
 }
 
 const Location = {
-    getCities : () => requests.get(`location/get-cities`),
-    getDistricts : (cityCode: number) => requests.get(`location/get-districts?cityCode=${cityCode}`),
-    getWards : (districtCode: number) => requests.get(`location/get-wards?districtCode=${districtCode}`),
+    getCities: () => requests.get(`location/get-cities`),
+    getDistricts: (cityCode: number) => requests.get(`location/get-districts?cityCode=${cityCode}`),
+    getWards: (districtCode: number) => requests.get(`location/get-wards?districtCode=${districtCode}`),
 }
 
 const Technology = {
@@ -188,18 +184,18 @@ const Technology = {
 }
 const Basket = {
     get: () => requests.get(`baskets/get-basket`),
-    upsert : (basketUpsertDTO : BasketUpsertParam) => requests.post(`baskets/upsert-basket`, basketUpsertDTO),
-    toggleStatusItem : (itemId: string) => requests.post(`baskets/toggle-status-item?itemId=${itemId}`, {}),
+    upsert: (basketUpsertDTO: BasketUpsertParam) => requests.post(`baskets/upsert-basket`, basketUpsertDTO),
+    toggleStatusItem: (itemId: string) => requests.post(`baskets/toggle-status-item?itemId=${itemId}`, {}),
 }
 
 const Order = {
-    getAllOrders : () => requests.get(`orders/get-orders`),
-    getOrdersOwn : () => requests.get(`orders/get-orders-of-user`),
-    updateOrderStatus : (request: OrderUpdatStatusRequest) => requests.post(`orders/update-order-status`, request),
+    getAllOrders: () => requests.get(`orders/get-orders`),
+    getOrdersOwn: () => requests.get(`orders/get-orders-of-user`),
+    updateOrderStatus: (request: OrderUpdatStatusRequest) => requests.post(`orders/update-order-status`, request),
 }
 
 const Payment = {
-    createClientSecret : (shippingAdressDTO : ShippingAdressDTO) => requests.post(`payments/create-client-secret`, shippingAdressDTO),
+    createClientSecret: (shippingAdressDTO: ShippingAdressDTO) => requests.post(`payments/create-client-secret`, shippingAdressDTO),
 }
 
 const Warehouses = {
@@ -224,7 +220,7 @@ const Stocks = {
 const Rating = {
     getProductRating: (productId: string) => requests.get(`ratings/get-product-rating?productId=${productId}`),
     getProductDetailRating: (productDetailId: string) => requests.get(`ratings/get-product-detail-rating?productDetailId=${productDetailId}`),
-    set: (p : RatingDTO) => requests.post(`ratings/gset-rating`, p),
+    set: (p: RatingDTO) => requests.post(`ratings/gset-rating`, p),
 }
 
 const agent = {

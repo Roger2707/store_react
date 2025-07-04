@@ -1,25 +1,25 @@
 import styled from "styled-components";
-import { ProductDetailDisplayDTO } from "../../../app/models/Product"
 import { ProductItem } from "./ProductItem";
 import { EmptyData } from "../../ui/Layout/EmptyData";
+import { ProductFullDetailDTO } from "../../../app/models/Product";
 
 interface Props {
-    products: ProductDetailDisplayDTO[] | undefined;
+    products: ProductFullDetailDTO[] | undefined;
 }
 
-export const ProductList = ({products} : Props) => {     
+export const ProductList = ({ products }: Props) => {
     return (
         <>
-        {
-            products === undefined ? 
-            <EmptyData message="Can not find Products 😥 Try again !" />
-            :
-            <ProductGridContainerStyle>
-                {products.map(p => {
-                    return <ProductItem key={p.productDetailId} product={p}/>
-                })}
-            </ProductGridContainerStyle>
-        }
+            {
+                products === undefined ?
+                    <EmptyData message="Can not find Products 😥 Try again !" />
+                    :
+                    <ProductGridContainerStyle>
+                        {products.map(p => {
+                            return <ProductItem key={p.productDetailId} product={p} />
+                        })}
+                    </ProductGridContainerStyle>
+            }
         </>
     )
 }

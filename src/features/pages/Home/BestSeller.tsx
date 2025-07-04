@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ProductDetailDisplayDTO } from "../../../app/models/Product";
 import agent from "../../../app/api/agent";
 import { ProductItem } from "../../components/Products/ProductItem";
+import { ProductFullDetailDTO } from "../../../app/models/Product";
 
 export const BestSeller = () => {
-    const [products, setProducts] = useState<ProductDetailDisplayDTO[]>([]);
+    const [products, setProducts] = useState<ProductFullDetailDTO[]>([]);
 
     useEffect(() => {
         const fetchProductBestSeller = async () => {
-            const data : ProductDetailDisplayDTO[] = await agent.Product.bestSeller();
-            if(data) setProducts(data);
+            const data: ProductFullDetailDTO[] = await agent.Product.bestSeller();
+            if (data) setProducts(data);
             else setProducts([]);
         }
         fetchProductBestSeller();

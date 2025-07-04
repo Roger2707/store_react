@@ -2,31 +2,38 @@ import { useParams } from "react-router-dom"
 import styled from "styled-components";
 import { ProductImage } from "../../components/ProductDetail/ProductImages";
 import { useEffect, useState } from "react";
-import { Product, ProductDetail } from "../../../app/models/Product";
 import agent from "../../../app/api/agent";
 import { Loading } from "../../ui/Common/Loading";
 import { FaArrowRight } from "react-icons/fa";
 import { ProductTech } from "../../components/ProductDetail/ProductTech";
 import { ProductCartButtons } from "../../components/ProductDetail/ProductCartButtons";
+import { ProductDetailDTO, ProductDTO } from "../../../app/models/Product";
 
 export const ProductDetailPage = () => {
-    const  [product, setProduct] = useState<Product | null>(null);
-    const [productDetail, setProductDetail] = useState<ProductDetail | null>(null);
-    const {id} = useParams();
+    const [product, setProduct] = useState<ProductDTO | null>(null);
+    const [productDetail, setProductDetail] = useState<ProductDetailDTO | null>(null);
+    const { productId, productDetailId } = useParams();
 
-    useEffect(() => {       
+    useEffect(() => {
+        if (product) return;
+
         const fetchProductDetailAsync = async () => {
             try {
-                if(id == null) return;
-                const response = await agent.Product.singleDTO(id);              
+                if (productId == null || productDetailId == null) return;
+
+                const response: ProductDTO = await agent.Product.singleDTO(productId);
+
                 setProduct(prev => response);
-                setProductDetail(response.details[0] || null);
+                setProductDetail(response.details.find(d => d.id === productDetailId) || null);
+
             } catch (error: any) {
                 console.log(error);
             }
         }
+
         fetchProductDetailAsync();
-    }, [id]);
+
+    }, [productId, productDetailId]);
 
     const handleChangeColor = (e: any) => {
         if (!product?.details) return;
@@ -40,7 +47,7 @@ export const ProductDetailPage = () => {
                 product && productDetail ?
                     <>
                         <div className="product-detail-layout" >
-                            <ProductImage imageUrls={product.imageUrl.split(',')} />
+                            <ProductImage imageUrls={product.details[0].imageUrl.split(',')} />
                             <div className="product-detail" >
                                 <div className="product-basic-info">
                                     <h1>{`${product.name} - ${productDetail.extraName}`}</h1>
@@ -49,42 +56,42 @@ export const ProductDetailPage = () => {
                                     <p>Created: {product.created.toString()}</p>
                                     <p>Category: {product.categoryName}</p>
                                     <p>Brand: {product.brandName}</p>
-                                    <p>Imported: {product.brandCountry}</p>               
+                                    <p>Imported: {product.brandCountry}</p>
                                 </div>
 
                                 <div className="product-color" >
                                     {
                                         product.details.map(d => {
                                             return (
-                                                <label key={d.id} className="product-color-option" style={{background: `${d.color}`}} >
+                                                <label key={d.id} className="product-color-option" style={{ background: `${d.color}` }} >
                                                     <input checked={productDetail.color === d.color} type="radio" name="product-color" value={d.color} onChange={handleChangeColor} />
                                                 </label>
                                             )
                                         })
                                     }
-                                    
+
                                 </div>
 
                                 <div className="product-price" >
                                     {
                                         productDetail.discountPrice > 0 ?
-                                        <div className="has-discount" >
-                                            <p className="old-price">{`${productDetail.price.toLocaleString("vi-VN")}`}</p>
-                                            <span><FaArrowRight /></span>
-                                            <p className="new-price">{`${productDetail.discountPrice.toLocaleString("vi-VN")} VND`}</p>
-                                        </div>
-                                        :
-                                        <p className="price" >{`${productDetail.price.toLocaleString("vi-VN")} VND`}</p>
+                                            <div className="has-discount" >
+                                                <p className="old-price">{`${productDetail.originPrice.toLocaleString("vi-VN")}`}</p>
+                                                <span><FaArrowRight /></span>
+                                                <p className="new-price">{`${productDetail.discountPrice.toLocaleString("vi-VN")} VND`}</p>
+                                            </div>
+                                            :
+                                            <p className="price" >{`${productDetail.originPrice.toLocaleString("vi-VN")} VND`}</p>
                                     }
                                 </div>
 
                                 <ProductCartButtons productDetailId={productDetail.id} />
                             </div>
-                        </div>    
+                        </div>
 
-                        <ProductTech productId={product.id} />   
+                        <ProductTech productId={product.id} />
                     </>
-                :
+                    :
                     <Loading message="Loading..." />
 
             }

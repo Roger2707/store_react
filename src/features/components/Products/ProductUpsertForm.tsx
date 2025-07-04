@@ -20,9 +20,9 @@ interface Props {
     onSetOpenForm: (e: boolean) => void;
 }
 
-export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Props) => {
-    const {data: categories} = useCategories();
-    const {data: brands} = useBrands();
+export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Props) => {
+    const { data: categories } = useCategories();
+    const { data: brands } = useBrands();
     const queryClient = useQueryClient();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,19 +30,17 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     const colorRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [error, setError] = useState<string>('');
 
-    const initProduct : ProductUpsert = {
-        id : productId,
+    const initProduct: ProductUpsert = {
+        id: productId,
         name: '',
         description: '',
-        imageUrl: '',
-        publicId: '',
         created: new Date().toISOString(),
         categoryId: crypto.randomUUID(),
         brandId: crypto.randomUUID(),
-        productDetails: [{color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1}]
+        productDetails: [{ color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1, imageUrl: '', publicId: '' }]
     }
 
-    const initUpload : ImageUploadDTO = {
+    const initUpload: ImageUploadDTO = {
         files: null,
         folderPath: '',
         publicIds: '',
@@ -62,33 +60,33 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
 
     //#region Set Data for dropdown
 
-    useEffect(() => {     
-        if(categories && categories.length > 0) {
-            const defaultCategory : Category = {
+    useEffect(() => {
+        if (categories && categories.length > 0) {
+            const defaultCategory: Category = {
                 id: '',
                 name: ''
             }
-            let newCategories : Category[] = [defaultCategory, ...categories];
+            let newCategories: Category[] = [defaultCategory, ...categories];
 
             setCategoriesDropdown(prev => {
                 return newCategories?.map((d: Category) => {
-                    return {title: d.name, value: d.id};
-                });                
+                    return { title: d.name, value: d.id };
+                });
             });
         }
 
-        if(brands && brands.length > 0) {     
-            const defaultBrand : Brand = {
+        if (brands && brands.length > 0) {
+            const defaultBrand: Brand = {
                 id: '',
                 name: '',
                 country: ''
             }
-            let newBrands : Brand[] = [defaultBrand, ...brands];
+            let newBrands: Brand[] = [defaultBrand, ...brands];
 
             setBrandsDropdown(prev => {
                 return newBrands.map((d: Brand) => {
-                    return {title: d.name, value: d.id};
-                });                
+                    return { title: d.name, value: d.id };
+                });
             })
         }
 
@@ -99,11 +97,11 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     useEffect(() => {
         const fetchProductDetailAsync = async () => {
             try {
-                if(isCreateMode) return;
+                if (isCreateMode) return;
                 setIsLoading(true);
-                const response : Product = await agent.Product.singleDTO(productId);
-                
-                const productUpsert : ProductUpsert = {
+                const response: Product = await agent.Product.singleDTO(productId);
+
+                const productUpsert: ProductUpsert = {
                     id: productId,
                     name: response.name,
                     description: response.description,
@@ -149,30 +147,30 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                     }
                 });
             } catch (error: any) {
-                
+
             }
             finally {
                 setIsLoading(false);
             }
         }
         // If id !== 0 -> Update -> Fetch Existed Product data
-        if(!isCreateMode) fetchProductDetailAsync();
-        
+        if (!isCreateMode) fetchProductDetailAsync();
+
     }, [isCreateMode, productId]);
 
     //#endregion
 
     //#region Change Events
 
-    const handleGetDataChange = (e: any, key: string) => {    
-        if (key === 'imageUrl') {  
+    const handleGetDataChange = (e: any, key: string) => {
+        if (key === 'imageUrl') {
             // Set FILE State
             setUpload(prev => {
-                return {...prev, files: e };
+                return { ...prev, files: e };
             });
-        } else {       
+        } else {
             setProduct(prev => {
-                return {...prev, [key]: e.target.value };
+                return { ...prev, [key]: e.target.value };
             });
         }
     }
@@ -183,12 +181,12 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
 
     const handleAddRow = (indexRow: number) => {
         setProduct(prev => {
-            if(prev.productDetails.length === 99) return {...prev};
+            if (prev.productDetails.length === 99) return { ...prev };
 
-            const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1};
+            const newDetail = { color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1 };
             let updatedProductDetails = [
                 ...prev.productDetails.slice(0, indexRow + 1),
-                newDetail, 
+                newDetail,
                 ...prev.productDetails.slice(indexRow + 1)
             ];
 
@@ -201,8 +199,8 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
 
     const handleRemoveRow = (indexRow: number) => {
         setProduct(prev => {
-            if(prev.productDetails.length === 1) {
-                const newDetail = {color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1};
+            if (prev.productDetails.length === 1) {
+                const newDetail = { color: '', price: 0, quantityInStock: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1 };
                 return {
                     ...prev,
                     productDetails: [newDetail]
@@ -235,19 +233,19 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     }
 
     const validateData = () => {
-        if(!checkRequired()) return false;
-        if(!checkDuplicateColor()) return false;
+        if (!checkRequired()) return false;
+        if (!checkDuplicateColor()) return false;
         return true;
     }
 
     const checkRequired = () => {
-        for(let i = 0; i < product.productDetails.length; i ++) {
-            const currentRow : ProductUpsertDetail = product.productDetails[i];
-            if(isEmptyRow(currentRow)) continue;
+        for (let i = 0; i < product.productDetails.length; i++) {
+            const currentRow: ProductUpsertDetail = product.productDetails[i];
+            if (isEmptyRow(currentRow)) continue;
 
             const currentPrice = +currentRow.price;
 
-            if(currentPrice === 0) {
+            if (currentPrice === 0) {
                 setError(`Row index ${i} has empty price`);
                 return false;
             }
@@ -256,22 +254,22 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     }
 
     const checkDuplicateColor = () => {
-        for(let i = 0; i < product.productDetails.length; i ++) {
-            const currentRow : ProductUpsertDetail = product.productDetails[i];
+        for (let i = 0; i < product.productDetails.length; i++) {
+            const currentRow: ProductUpsertDetail = product.productDetails[i];
             const currentColor = currentRow.color;
 
             // CurrentRow is Empty Row => Next Row
-            if(isEmptyRow(currentRow)) continue;
+            if (isEmptyRow(currentRow)) continue;
 
-            for(let j = 0; j < product.productDetails.length; j ++) {
-                if(j === i) continue;
-                const compareLoopRow : ProductUpsertDetail = product.productDetails[j];
+            for (let j = 0; j < product.productDetails.length; j++) {
+                if (j === i) continue;
+                const compareLoopRow: ProductUpsertDetail = product.productDetails[j];
                 const compareLoopColor = compareLoopRow.color;
-                if(isEmptyRow(compareLoopRow)) continue;
+                if (isEmptyRow(compareLoopRow)) continue;
 
-                if(compareLoopColor === currentColor) {
+                if (compareLoopColor === currentColor) {
                     setError(`Duplicate Color at row_index: ${j}, value: ${compareLoopColor}`);
-                    
+
                     // Focus vào input bị lỗi
                     setTimeout(() => {
                         colorRefs.current[j]?.focus();
@@ -284,9 +282,9 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     }
 
     const isEmptyRow = (currentRow: ProductUpsertDetail) => {
-        if(+currentRow.price !== 0) return false;
-        if(currentRow.color !== '') return false;
-        if(currentRow.extraName !== '') return false;
+        if (+currentRow.price !== 0) return false;
+        if (currentRow.color !== '') return false;
+        if (currentRow.extraName !== '') return false;
 
         return true;
     }
@@ -298,34 +296,34 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        if(!validateData()) return;
+        if (!validateData()) return;
 
         setIsSaving(true);
-        try { 
-            let uploadResult : ImageUploadResult = await agent.Upload.upload(upload);
+        try {
+            let uploadResult: ImageUploadResult = await agent.Upload.upload(upload);
             if (!uploadResult) {
                 console.log('Update Image has some problems !');
                 setIsSaving(false);
                 return;
             }
-                     
-            const updatedProduct : ProductUpsert = {
+
+            const updatedProduct: ProductUpsert = {
                 ...product
                 , imageUrl: uploadResult.imageUrl || product.imageUrl
                 , publicId: uploadResult.publicId || product.publicId
                 , productDetails: product.productDetails.filter(p => !isEmptyRow(p))
             }
-            
-            if(!isCreateMode) {
+
+            if (!isCreateMode) {
                 await agent.Product.update(updatedProduct);
             }
             else {
                 await agent.Product.create(updatedProduct);
             }
-            queryClient.invalidateQueries({queryKey: ['products']});
+            queryClient.invalidateQueries({ queryKey: ['products'] });
             handleCloseForm();
 
-        } catch (error: any) {      
+        } catch (error: any) {
             setIsSaving(false);
         }
     }
@@ -336,20 +334,20 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
         <ProductUpsertStyle onSubmit={handleSubmit} disabled={isSaving || isLoading} >
             <div className="product-header-container" >
                 <div className="product-fields-group-1" >
-                    <Input id='name' value={product.name} placeholder="Name..." type="text" 
-                            onGetDataChange={(e) => handleGetDataChange(e, 'name')} 
+                    <Input id='name' value={product.name} placeholder="Name..." type="text"
+                        onGetDataChange={(e) => handleGetDataChange(e, 'name')}
                     />
                     <Dropdown field="category" data={categoriesDropdown} currentSelectedValue={product.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
                     <Dropdown field="brand" data={brandsDropdown} currentSelectedValue={product.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
                 </div>
 
                 <div className="product-fields-group-2">
-                    <Textarea id='description' value={product.description} placeholder="Description..." 
-                                onGetDataChange={e => handleGetDataChange(e, 'description')}
+                    <Textarea id='description' value={product.description} placeholder="Description..."
+                        onGetDataChange={e => handleGetDataChange(e, 'description')}
                     />
-                    <MultipleFileImage 
-                        isClearMode = {isClearMode}
-                        value={upload.imageDisplay} 
+                    <MultipleFileImage
+                        isClearMode={isClearMode}
+                        value={upload.imageDisplay}
                         onGetDataChange={e => handleGetDataChange(e, 'imageUrl')}
                     />
                 </div>
@@ -363,18 +361,18 @@ export const ProductUpsertForm = ({productId, isCreateMode, onSetOpenForm}: Prop
                     <h3>Status</h3>
                 </div>
                 <div className="rows-container" >
-                    {product.productDetails.map((d, i) => 
-                        <ProductDetailRow 
-                            key={d.id} 
-                            productDetail={d} 
-                            onSetProduct={setProduct} 
-                            indexRow={i} 
-                            onAddRow={handleAddRow} onRemoveRow={handleRemoveRow} 
+                    {product.productDetails.map((d, i) =>
+                        <ProductDetailRow
+                            key={d.id}
+                            productDetail={d}
+                            onSetProduct={setProduct}
+                            indexRow={i}
+                            onAddRow={handleAddRow} onRemoveRow={handleRemoveRow}
                         />)
-                    } 
+                    }
                 </div>
             </div>
-        
+
             <div className="form_controls" >
                 <button className="btn-submit" type="submit">Submit</button>
                 <button className="btn-clear" type="button" onClick={handleClearData}>Clear</button>

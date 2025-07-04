@@ -1,30 +1,30 @@
-import { ProductDetailDisplayDTO } from "../../../app/models/Product"
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { ProductRatings } from "../Rating/ProductRatings";
+import { ProductFullDetailDTO } from "../../../app/models/Product";
 
 interface Props {
-    product: ProductDetailDisplayDTO;
+    product: ProductFullDetailDTO;
 }
 
-export const ProductItem = ({product} : Props) => {
-    const { productId, productName, imageUrl, price, discountPrice, stars} = product;
+export const ProductItem = ({ product }: Props) => {
+    const { productId, productDetailId, name, imageUrl, originPrice, discountPrice, stars } = product;
 
     return (
         <ProductItemStyle>
-            <Link to={`${productId}`} className="product-item" >
+            <Link to={`products/${productId}/${productDetailId}`} className="product-item" >
                 <img src={imageUrl.split(',')[0]} alt="img" />
                 <div className="product-item-detail" >
                     <div className="product-heading">
-                        <p>{productName}</p>
+                        <p>{name}</p>
                     </div>
                     <div className="product-desc">
                         <div className="product-prices" >
-                            <p className={`product-price ${price !== 0 && 'price-line'}`} >{price.toLocaleString('vi-VN')}</p>
+                            <p className={`product-price ${originPrice !== 0 && 'price-line'}`} >{originPrice.toLocaleString('vi-VN')}</p>
                             {discountPrice !== 0 && <p className="product-discount">{discountPrice.toLocaleString('vi-VN')}</p>}
                         </div>
 
-                        <ProductRatings stars = {stars} />
+                        <ProductRatings stars={stars} />
                     </div>
                 </div>
             </Link>
@@ -32,7 +32,7 @@ export const ProductItem = ({product} : Props) => {
     )
 }
 
-const ProductItemStyle = styled.div `
+const ProductItemStyle = styled.div`
     width: 100%;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     border-radius: 5px;

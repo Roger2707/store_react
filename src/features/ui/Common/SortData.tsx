@@ -8,15 +8,15 @@ interface SortOption {
 }
 
 interface Props {
-    selectedValue : string;
-    onSetSelectedValue : Dispatch<SetStateAction<ProductParams>>;
-    sortOptions : SortOption[];
+    selectedValue: string;
+    onSetSelectedValue: Dispatch<SetStateAction<ProductParams>>;
+    sortOptions: SortOption[];
 }
 
-export const SortData = ({selectedValue, onSetSelectedValue, sortOptions}: Props) => {
-    
+export const SortData = ({ selectedValue, onSetSelectedValue, sortOptions }: Props) => {
+
     const handleSubmit = (e: any) => {
-        onSetSelectedValue(prev => ({...prev, orderBy: e.target.value}));
+        onSetSelectedValue(prev => ({ ...prev, orderBy: e.target.value }));
     }
 
     return (
@@ -28,7 +28,7 @@ export const SortData = ({selectedValue, onSetSelectedValue, sortOptions}: Props
     )
 }
 
-const Style = styled.div `
+const Style = styled.div`
     select {
         font-size: 1rem;
         font-style: italic;

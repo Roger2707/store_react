@@ -1,101 +1,88 @@
-export interface ProductDetailDisplayDTO {
-    productId: number
+export interface ProductFullDetailDTO {
+    productId: string
     productDetailId: string
-    productName: string
-    imageUrl: string
+    name: string
+    description: string
     color: string
-    price: number
+    extraName: string
+    originPrice: number
+    percentageDiscount: number
     discountPrice: number
+    imageUrl: string
+    publicId: string
     categoryName: string
     brandName: string
     brandCountry: string
     created: Date
     stars: number
-}
-
-export interface Product {
-    id: string;
-    name: string;
-    description: string;
-
-    imageUrl: string;
-    publicId: string;
-
-    created: Date;
-    categoryId: string;
-    categoryName: string;
-    brandId: string;
-    brandName: string;
-    brandCountry: string;
-    stars: number
-    details: ProductDetail[],
+    totalRow: number
+    status: number
 }
 
 export interface ProductParams {
-    orderBy: string,
-    searchBy: string,
-    filterByCategory: string,
-    filterByBrand: string,
-    currentPage: number,
+    minPrice: number
+    maxPrice: number
+    searchBy: string
+    filterByCategory: string
+    filterByBrand: string
+    currentPage: number
 }
 
-export interface ProductDetail {
-    id: string;
-    productid: string;
-    color: string;
-    status: string;
-    price: number;
-    discountPrice: number;
-    extraName: string;
-}
-
-export interface ProductUpsert {
+export interface ProductDTO {
     id: string;
     name: string;
     description: string;
+    created: Date;
+    categoryName: string;
+    brandName: string;
+    brandCountry: string;
+    totalRow: number
 
-    imageUrl: string;
-    publicId: string;
+    details: ProductDetailDTO[],
+}
 
-    created: string;
-    categoryId: string;
-    brandId: string;
+export interface ProductDetailDTO {
+    id: string;
+    productid: string
+
+    originPrice: number
+    percentageDiscount: number
+    discountPrice: number
+
+    imageUrl: string
+    color: string
+    extraName: string
+    stars: number
+    status: string
+}
+
+export interface ProductUpsert {
+    id: string
+    name: string
+    description: string
+    created: string
+    categoryId: string
+    brandId: string
 
     // Detail
-    productDetails: ProductUpsertDetail[];
+    productDetails: ProductUpsertDetail[]
 }
 
 export interface ProductUpsertDetail {
-    id: string;
-    productid: string;
-    price: number;
-    color: string;
-    extraName: string;
-    status: number;
+    id: string
+    productid: string
+
+    price: number
+    color: string
+    extraName: string
+    status: number
+    imageUrl: string
+    publicId: string
+
 }
 
 export interface ProductTechnology {
-    name : string,
+    name: string,
     description: string,
     imageUrl: string,
-}
-
-export interface ProductSingleDetailDTO {
-    productDetailId: string
-    productName: string
-    productFirstImage: string
-    color: string
-    originPrice: number
-    discountPercent: number
-    discountPrice: number
-    categoryName: string
-    brandName: string
-}
-
-export interface ProductSearch {
-    productName: string
-    minPrice: number
-    maxPrice: number
-    brandId: string
-    categoryId: string
 }

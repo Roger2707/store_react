@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { ProductList } from "../../components/Products/ProductList";
 import { Pagination } from "../../ui/Common/Pagination";
 import { SearchData } from "../../ui/Common/SearchData";
-import { SortData } from "../../ui/Common/SortData";
 import { ProductParams } from "../../../app/models/Product";
 import { useProducts } from "../../Hooks/useProducts";
 import { CategoryFilter } from "../../components/Products/CategoryFilter";
@@ -12,28 +11,44 @@ import { sortOptions } from "../../../app/utils/helper";
 import { ProductSkeleton } from "../../components/Products/ProductSkeleton";
 
 export const ProductPage = () => {
-    const defaultProductParam : ProductParams = {
+    const defaultProductParam: ProductParams = {
         currentPage: 1,
         filterByBrand: '',
         filterByCategory: '',
-        orderBy: '',
-        searchBy: ''
+        searchBy: '',
+        minPrice: 0,
+        maxPrice: 0
     }
     const scrolltargetRef = useRef<HTMLDivElement>(null);
     const [productParams, setProductParams] = useState<ProductParams>(defaultProductParam);
+    const [sortBy, setSortBy] = useState<string>(sortOptions[0].value);
     const { data, isLoading, isError } = useProducts(productParams);
 
     useEffect(() => {
         if (scrolltargetRef.current) {
             scrolltargetRef.current.scrollIntoView({ behavior: 'smooth' });
-        }     
+        }
     }, [data]);
-    
+
+    const handleSortProducts = (e: any) => {
+        setSortBy(prev => e.taget.value);
+        switch (e.target.value) {
+            case '':
+                break;
+            case 'nameDesc':
+                break;
+            case 'priceAsc':
+                break;
+            case 'priceDesc':
+                break;
+        }
+    }
+
     return (
         <>
             <ProductsStyle ref={scrolltargetRef} >
                 <div className="products-filter-container" >
-                    <CategoryFilter 
+                    <CategoryFilter
                         categoriesFilter={productParams.filterByCategory}
                         onSetCategoriesFilter={setProductParams}
                     />
@@ -50,17 +65,15 @@ export const ProductPage = () => {
                 </div>
                 <div className="products-display" >
                     <div className="products-head" >
-                        <SearchData 
-                            searchKey={productParams.searchBy} 
-                            onSetSearchKey={setProductParams} 
+                        <SearchData
+                            searchKey={productParams.searchBy}
+                            onSetSearchKey={setProductParams}
                             placeholder="Type to search products..."
                         />
 
-                        <SortData
-                            selectedValue = {productParams.orderBy}
-                            onSetSelectedValue = {setProductParams}
-                            sortOptions = {sortOptions}
-                        />
+                        <select value={sortBy} onChange={handleSortProducts} >
+                            {sortOptions.map((option, index) => <option key={index} value={option.value} >{option.title}</option>)}
+                        </select>
                     </div>
                     {
                         isLoading || !data ? (
@@ -87,7 +100,7 @@ export const ProductPage = () => {
     )
 }
 
-const ProductsStyle = styled.div `
+const ProductsStyle = styled.div`
     display: grid;
     grid-template-columns: 1.5fr 8.5fr;
 

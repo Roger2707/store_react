@@ -35,7 +35,7 @@ export const router = createBrowserRouter(([
             
             // PUBLIC ROUTES
             { path: 'products', element: <ProductPage/> },
-            { path: 'products/:id', element: <ProductDetailPage/> },
+            { path: 'products/:productId/:productDetailId', element: <ProductDetailPage /> },
             { path: 'about', element: <About/> },
             { path: 'news', element: <News/> },
             { path: 'contact', element: <Contact/> },
