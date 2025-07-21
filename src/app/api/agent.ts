@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import { router } from "../router/Routes";
-import { ProductParams, ProductUpsert } from "../models/Product";
+import { ProductParams, ProductUpsertDTO } from "../models/Product";
 import { convertKeysToLowerCase, icons } from "../utils/helper";
 import { toast } from "react-toastify";
 import { Category } from "../models/Category";
@@ -118,7 +118,7 @@ const getFormData = (data: any) => {
 }
 
 const Upload = {
-    upload: (params: ImageUploadDTO) => requests.postForm('uploads/upload-images', getFormData(params)),
+    uploads: (params: ImageUploadDTO[]) => requests.postForm('uploads/upload-images', getFormData(params)),
     uploadSingle: (params: SingleImageUploadDTO) => requests.postForm('uploads/upload-image', getFormData(params))
 }
 
@@ -127,8 +127,8 @@ const Product = {
     bestSeller: () => requests.get('products/get-products-best-seller'),
     singleDTO: (id: string) => requests.get(`products/get-product-dto?id=${id}`),
 
-    create: (product: ProductUpsert) => requests.post('products/create', product),
-    update: (product: ProductUpsert) => requests.put(`products/update`, product),
+    create: (product: ProductUpsertDTO) => requests.post('products/create', product),
+    update: (product: ProductUpsertDTO) => requests.put(`products/update`, product),
     changeStatus: (id: string) => requests.post(`products/change-status?id=${id}`, {})
 }
 

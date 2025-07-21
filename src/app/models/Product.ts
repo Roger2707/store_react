@@ -56,7 +56,9 @@ export interface ProductDetailDTO {
     status: string
 }
 
-export interface ProductUpsert {
+// CRUD DTOs
+
+export interface ProductUpsertDTO {
     id: string
     name: string
     description: string
@@ -65,10 +67,10 @@ export interface ProductUpsert {
     brandId: string
 
     // Detail
-    productDetails: ProductUpsertDetail[]
+    productDetails: ProductUpsertDetailDTO[]
 }
 
-export interface ProductUpsertDetail {
+export interface ProductUpsertDetailDTO {
     id: string
     productid: string
 

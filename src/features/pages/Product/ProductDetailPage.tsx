@@ -32,8 +32,8 @@ export const ProductDetailPage = () => {
         }
 
         fetchProductDetailAsync();
-
-    }, [productId, productDetailId]);
+        // eslint-disable-next-line
+    }, []);
 
     const handleChangeColor = (e: any) => {
         if (!product?.details) return;

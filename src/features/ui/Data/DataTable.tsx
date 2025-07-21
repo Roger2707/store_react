@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { RiEditBoxFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { useAppSelector } from "../../../app/store/configureStore";
-import { ProductDetailDisplayDTO } from "../../../app/models/Product";
+import { ProductFullDetailDTO } from "../../../app/models/Product";
 
 interface Column<T> {
     key: string,
@@ -42,7 +42,7 @@ export default function DataTable<T>({data, columns, onSetCurrentId, onSetOpenFo
         }
     }, [user])
 
-    function isProduct(obj: any): obj is ProductDetailDisplayDTO {
+    function isProduct(obj: any): obj is ProductFullDetailDTO {
         return 'productId' in obj && typeof obj.productId === 'string';
     }
 

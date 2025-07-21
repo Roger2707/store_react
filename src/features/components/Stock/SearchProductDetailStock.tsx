@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input"
 import { useMemo, useState } from "react"
-import { ProductSearch, ProductSingleDetailDTO } from "../../../app/models/Product"
 import { InputMoney } from "../../ui/Forms/InputMoney"
 import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown"
 import { useCategories } from "../../Hooks/useCategories"
@@ -9,45 +8,46 @@ import { useBrands } from "../../Hooks/useBrands"
 import { Category } from "../../../app/models/Category"
 import { Brand } from "../../../app/models/Brand"
 import agent from "../../../app/api/agent"
+import { ProductFullDetailDTO, ProductParams } from "../../../app/models/Product"
 
 interface Props {
-    onReceiveProps: (data: ProductSingleDetailDTO) => void;
+    onReceiveProps: (data: ProductFullDetailDTO) => void;
 }
 
-export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
-    const [productSearch, setProductSearch] = useState<ProductSearch>({productName: '', minPrice: 0, maxPrice: 0, categoryId: '', brandId: ''});
-    const {data: categories} = useCategories();
-    const {data: brands} = useBrands();
+export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
+    const [productSearch, setProductSearch] = useState<ProductParams>({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 0 });
+    const { data: categories } = useCategories();
+    const { data: brands } = useBrands();
 
-    const categoryDropdown : DropdownData[] = useMemo(() => {
-        const defaultCategory : Category = {name: '', id: ''};
+    const categoryDropdown: DropdownData[] = useMemo(() => {
+        const defaultCategory: Category = { name: '', id: '' };
         const categoriesData = categories && [defaultCategory, ...categories];
         return categoriesData?.map((d: Category) => ({ title: d.name, value: d.id })) || [];
     }, [categories]);
 
-    const brandDropdown : DropdownData[] = useMemo(() => {
-        const defaultbrand : Brand = {name: '', id: '', country: ''};
+    const brandDropdown: DropdownData[] = useMemo(() => {
+        const defaultbrand: Brand = { name: '', id: '', country: '' };
         const brandsData = brands && [defaultbrand, ...brands];
         return brandsData?.map((d: Brand) => ({ title: d.name, value: d.id })) || [];
     }, [brands]);
 
     const [isSearch, setIsSearch] = useState<boolean>(false);
-    const [productSearchData, setProductSearchData] = useState<ProductSingleDetailDTO[]>([]);
+    const [productSearchData, setProductSearchData] = useState<ProductFullDetailDTO[]>([]);
 
     const handleChangeData = (e: any, key: string) => {
-        switch(key) {
+        switch (key) {
             case 'productName':
-                setProductSearch(prev => ({...prev, [key]: e.target.value}));
+                setProductSearch(prev => ({ ...prev, [key]: e.target.value }));
                 break;
             case 'minPrice':
             case 'maxPrice':
-                setProductSearch(prev => ({...prev, [key]: +e}));
+                setProductSearch(prev => ({ ...prev, [key]: +e }));
                 break;
             case 'categoryId':
             case 'brandId':
-                setProductSearch(prev => ({...prev, [key]: e.target.value}));
+                setProductSearch(prev => ({ ...prev, [key]: e.target.value }));
                 break;
-            default:            
+            default:
         }
     }
 
@@ -56,10 +56,10 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
 
         try {
             setIsSearch(true);
-            const data : ProductSingleDetailDTO[] = await agent.Product.details(productSearch);
+            const data: ProductFullDetailDTO[] = await agent.Product.list(productSearch);
             setProductSearchData(data);
         }
-        catch(error: any) {
+        catch (error: any) {
             console.log(error);
         }
         finally {
@@ -67,12 +67,12 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
         }
     }
 
-    const handleClearScreen = () => {        
-        setProductSearch(prev => ({productName: '', minPrice: 0, maxPrice: 0, categoryId: '', brandId: ''}));
+    const handleClearScreen = () => {
+        setProductSearch(prev => ({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 0 }));
         setProductSearchData([]);
     }
 
-    const handlePropProductToParent = (product: ProductSingleDetailDTO) => {
+    const handlePropProductToParent = (product: ProductFullDetailDTO) => {
         onReceiveProps(product);
     }
 
@@ -80,12 +80,12 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
         <Styled onSubmit={handleSearch} disabled={isSearch} >
             <div className="search-conditions" >
                 <Input
-                    id="productName"
+                    id="searchBy"
                     placeholder="Name..."
                     type="text"
                     width="100%"
-                    value={productSearch.productName}
-                    onGetDataChange={e => handleChangeData(e, 'productName')}
+                    value={productSearch.searchBy}
+                    onGetDataChange={e => handleChangeData(e, 'searchBy')}
                 />
                 <div className="product-prices" >
                     <InputMoney
@@ -96,7 +96,7 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
                         value={productSearch.minPrice}
                         onGetDataChange={e => handleChangeData(e, 'minPrice')}
                     />
-                    <label style={{display: 'inline-block', textAlign: 'center'}} >~</label>
+                    <label style={{ display: 'inline-block', textAlign: 'center' }} >~</label>
                     <InputMoney
                         id="maxPrice"
                         placeholder="Max Price"
@@ -112,7 +112,7 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
                         width="100%"
                         marginTop="1vh"
                         onGetDataChange={e => handleChangeData(e, 'categoryId')}
-                        currentSelectedValue={productSearch.categoryId}
+                        currentSelectedValue={productSearch.filterByCategory}
                     />
 
                     <Dropdown
@@ -120,17 +120,17 @@ export const SearchProductDetailStock = ({onReceiveProps}: Props) => {
                         width="100%"
                         marginTop="1vh"
                         onGetDataChange={e => handleChangeData(e, 'brandId')}
-                        currentSelectedValue={productSearch.brandId}
+                        currentSelectedValue={productSearch.filterByBrand}
                     />
                 </div>
             </div>
 
             <div className="search-data" >
                 {
-                    productSearchData.map((p: ProductSingleDetailDTO) => {
+                    productSearchData.map((p: ProductFullDetailDTO) => {
                         return (
                             <div className="search-row" key={p.productDetailId} onDoubleClick={handlePropProductToParent.bind(null, p)} >
-                                <span>{p.productName}</span>
+                                <span>{p.name}</span>
                                 <span>{p.originPrice.toLocaleString('vi-VN')}</span>
                                 <span>{p.categoryName}</span>
                                 <span>{p.brandName}</span>

@@ -32,48 +32,49 @@ export const router = createBrowserRouter(([
         path: '/',
         element: <App />,
         children: [
-            
+
             // PUBLIC ROUTES
-            { path: 'products', element: <ProductPage/> },
-            { path: 'products/:productId/:productDetailId', element: <ProductDetailPage /> },
-            { path: 'about', element: <About/> },
-            { path: 'news', element: <News/> },
-            { path: 'contact', element: <Contact/> },
-            { path: 'login', element: <Login/> },
-            { path: 'signup', element: <SignUp/> },
-            { path: 'forgot-password', element: <ForgotPassword/> },
-            { path: 'get-reset-password', element: <ResetPassword/> },
+            { path: 'products', element: <ProductPage /> },
+            { path: 'products/products/:productId/:productDetailId', element: <ProductDetailPage /> },
+            { path: 'about', element: <About /> },
+            { path: 'news', element: <News /> },
+            { path: 'contact', element: <Contact /> },
+            { path: 'login', element: <Login /> },
+            { path: 'signup', element: <SignUp /> },
+            { path: 'forgot-password', element: <ForgotPassword /> },
+            { path: 'get-reset-password', element: <ResetPassword /> },
 
             // ERROR ROUTES
-            { path: '*', element: <NotfoundPage/> },
+            { path: '*', element: <NotfoundPage /> },
 
             // ADMIN ROUTES
             {
                 element: <RequireAuth roles={['Admin']} />, children: [
-                    { path: 'admin', element: <AdminPage/>,
+                    {
+                        path: 'admin', element: <AdminPage />,
                         children: [
-                            { path: 'accounts', element: <AdminAccount/> },
-                            { path: 'products', element: <AdminProduct/> },
-                            { path: 'categories', element: <AdminCategory/> },
-                            { path: 'brands', element: <AdminBrand/> },
-                            { path: 'promotions', element: <AdminPromotion/> },
-                            { path: 'stocks', element: <AdminStock/> },
-                            { path: 'warehouses', element: <AdminWarehouse/> },
-                            { path: 'orders', element: <AdminOrder/> },
+                            { path: 'accounts', element: <AdminAccount /> },
+                            { path: 'products', element: <AdminProduct /> },
+                            { path: 'categories', element: <AdminCategory /> },
+                            { path: 'brands', element: <AdminBrand /> },
+                            { path: 'promotions', element: <AdminPromotion /> },
+                            { path: 'stocks', element: <AdminStock /> },
+                            { path: 'warehouses', element: <AdminWarehouse /> },
+                            { path: 'orders', element: <AdminOrder /> },
                         ]
                     },
                 ]
             },
-            
+
             // AUTHENTICATED ROUTES
             {
                 element: <RequireAuth />, children: [
-                    { path: 'profile', element: <UserProfile/>, },
-                    { path: 'orders', element: <OrdersSummary/> },
-                    { path: 'change-password', element: <ChangePassword/> },
-                    { path: 'basket', element: <BasketPage/> },
-                    { path: 'checkout/:clientSecret', element: <CheckoutPage/> },
-                    { path: 'checkout-success', element: <CheckOutSuccess/> },
+                    { path: 'profile', element: <UserProfile />, },
+                    { path: 'orders', element: <OrdersSummary /> },
+                    { path: 'change-password', element: <ChangePassword /> },
+                    { path: 'basket', element: <BasketPage /> },
+                    { path: 'checkout/:clientSecret', element: <CheckoutPage /> },
+                    { path: 'checkout-success', element: <CheckOutSuccess /> },
                 ]
             },
         ]

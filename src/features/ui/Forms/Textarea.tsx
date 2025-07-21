@@ -10,7 +10,7 @@ interface Props {
 export const Textarea = ({value, placeholder, onGetDataChange, id} : Props) => {
     return (
         <Style>
-            <textarea id={id} value={value || undefined} rows={10} placeholder={placeholder} onChange={onGetDataChange} />
+            <textarea id={id} value={value || undefined} rows={5} placeholder={placeholder} onChange={onGetDataChange} />
             <span></span>
         </Style>
     )

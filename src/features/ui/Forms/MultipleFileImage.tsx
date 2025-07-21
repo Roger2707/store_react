@@ -4,15 +4,15 @@ import styled from "styled-components";
 interface Props {
     isClearMode: boolean;
     value: string;
-    onGetDataChange: (e:any) => void;
+    onGetDataChange: (e: any) => void;
 }
 
 export interface FileWithPreview {
     file: File;
     preview: string;
-  }
+}
 
-export const MultipleFileImage = ({isClearMode, value, onGetDataChange}: Props) => {
+export const MultipleFileImage = ({ isClearMode, value, onGetDataChange }: Props) => {
     const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
 
     const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +23,7 @@ export const MultipleFileImage = ({isClearMode, value, onGetDataChange}: Props) 
             file,
             preview: URL.createObjectURL(file),
         }));
-      
+
         setSelectedFiles(fileArray);
         onGetDataChange(Array.from(files));
     }
@@ -32,41 +32,42 @@ export const MultipleFileImage = ({isClearMode, value, onGetDataChange}: Props) 
         isClearMode && setSelectedFiles([]);
     }, [isClearMode])
 
+
     return (
         <Style>
             <input
                 type="file"
                 multiple
                 id="imageUpload"
-                accept="image/*" 
+                accept="image/*"
                 onChange={handleChangeImage}
             />
             <label htmlFor="imageUpload" >Uploads:</label>
             <div className="preview" >
                 {
-                ((selectedFiles.length === 0 && value !== '') || isClearMode) ?
-                    Array.from(value.split(',')).map((item, index) => (
-                        <img 
-                            key={index}
-                            src={item}
-                            alt={`Preview ${index}`}
-                        />
-                    ))
-                :
-                    selectedFiles.map((item, index) => (
-                        <img
-                            key={index}
-                            src={item.preview}
-                            alt={`Preview ${index}`}
-                        />
-                    ))
+                    ((selectedFiles.length === 0 && value !== '') || isClearMode) ?
+                        Array.from(value.split(',')).map((item, index) => (
+                            <img
+                                key={index}
+                                src={item}
+                                alt={`Preview ${index}`}
+                            />
+                        ))
+                        :
+                        selectedFiles.map((item, index) => (
+                            <img
+                                key={index}
+                                src={item.preview}
+                                alt={`Preview ${index}`}
+                            />
+                        ))
                 }
             </div>
         </Style>
     )
 }
 
-const Style = styled.div `
+const Style = styled.div`
     input {
         display: none;
     }

@@ -9,9 +9,9 @@ import { SearchProductDetailStock } from "../../components/Stock/SearchProductDe
 import { Modal } from "../../ui/Layout/Modal";
 import agent from "../../../app/api/agent";
 import { ShowTransactions } from "../../components/Stock/ShowTransactions";
-import { ProductSingleDetailDTO } from "../../../app/models/Product";
+import { ProductFullDetailDTO } from "../../../app/models/Product";
 
-const defaultStockUpsertDTO : StockUpsertDTO = {
+const defaultStockUpsertDTO: StockUpsertDTO = {
     stockId: '',
     productDetailId: '',
     warehouseId: '',
@@ -19,7 +19,7 @@ const defaultStockUpsertDTO : StockUpsertDTO = {
     transactionType: -1,
 }
 
-const defaulStockDTO : StockDTO = {
+const defaulStockDTO: StockDTO = {
     productDetailId: '',
     productName: '',
     color: '',
@@ -27,7 +27,7 @@ const defaulStockDTO : StockDTO = {
     imageUrl: '',
     categoryName: '',
     brandName: '',
-    stockDetail : []
+    stockDetail: []
 }
 
 export const AdminStock = () => {
@@ -42,14 +42,14 @@ export const AdminStock = () => {
     const [isOpenSearchProduct, setIsOpenSearchProduct] = useState<boolean>(false);
     const [actionEnable, setActionEnable] = useState<boolean>(false);
     const [showTransactionMode, setShowTransactionMode] = useState<boolean>(false);
-    
+
     const getStockDTO = async (productDetailId: string) => {
         try {
             setIsLoadData(true);
-            const data : StockDTO = await agent.Stocks.getStockOfProduct(productDetailId)
+            const data: StockDTO = await agent.Stocks.getStockOfProduct(productDetailId)
             setStockDTO(data);
         } catch (error) {
-            setStockUpsertDTO(prev => ({...prev, productDetailId: ''}));
+            setStockUpsertDTO(prev => ({ ...prev, productDetailId: '' }));
             productDetailInputRef?.current?.focus();
         }
         finally {
@@ -59,24 +59,23 @@ export const AdminStock = () => {
 
     const handleChangeData = (e: any, key: string) => {
         const value = e.target.value;
-        switch(key)
-        {
+        switch (key) {
             case 'productDetailId':
             case 'warehouseId':
                 setStockUpsertDTO(prev => {
                     return {
                         ...prev
-                        , [key] : value
+                        , [key]: value
                     }
                 })
                 break;
 
             case "quantity":
-            case "transactionType":                
+            case "transactionType":
                 setStockUpsertDTO(prev => {
                     return {
                         ...prev
-                        , [key] : +value
+                        , [key]: +value
                     }
                 })
                 break;
@@ -84,18 +83,18 @@ export const AdminStock = () => {
         }
     }
 
-    const handleReceiveProduct = (product: ProductSingleDetailDTO) => {
-        if(product) {
+    const handleReceiveProduct = (product: ProductFullDetailDTO) => {
+        if (product) {
             console.log(product);
-            
+
             setIsOpenSearchProduct(false);
             getStockDTO(product.productDetailId);
-            setStockUpsertDTO(prev => ({...prev, productDetailId: product.productDetailId}));   
+            setStockUpsertDTO(prev => ({ ...prev, productDetailId: product.productDetailId }));
         }
     }
 
     useEffect(() => {
-        if(stockDTO.productDetailId !== '') {
+        if (stockDTO.productDetailId !== '') {
             // Retrieve warehouse quantity
             let warehousesQuantities: WarehouseProductQuantity[] = stockDTO.stockDetail.map(s => ({
                 warehouseId: s.warehouseId,
@@ -112,25 +111,25 @@ export const AdminStock = () => {
             let newWarehouseDropdown = [wareHouseDropdownDefault, ...stockDTO.stockDetail];
             setWarehousesDropdown(prev => {
                 return newWarehouseDropdown?.map((d: any) => {
-                    return {title: d.warehouseName, value: d.warehouseId};
-                });                
+                    return { title: d.warehouseName, value: d.warehouseId };
+                });
             });
             // Enable Input Actions
-            setActionEnable(true); 
+            setActionEnable(true);
         }
     }, [stockDTO.productDetailId, stockDTO.stockDetail])
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        
+
         try {
             setIsSaving(true);
-            const newStockUpsert : StockUpsertDTO = {
+            const newStockUpsert: StockUpsertDTO = {
                 ...stockUpsertDTO
                 , stockId: stockDTO.stockDetail.find(s => s.warehouseId === stockUpsertDTO.warehouseId)?.stockId || ''
-            }     
+            }
             await agent.Stocks.upsertStock(newStockUpsert);
-            handleClearData();     
+            handleClearData();
         } catch (error: any) {
             // Log the full error response
             console.log('Error response:', error);
@@ -156,110 +155,110 @@ export const AdminStock = () => {
 
     return (
         <>
-        {isOpenSearchProduct && (
-            <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} height="80%" ><SearchProductDetailStock onReceiveProps={handleReceiveProduct} /></Modal>
-        )}
+            {isOpenSearchProduct && (
+                <Modal title="Search Product:" onSetOpen={setIsOpenSearchProduct} height="80%" ><SearchProductDetailStock onReceiveProps={handleReceiveProduct} /></Modal>
+            )}
 
-        {showTransactionMode && (
-            <Modal title={`Transaction of Product: ${stockDTO.productName}`} onSetOpen={setShowTransactionMode} width="80%" ><ShowTransactions productDetailId={stockDTO.productDetailId}/></Modal>
-        )}
+            {showTransactionMode && (
+                <Modal title={`Transaction of Product: ${stockDTO.productName}`} onSetOpen={setShowTransactionMode} width="80%" ><ShowTransactions productDetailId={stockDTO.productDetailId} /></Modal>
+            )}
 
-        <h1>Stocks:</h1>
-        <StockFormStyle disabled={isSaving || isOpenSearchProduct} onSubmit={handleSubmit} >
-            <div className="stocks-header" >
-                <div className="stock-products" >
-                    <div className="stock-products-header" >
-                        <Input
-                            id="productId"
-                            placeholder="ProductDetailID..."
-                            type="text"
-                            width="100%"
-                            value={stockUpsertDTO.productDetailId}
-                            onGetDataChange={e => handleChangeData(e, 'productDetailId')}
-                            onGetDataEnter={(e) => getStockDTO(e.target.value)}
-                            ref={productDetailInputRef}
-                            disable={actionEnable}
-                        />
+            <h1>Stocks:</h1>
+            <StockFormStyle disabled={isSaving || isOpenSearchProduct} onSubmit={handleSubmit} >
+                <div className="stocks-header" >
+                    <div className="stock-products" >
+                        <div className="stock-products-header" >
+                            <Input
+                                id="productId"
+                                placeholder="ProductDetailID..."
+                                type="text"
+                                width="100%"
+                                value={stockUpsertDTO.productDetailId}
+                                onGetDataChange={e => handleChangeData(e, 'productDetailId')}
+                                onGetDataEnter={(e) => getStockDTO(e.target.value)}
+                                ref={productDetailInputRef}
+                                disable={actionEnable}
+                            />
 
-                        <button type="button" className="btn-search-product" disabled={actionEnable}
+                            <button type="button" className="btn-search-product" disabled={actionEnable}
                                 onClick={() => setIsOpenSearchProduct(true)} >
-                            . . .
-                        </button>
+                                . . .
+                            </button>
+                        </div>
+
+                        <div className="products" style={{ opacity: `${isLoadData ? 0.5 : 1}` }} >
+                            <h3>Product Detail:</h3>
+                            <div className="product-detail-info" >
+                                <Input id="productName" type="text" value={stockDTO.productName} readonly />
+                                <Input id="color" type="text" value={stockDTO.color} readonly />
+                                <Input id="categoryName" type="text" value={stockDTO.categoryName} readonly />
+                                <Input id="brandName" type="text" value={stockDTO.brandName} readonly />
+                                <Input id="price" type="text" value={stockDTO.price} readonly />
+                                <img src={stockDTO.imageUrl.split(',')[0]} alt="product-detail-first-image" />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="products" style={{opacity: `${isLoadData ? 0.5 : 1}`}} >
-                        <h3>Product Detail:</h3>
-                        <div className="product-detail-info" >
-                            <Input id="productName" type="text" value={stockDTO.productName} readonly />
-                            <Input id="color" type="text" value={stockDTO.color} readonly />
-                            <Input id="categoryName" type="text" value={stockDTO.categoryName} readonly />
-                            <Input id="brandName" type="text" value={stockDTO.brandName} readonly />
-                            <Input id="price" type="text" value={stockDTO.price} readonly />
-                            <img src={stockDTO.imageUrl.split(',')[0]} alt="product-detail-first-image" />
+                    <div className="stock-warehouse" >
+                        <h2>Inventory Detail:</h2>
+                        <div className="warehouse-detail" >
+                            {
+                                warehouses?.map(w => {
+                                    return (
+                                        <div className="warehouse-item" key={w.warehouseId} >
+                                            <span>{w.warehouseName}</span>
+                                            <span>{w.quantity}</span>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>
 
-                <div className="stock-warehouse" >
-                    <h2>Inventory Detail:</h2>
-                    <div className="warehouse-detail" >
-                        {
-                            warehouses?.map(w => {
-                                return (
-                                    <div className="warehouse-item" key={w.warehouseId} >
-                                        <span>{w.warehouseName}</span>
-                                        <span>{w.quantity}</span>
-                                    </div>
-                                )
-                            })
-                        }
+                <div className="stocks-management" >
+                    <h3>Import / Export Inventory:</h3>
+                    <div className="stocks-quantity" >
+                        <div className="stocks-quantity-input" >
+                            <Input
+                                id="quantity"
+                                placeholder="Quantity..."
+                                type="number"
+                                width="60%"
+                                value={stockUpsertDTO.quantity}
+                                onGetDataChange={e => handleChangeData(e, 'quantity')}
+                                disable={!actionEnable}
+                            />
+
+                            <Dropdown
+                                id='transactionType'
+                                data={transactionType}
+                                width="60%"
+                                marginTop="1vh"
+                                onGetDataChange={e => handleChangeData(e, 'transactionType')}
+                                currentSelectedValue={stockUpsertDTO.transactionType}
+                                disable={!actionEnable}
+                            />
+
+                            <Dropdown
+                                id='warehouseId'
+                                data={warehousesDropdown}
+                                width="60%"
+                                marginTop="1vh"
+                                onGetDataChange={e => handleChangeData(e, 'warehouseId')}
+                                currentSelectedValue={stockUpsertDTO.warehouseId}
+                                disable={!actionEnable}
+                            />
+                        </div>
+
+                        <div className="stocks-quantity-actions" >
+                            <button type="button" onClick={handleClearData} >Clear Data</button>
+                            <button type="button" onClick={() => setShowTransactionMode(true)} disabled={!actionEnable} >Show Transactions</button>
+                            <button type="submit" disabled={!actionEnable} >Save</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div className="stocks-management" >
-                <h3>Import / Export Inventory:</h3>
-                <div className="stocks-quantity" >
-                    <div className="stocks-quantity-input" >
-                        <Input
-                            id="quantity"
-                            placeholder="Quantity..."
-                            type="number"
-                            width="60%"
-                            value={stockUpsertDTO.quantity}
-                            onGetDataChange={e => handleChangeData(e, 'quantity')}
-                            disable={!actionEnable}
-                        />
-
-                        <Dropdown
-                            id='transactionType'
-                            data={transactionType}
-                            width="60%"
-                            marginTop="1vh"
-                            onGetDataChange={e => handleChangeData(e, 'transactionType')}
-                            currentSelectedValue={stockUpsertDTO.transactionType}
-                            disable={!actionEnable}
-                        />
-
-                        <Dropdown
-                            id='warehouseId'
-                            data={warehousesDropdown}
-                            width="60%"
-                            marginTop="1vh"
-                            onGetDataChange={e => handleChangeData(e, 'warehouseId')}
-                            currentSelectedValue={stockUpsertDTO.warehouseId}
-                            disable={!actionEnable}
-                        />
-                    </div>
-
-                    <div className="stocks-quantity-actions" >
-                        <button type="button" onClick={handleClearData} >Clear Data</button>
-                        <button type="button" onClick={() => setShowTransactionMode(true)} disabled={!actionEnable} >Show Transactions</button>
-                        <button type="submit" disabled={!actionEnable} >Save</button>
-                    </div>
-                </div>
-            </div>
-        </StockFormStyle>
+            </StockFormStyle>
         </>
     )
 }

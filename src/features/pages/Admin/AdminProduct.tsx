@@ -10,8 +10,6 @@ import { useProducts } from "../../Hooks/useProducts";
 import { ProductParams } from "../../../app/models/Product";
 import { Pagination } from "../../ui/Common/Pagination";
 import { SearchData } from "../../ui/Common/SearchData";
-import { SortData } from "../../ui/Common/SortData";
-import { sortOptions } from "../../../app/utils/helper";
 import { columns } from "./AdminProductsHelper";
 import { useQueryClient } from "@tanstack/react-query";
 import { ButtonCreateAdmin } from "./UI/ButtonCreateAdmin";
