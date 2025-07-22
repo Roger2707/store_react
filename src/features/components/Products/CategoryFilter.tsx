@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components"
-import { useCategories } from "../../Hooks/useCategories";
 import { Category } from "../../../app/models/Category";
 import { ProductParams } from "../../../app/models/Product";
+import { useAppSelector } from "../../../app/store/configureStore";
 
 interface Props {
     categoriesFilter: string;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const CategoryFilter = ({categoriesFilter, onSetCategoriesFilter}: Props) => { 
-    const { data } = useCategories();
+    const { categories: data } = useAppSelector(state => state.category);
     const [categoriesSelected, setCategoriesSelected] = useState<string[]>([]);
 
     const handleSelectedCategory = (id: string) => {

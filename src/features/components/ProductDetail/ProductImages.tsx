@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components"
 
 interface Props {
@@ -11,6 +11,10 @@ export const ProductImage = ({imageUrls} : Props) => {
     const handleSetMainImage = (image: string) => {
         setCurrentImage(image);
     }
+
+    useEffect(() => {
+        setCurrentImage(imageUrls[0]);
+    }, [imageUrls]);
 
     return (
         <Style>

@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components"
 import { ProductParams } from "../../../app/models/Product";
-import { useBrands } from "../../Hooks/useBrands";
 import { Brand } from "../../../app/models/Brand";
+import { useAppSelector } from "../../../app/store/configureStore";
 
 interface Props {
     brandsFilter: string;
@@ -10,8 +10,7 @@ interface Props {
 }
 
 export const BrandsFilter = ({brandsFilter, onSetBrandsFilter}: Props) => {
-    const {data} = useBrands();
-    
+    const {brands: data} = useAppSelector(state => state.brand);
     const [brandsSelected, setBrandsSelected] = useState<string[]>([]);
 
     const handleSelectedBrands = (id: string) => {

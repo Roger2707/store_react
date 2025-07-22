@@ -10,59 +10,67 @@ import { getBasket } from './app/store/basketSlice';
 import { Container } from './features/ui/Layout/Container';
 import { Footer } from './features/ui/Layout/Footer';
 import { useSignalIROrderStatusHub } from './features/Hooks/useSignalRNotiHub';
+import { fetchCategoryAsync, setCategoriesDropdown } from './app/store/categorySlice';
+import { fetchBrandsAsync, setBrandsDropdown } from './app/store/brandSlice';
 
 function App() {
-    const location = useLocation();
-    const dispatch = useAppDispatch();
-    const [loadingApp, setLoadingApp] = useState<boolean>(true);
-    const {user} = useAppSelector(state => state.user);
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+  const [loadingApp, setLoadingApp] = useState<boolean>(true);
+  const { user } = useAppSelector(state => state.user);
 
-    const initApp = useCallback(async () => {
-      try {
-        await dispatch(fetchCurrentUser());
-      } catch (error) {
-        console.log(error);
-      }
-    }, [dispatch]);
+  const initApp = useCallback(async () => {
+    try {
+      await dispatch(fetchCurrentUser());
+      await dispatch(fetchCategoryAsync());
+      await dispatch(fetchBrandsAsync());
 
-    useEffect(() => {
-      if (user?.basketId) {
-        dispatch(getBasket());
-      }
-    }, [user, dispatch]);
-    
-    useEffect(() => {
-        initApp().then(() => setLoadingApp(false));
-    }, [initApp]);
+      // set dropdown data
+      dispatch(setCategoriesDropdown(null))
+      dispatch(setBrandsDropdown(null))
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch]);
 
-    const token = user?.token ?? null;
-    useSignalIROrderStatusHub(token);
+  useEffect(() => {
+    if (user?.basketId) {
+      dispatch(getBasket());
+    }
+  }, [user, dispatch]);
 
-    return (
-      <AppStyle>
+  useEffect(() => {
+    initApp().then(() => setLoadingApp(false));
+  }, [initApp]);
+
+  const token = user?.token ?? null;
+  useSignalIROrderStatusHub(token);
+
+  return (
+    <AppStyle>
       {
-          loadingApp ? <Loading message='Initializing App...' />
+        loadingApp ? <Loading message='Initializing App...' />
           :
           <>
-            {!location.pathname.includes('admin') && <Header/>}
+            {!location.pathname.includes('admin') && <Header />}
             {
               location.pathname === '/' ?
-              <Home/>
-              :
-              (
-                location.pathname.includes('admin') ?
-                <Outlet/>
+                <Home />
                 :
-                <Container>
+                (
+                  location.pathname.includes('admin') ?
                     <Outlet />
-                </Container>
-              )
+                    :
+                    <Container>
+                      <Outlet />
+                    </Container>
+                )
             }
-            <Footer/>
+            <Footer />
           </>
       }
-      </AppStyle>
-    );
+    </AppStyle>
+  );
 }
 
 const AppStyle = styled.div`

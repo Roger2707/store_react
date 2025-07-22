@@ -13,11 +13,11 @@ interface Props {
     width?: string;
 }
 
-export const InputMoney = forwardRef<HTMLInputElement, Props>(({id, value, placeholder, type, onGetDataChange, errors, readonly, width}, ref) => {
+export const InputMoney = forwardRef<HTMLInputElement, Props>(({ id, value, placeholder, type, onGetDataChange, errors, readonly, width }, ref) => {
     const [inputValue, setInputValue] = useState<string>(formatPrice(value));
 
-    useEffect(()=> {
-        if(value || +value === 0) {
+    useEffect(() => {
+        if (value || +value === 0) {
             setInputValue(formatPrice(value));
         }
     }, [value])
@@ -33,24 +33,24 @@ export const InputMoney = forwardRef<HTMLInputElement, Props>(({id, value, place
 
         if (!isNaN(numericValue)) {
             onGetDataChange(numericValue);
-            setInputValue(formatPrice(numericValue)); 
+            setInputValue(formatPrice(numericValue));
         } else {
-            onGetDataChange(0); 
+            onGetDataChange(0);
             setInputValue('');
         }
     };
 
     return (
         <Style className="input_container" >
-            <input 
-                id={id} type={type} 
-                value={inputValue} 
-                placeholder={placeholder} 
-                onChange={handleChange} 
+            <input
+                id={id} type={type}
+                value={inputValue}
+                placeholder={placeholder}
+                onChange={handleChange}
                 onBlur={handleBlur}
-                ref={ref} 
-                readOnly={readonly ? true: false}
-                style={{width : `${width ? width : '100%'}`}}
+                ref={ref}
+                readOnly={readonly ? true : false}
+                style={{ width: `${width ? width : '100%'}` }}
             />
             <span ></span>
         </Style>

@@ -1,24 +1,26 @@
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input"
 import { InputMoney } from "../../ui/Forms/InputMoney"
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, forwardRef, SetStateAction, useEffect, useImperativeHandle, useState } from "react";
 import { Dropdown } from "../../ui/Forms/Dropdown";
 import { productStatus } from "../../../app/utils/helper";
 import { ProductUpsertDetailDTO, ProductUpsertDTO } from "../../../app/models/Product";
 import { MultipleFileImage } from "../../ui/Forms/MultipleFileImage";
-import { ImageUploadDTO, ImageUploadResult } from "../../../app/models/ImageUpload";
-import agent from "../../../app/api/agent";
+import { ImageUploadDTO } from "../../../app/models/ImageUpload";
 
 interface Props {
     productName: string;
-    isSaving: boolean;
     isClearMode: boolean;
     selectedTabIndex: number;
     productDetails: ProductUpsertDetailDTO[];
     onSetProductUpsert: Dispatch<SetStateAction<ProductUpsertDTO>>;
 }
 
-export const ProductDetailTabs = ({ productName, isSaving, isClearMode, selectedTabIndex, productDetails, onSetProductUpsert }: Props) => {
+export type UploadsRef = {
+    getUploads: () => any;
+};
+
+export const ProductDetailTabs = forwardRef<UploadsRef, Props>(({ productName, isClearMode, selectedTabIndex, productDetails, onSetProductUpsert }, ref) => {
 
     const uploadArray: ImageUploadDTO[] = Array.from({ length: productDetails.length }, () => ({
         files: null,
@@ -27,25 +29,17 @@ export const ProductDetailTabs = ({ productName, isSaving, isClearMode, selected
         imageDisplay: ''
     }));
     const [uploads, setUploads] = useState<ImageUploadDTO[]>(uploadArray);
+    const [value, setValue] = useState<any>();
 
     useEffect(() => {
         if (isClearMode) setUploads(uploadArray);
         // eslint-disable-next-line
     }, [isClearMode]);
 
-    useEffect(() => {
-        const uploadImagesAsync = async () => {
-            let uploadResult: ImageUploadResult = await agent.Upload.uploads(uploads!);
-
-            if (!uploadResult) {
-                // have to prop parent to set save = false
-                return;
-            }
-        }
-        if (isSaving) {
-            uploadImagesAsync();
-        }
-    })
+    // ref
+    useImperativeHandle(ref, () => ({
+        getUploads: () => uploads
+    }));
 
     // Call when start component
     useEffect(() => {
@@ -72,11 +66,13 @@ export const ProductDetailTabs = ({ productName, isSaving, isClearMode, selected
         setUploads(prev => {
             const updatedUploads = [...prev];
             updatedUploads[selectedTabIndex] = newUpload;
-            console.log(updatedUploads);
-            
             return updatedUploads;
         })
     }
+
+    useEffect(() => {
+        setValue(uploads[selectedTabIndex].imageDisplay !== '' ? uploads[selectedTabIndex].imageDisplay : uploads[selectedTabIndex].files);
+    }, [uploads, selectedTabIndex])
 
     const handleGetDataChange = (e: any, key: string) => {
         let newValue;
@@ -129,17 +125,17 @@ export const ProductDetailTabs = ({ productName, isSaving, isClearMode, selected
 
             <MultipleFileImage
                 isClearMode={isClearMode}
-                value={uploads[selectedTabIndex].imageDisplay}
+                value={value}
                 onGetDataChange={e => handleUploadChange(e)}
             />
         </ProductDetailTabItemStyle>
     )
-}
+})
 
 const ProductDetailTabItemStyle = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-column-gap: 50px;
     grid-row-gap: 10px;
-    padding: 0 3vw;
+    padding: 1.5vh 2vw;
 `

@@ -1,14 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { Brand } from "../../../app/models/Brand";
 import { Promotion, PromotionUpsert } from "../../../app/models/Promotion";
-import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
-import { Category } from "../../../app/models/Category";
+import { Dropdown } from "../../ui/Forms/Dropdown";
 import { setPromotionsCreate, setPromotionUpdate } from "../../../app/store/promotionSlice";
-import { useCategories } from "../../Hooks/useCategories";
-import { useBrands } from "../../Hooks/useBrands";
 import agent from "../../../app/api/agent";
 
 interface Props {
@@ -16,77 +12,52 @@ interface Props {
     onSetOpenForm: (e: boolean) => void;
 }
 
-export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
-    const [promotion, setPromotion] = useState<PromotionUpsert>({id: id, brandId: '', categoryId: '', startDate: new Date(), endDate: new Date(), percentageDiscount: 0});
-    const {promotions} = useAppSelector(state => state.promotion);
+export const PromotionUpsertForm = ({ id, onSetOpenForm }: Props) => {
+    const [promotion, setPromotion] = useState<PromotionUpsert>({ id: id, brandId: '', categoryId: '', startDate: new Date(), endDate: new Date(), percentageDiscount: 0 });
+    const { promotions } = useAppSelector(state => state.promotion);
     const existedPromoiton = promotions.find(c => c.id === id);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
 
-    // react query
-    const {data: categories} = useCategories();
-    const {data: brands} = useBrands();
-    
+    const { categoriesDropdown } = useAppSelector(state => state.category)
+    const { brandsDropdown } = useAppSelector(state => state.brand)
+
     // This function only called when update mode
     useEffect(() => {
         setLoading(true);
-        if(existedPromoiton) {      
+        if (existedPromoiton) {
             setPromotion(prev => {
                 return {
                     id: existedPromoiton.id,
-                    categoryId: existedPromoiton.categoryId, 
+                    categoryId: existedPromoiton.categoryId,
                     brandId: existedPromoiton.brandId,
                     startDate: new Date(existedPromoiton.startDate),
                     endDate: new Date(existedPromoiton.endDate),
                     percentageDiscount: existedPromoiton.percentageDiscount
                 };
-            });   
+            });
         }
         setLoading(false)
     }, [existedPromoiton]);
 
-    const categoryDropdown : DropdownData[] = useMemo(() => {
-        return categories?.map((d: Category) => ({ title: d.name, value: d.id })) || [];
-    }, [categories]);
-    
-    useEffect(() => {     
-        if (promotion.categoryId === '' && categoryDropdown.length > 0) {
-            setPromotion(prev => ({
-                ...prev,
-                categoryId: categoryDropdown[0].value
-            }));
-        }
-    }, [categoryDropdown, promotion.categoryId]); 
-    
-    const brandDropdown : DropdownData[] = useMemo(() => {
-        return brands?.map((d: Brand) => ({ title: d.name, value: d.id })) || [];
-    }, [brands]);
-    
-    useEffect(() => {     
-        if (promotion.brandId === '' && brandDropdown.length > 0) {
-            setPromotion(prev => ({
-                ...prev,
-                brandId: brandDropdown[0].value
-            }));
-        }
-    }, [brandDropdown, promotion.brandId]);
-    
+
+
     const handleGetDataChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
         let value: string | Date;;
-        switch(key){
+        switch (key) {
             case "startDate":
             case "endDate":
                 value = new Date(e.target.value);
                 break;
             default:
                 value = e.target.value;
-                break;          
+                break;
         }
 
         setPromotion(prev => {
-            return {...prev, [key] : value};
-        });        
+            return { ...prev, [key]: value };
+        });
     }
 
     const handleCloseForm = () => {
@@ -95,9 +66,9 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        try{
+        try {
             setSaving(true);
-            let promotionResult : Promotion;
+            let promotionResult: Promotion;
             let objectParam = {
                 id: promotion.id,
                 categoryId: promotion.categoryId,
@@ -107,18 +78,18 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
                 percentageDiscount: promotion.percentageDiscount
             }
             console.log(objectParam);
-            
-            if(existedPromoiton) {            
+
+            if (existedPromoiton) {
                 promotionResult = await agent.Promotions.update(objectParam);
                 dispatch(setPromotionUpdate(promotionResult));
             }
             else {
                 promotionResult = await agent.Promotions.create(objectParam);
-                dispatch(setPromotionsCreate(promotionResult));          
+                dispatch(setPromotionsCreate(promotionResult));
             }
             handleCloseForm();
         }
-        catch(error: any) {
+        catch (error: any) {
             console.log(error);
         }
         finally {
@@ -129,11 +100,11 @@ export const PromotionUpsertForm = ({id, onSetOpenForm} : Props) => {
     return (
         <Style onSubmit={handleSubmit} disabled={saving || loading} >
             <div className="form_inputs" >
-                <Dropdown field="categoryId" data={categoryDropdown} currentSelectedValue={promotion.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
-                <Dropdown field="brandId" data={brandDropdown} currentSelectedValue={promotion.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
-                <Input id='startDate' placeholder="Start Date..." type="date" value={promotion.startDate instanceof Date ? promotion.startDate.toISOString().split("T")[0] : ''} onGetDataChange = {(e) => handleGetDataChange(e, 'startDate')}  />
-                <Input id='endDate' placeholder="End Date..." type="date" value={promotion.startDate instanceof Date ? promotion.endDate.toISOString().split("T")[0] : ''} onGetDataChange = {(e) => handleGetDataChange(e, 'endDate')}  />
-                <Input id='percentageDiscount' placeholder="% Discount" type="number" value={promotion.percentageDiscount} onGetDataChange = {(e) => handleGetDataChange(e, 'percentageDiscount')}  />
+                <Dropdown field="categoryId" data={categoriesDropdown} currentSelectedValue={promotion.categoryId} onGetDataChange={e => handleGetDataChange(e, 'categoryId')} />
+                <Dropdown field="brandId" data={brandsDropdown} currentSelectedValue={promotion.brandId} onGetDataChange={e => handleGetDataChange(e, 'brandId')} />
+                <Input id='startDate' placeholder="Start Date..." type="date" value={promotion.startDate instanceof Date ? promotion.startDate.toISOString().split("T")[0] : ''} onGetDataChange={(e) => handleGetDataChange(e, 'startDate')} />
+                <Input id='endDate' placeholder="End Date..." type="date" value={promotion.startDate instanceof Date ? promotion.endDate.toISOString().split("T")[0] : ''} onGetDataChange={(e) => handleGetDataChange(e, 'endDate')} />
+                <Input id='percentageDiscount' placeholder="% Discount" type="number" value={promotion.percentageDiscount} onGetDataChange={(e) => handleGetDataChange(e, 'percentageDiscount')} />
             </div>
 
             <div className="form_controls" >

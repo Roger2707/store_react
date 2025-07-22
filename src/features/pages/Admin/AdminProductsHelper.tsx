@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export const columns = [
     { key: 'productId', title: 'ProductId' },
-    { key: 'productName', title: 'Name' },
+    { key: 'name', title: 'Name' },
     {
         key: 'imageUrl',
         title: 'Photo',

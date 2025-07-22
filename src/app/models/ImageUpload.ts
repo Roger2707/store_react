@@ -15,4 +15,5 @@ export interface SingleImageUploadDTO {
 export interface ImageUploadResult {
     imageUrl: string;
     publicId: string;
+    messages: string;
 }

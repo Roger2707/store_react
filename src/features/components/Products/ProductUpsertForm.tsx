@@ -1,16 +1,14 @@
 import styled from "styled-components"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "../../ui/Forms/Input";
 import { Textarea } from "../../ui/Forms/Textarea";
-import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
-import { Category } from "../../../app/models/Category";
-import { Brand } from "../../../app/models/Brand";
-import { useCategories } from "../../Hooks/useCategories";
-import { useBrands } from "../../Hooks/useBrands";
+import { Dropdown } from "../../ui/Forms/Dropdown";
 import agent from "../../../app/api/agent";
 import { useQueryClient } from "@tanstack/react-query";
-import { ProductDTO, ProductUpsertDTO } from "../../../app/models/Product";
-import { ProductDetailTabs } from "./ProductDetailTabs";
+import { ProductDTO, ProductUpsertDetailDTO, ProductUpsertDTO } from "../../../app/models/Product";
+import { ProductDetailTabs, UploadsRef } from "./ProductDetailTabs";
+import { ImageUploadDTO, ImageUploadResult } from "../../../app/models/ImageUpload";
+import { useAppSelector } from "../../../app/store/configureStore";
 
 interface Props {
     productId: string;
@@ -19,14 +17,15 @@ interface Props {
 }
 
 export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Props) => {
-    const { data: categories } = useCategories();
-    const { data: brands } = useBrands();
+    const { categoriesDropdown } = useAppSelector(state => state.category);
+    const { brandsDropdown } = useAppSelector(state => state.brand);
+
     const queryClient = useQueryClient();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isClearMode, setIsClearMode] = useState<boolean>(false);
-    const [error, setError] = useState<string>('');
     const [selectedTab, setSelectedTab] = useState<number>(0);
+    const childRef = useRef<UploadsRef>(null);
 
     const initProduct: ProductUpsertDTO = {
         id: productId,
@@ -43,59 +42,24 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
 
     //#region Get / Init Data Component
     const [productUpsert, setProductUpsert] = useState<ProductUpsertDTO>(initProduct);
-    const [categoriesDropdown, setCategoriesDropdown] = useState<DropdownData[]>([]);
-    const [brandsDropdown, setBrandsDropdown] = useState<DropdownData[]>([]);
-
-    //#region Set Data for dropdown
-
-    useEffect(() => {
-        if (categories && categories.length > 0) {
-            const defaultCategory: Category = {
-                id: '',
-                name: ''
-            }
-            let newCategories: Category[] = [defaultCategory, ...categories];
-
-            setCategoriesDropdown(prev => {
-                return newCategories?.map((d: Category) => {
-                    return { title: d.name, value: d.id };
-                });
-            });
-        }
-
-        if (brands && brands.length > 0) {
-            const defaultBrand: Brand = {
-                id: '',
-                name: '',
-                country: ''
-            }
-            let newBrands: Brand[] = [defaultBrand, ...brands];
-
-            setBrandsDropdown(prev => {
-                return newBrands.map((d: Brand) => {
-                    return { title: d.name, value: d.id };
-                });
-            })
-        }
-
-    }, [categories, brands]);
-
-    //#endregion
 
     useEffect(() => {
         const fetchProductDetailAsync = async () => {
             try {
                 if (isCreateMode) return;
+
                 setIsLoading(true);
                 const response: ProductDTO = await agent.Product.singleDTO(productId);
+                const categoryId = categoriesDropdown.find(dropdown => dropdown.title === response.categoryName)?.value;
+                const brandId = brandsDropdown.find(dropdown => dropdown.title === response.brandName)?.value;
 
                 const productUpsert: ProductUpsertDTO = {
                     id: productId,
                     name: response.name,
                     description: response.description,
                     created: response.created.toString(),
-                    categoryId: categoriesDropdown.find(dropdown => dropdown.title === response.categoryName)?.value,
-                    brandId: brandsDropdown.find(dropdown => dropdown.title === response.brandName)?.value,
+                    categoryId,
+                    brandId,
 
                     // details
                     productDetails: response.details.map(d => {
@@ -107,7 +71,7 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
                             extraName: d.extraName,
                             status: d.status === 'Active' ? 1 : 0,
                             imageUrl: d.imageUrl,
-                            publicId: '',
+                            publicId: d.publicId,
                         }
                     })
                 }
@@ -116,16 +80,6 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
 
                 // Set State Origin
                 setProductUpsertOrigin(productUpsert);
-
-                // setOriginUpload(prev => {
-                //     return {
-                //         ...prev
-                //         , folderPath: `products/${productUpsert.name.trim().toLowerCase()}`
-                //         , publicIds: productUpsert.publicId
-                //         // reference for UploadComponent
-                //         , imageDisplay: productUpsert.imageUrl
-                //     }
-                // });
             } catch (error: any) {
 
             }
@@ -147,11 +101,7 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
         setProductUpsert(prev => {
             return { ...prev, [key]: e.target.value };
         });
-
     }
-
-    //#endregion
-
 
     const handleClearData = () => {
         setIsClearMode(true);
@@ -166,29 +116,49 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
         onSetOpenForm(false);
     }
 
-    useEffect(() => {
-        error && console.log(error);
-    }, [error])
-
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         setIsSaving(true);
+
+        // get uploads 
+        const uploads = childRef.current?.getUploads();
         try {
-            const updatedProduct: ProductUpsertDTO = {
-                ...productUpsert
-                , productDetails: productUpsert.productDetails
+            const uploadTasks = uploads.map(async (upload: ImageUploadDTO) => {
+                try {
+                    const result = await agent.Upload.uploads(upload);
+                    return result as ImageUploadResult;
+                } catch (error) {
+                    console.error("Upload error:", error);
+                }
+            });
+
+            const results: (ImageUploadResult)[] = await Promise.all(uploadTasks);
+            if (results.length > 0) {
+                let newProductDetails = productUpsert.productDetails;
+                let i = 0;
+                for (var item of newProductDetails) {
+                    if (results[i].messages.includes('success')) {
+                        item.imageUrl = results[i].imageUrl;
+                        item.publicId = results[i].publicId;
+                    }
+                    i++;
+                }
+                const updatedProduct: ProductUpsertDTO = {
+                    ...productUpsert
+                    , productDetails: newProductDetails
+                }
+
+                if (isCreateMode) await agent.Product.create(updatedProduct);
+                else await agent.Product.update(updatedProduct);
+
+                queryClient.invalidateQueries({ queryKey: ['products'] });
+                handleCloseForm();
             }
 
-            if (!isCreateMode) {
-                await agent.Product.update(updatedProduct);
-            }
-            else {
-                await agent.Product.create(updatedProduct);
-            }
-            queryClient.invalidateQueries({ queryKey: ['products'] });
-            handleCloseForm();
-
-        } catch (error: any) {
+        } catch (err) {
+            console.error(err);
+        }
+        finally {
             setIsSaving(false);
         }
     }
@@ -197,6 +167,28 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
 
     const handleChangeTab = (index: number) => {
         setSelectedTab(index);
+    }
+
+    const handleAddTab = () => {
+        const newTab: ProductUpsertDetailDTO = { color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1, imageUrl: '', publicId: '' }
+        setProductUpsert(prev => {
+            return {
+                ...prev,
+                productDetails: [...prev.productDetails, newTab]
+            }
+        })
+    }
+
+    const handleRemoveTab = () => {
+        const id = productUpsert.productDetails[selectedTab].id;
+        const updatedProductDetails = productUpsert.productDetails.filter(d => d.id !== id);
+        setSelectedTab(0);
+        setProductUpsert(prev => {
+            return {
+                ...prev,
+                productDetails: updatedProductDetails
+            }
+        })
     }
 
     return (
@@ -218,19 +210,26 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
             </div>
             <div className="product-detail-container" >
                 <div className="product-detail-tab-header" >
-                    {
-                        productUpsert.productDetails.map((_, index) => {
-                            return (
-                                <button key={index} type="button" className={`product-header-item ${selectedTab === index ? 'active' : ''}`} onClick={() => handleChangeTab(index)} >
-                                    {`Item-${index}`}
-                                </button>
-                            )
-                        })
-                    }
+                    <div className="product-detail-add-remove">
+                        <button className="btn-new-tab" type="button" onClick={handleAddTab} >+</button>
+                        <button className="btn-remove-tab" type="button" onClick={handleRemoveTab} >-</button>
+                    </div>
+                    <div className="product-detail-tab-page" >
+                        {
+                            productUpsert.productDetails.map((_, index) => {
+                                return (
+                                    <button key={index} type="button" className={`product-header-item ${selectedTab === index ? 'active' : ''}`} onClick={() => handleChangeTab(index)} >
+                                        {index}
+                                    </button>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
 
-                <ProductDetailTabs productName={productUpsert.name} isSaving={isSaving} isClearMode={isClearMode}
+                <ProductDetailTabs productName={productUpsert.name} isClearMode={isClearMode}
                     selectedTabIndex={selectedTab} onSetProductUpsert={setProductUpsert} productDetails={productUpsert.productDetails}
+                    ref={childRef}
                 />
 
             </div>
@@ -263,7 +262,7 @@ const ProductUpsertStyle = styled.form<{ disabled: boolean }>`
             display: grid;
             grid-template-columns: repeat(1, 1fr);
             grid-column-gap: 10%;   
-            height: fit-content;   
+            height: fit-content;
             margin-top: 1vh;
         }
     }
@@ -276,34 +275,61 @@ const ProductUpsertStyle = styled.form<{ disabled: boolean }>`
         margin-top: 2vh;
 
         .product-detail-tab-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 0.3fr 9.7fr;
             background-color: #6082B6;
-            padding: 1vh 10%;
-            margin-bottom: 2vh;
+            height: 5vh;
 
-            .product-header-item {
-                padding: 5px 20px;
-                background-color: #fff;
-                border: 1px solid #ccc;
-                border: none;
-                outline: none;
-                border-radius: 2px;
-
-                &:hover {
+            .product-detail-add-remove {
+                display: flex;
+                flex-direction: column;
+                height: fit-content;
+                margin-right: 5px;
+                padding: 3px;
+                button {
+                    padding: 1px;
+                    border: none;
+                    outline: none;
+                    min-width: 25px;
+                    margin-bottom: 5px;
                     cursor: pointer;
-                    background-color: lightgrey;
-                    transition: 0.5s;
-                }
+                    border-radius: 3px;
 
-                &:first-child {
-                    margin-right: 1vw;
+                    &:hover {
+                        background-color: #93a2b8;
+                        color: #fff;
+                        transition: 0.5s;
+                    }
                 }
-
             }
-            .active {
-                background-color: lightgrey;
+
+            .product-detail-tab-page {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1vh 10%;
+                margin-bottom: 2vh;
+    
+                .product-header-item {
+                    padding: 5px 20px;
+                    background-color: #fff;
+                    border: 1px solid #ccc;
+                    border: none;
+                    outline: none;
+                    border-radius: 2px;
+                    margin-right: 1vw;
+    
+                    &:hover {
+                        cursor: pointer;
+                        background-color: #e2734a;
+                        color: #fff;
+                        transition: 0.5s;
+                    }
+                }
+                .active {
+                    background-color: orangered;
+                    color: #fff;
+                }
             }
         }
     }

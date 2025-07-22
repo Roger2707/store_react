@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 interface Props {
     isClearMode: boolean;
-    value: string;
+    value: string | File[] | null | undefined;
     onGetDataChange: (e: any) => void;
 }
 
@@ -32,6 +32,24 @@ export const MultipleFileImage = ({ isClearMode, value, onGetDataChange }: Props
         isClearMode && setSelectedFiles([]);
     }, [isClearMode])
 
+    useEffect(() => {
+        let previews: FileWithPreview[] = [];
+
+        if (typeof value === 'string') {
+            const imageUrls = value.split(',');
+            previews = imageUrls.map((url) => ({
+                file: {} as File,
+                preview: url
+            }));
+        } else if (Array.isArray(value)) {
+            previews = value.map((file) => ({
+                file,
+                preview: URL.createObjectURL(file)
+            }));
+        }
+
+        setSelectedFiles(previews);
+    }, [value]);
 
     return (
         <Style>
@@ -42,26 +60,15 @@ export const MultipleFileImage = ({ isClearMode, value, onGetDataChange }: Props
                 accept="image/*"
                 onChange={handleChangeImage}
             />
-            <label htmlFor="imageUpload" >Uploads:</label>
-            <div className="preview" >
-                {
-                    ((selectedFiles.length === 0 && value !== '') || isClearMode) ?
-                        Array.from(value.split(',')).map((item, index) => (
-                            <img
-                                key={index}
-                                src={item}
-                                alt={`Preview ${index}`}
-                            />
-                        ))
-                        :
-                        selectedFiles.map((item, index) => (
-                            <img
-                                key={index}
-                                src={item.preview}
-                                alt={`Preview ${index}`}
-                            />
-                        ))
-                }
+            <label htmlFor="imageUpload" ></label>
+            <div className="preview">
+                {selectedFiles.map((item, index) => (
+                    <img
+                        key={index}
+                        src={item.preview}
+                        alt={`Preview ${index}`}
+                    />
+                ))}
             </div>
         </Style>
     )
@@ -74,19 +81,21 @@ const Style = styled.div`
 
     label {
         display: inline-block;
-        padding: 0.5vh 0.5vw;
         color: #fff;
-        background-color: #191970;
+        background-color: transparent;
         border-radius: 5px;
         cursor: pointer;
+        position: absolute;
+        width: 39%;
+        height: 15vh;
     }
 
     .preview {
         margin-top: 1vh;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-row-gap: 2px;
-        column-gap: 2px;
+        grid-row-gap: 0.5vh;
+        column-gap: 0.5vw;
         height: 160px;
         background-color: #ccc;
         border: 2px solid darkgray;
@@ -96,6 +105,7 @@ const Style = styled.div`
             width: 100%;
             height: 70px;
             cursor: pointer;
+            image-rendering: optimizeQuality;
         }
     }
 `

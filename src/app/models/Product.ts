@@ -50,6 +50,7 @@ export interface ProductDetailDTO {
     discountPrice: number
 
     imageUrl: string
+    publicId: string
     color: string
     extraName: string
     stars: number

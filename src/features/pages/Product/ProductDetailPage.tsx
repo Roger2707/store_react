@@ -20,9 +20,7 @@ export const ProductDetailPage = () => {
         const fetchProductDetailAsync = async () => {
             try {
                 if (productId == null || productDetailId == null) return;
-
                 const response: ProductDTO = await agent.Product.singleDTO(productId);
-
                 setProduct(prev => response);
                 setProductDetail(response.details.find(d => d.id === productDetailId) || null);
 
@@ -47,7 +45,7 @@ export const ProductDetailPage = () => {
                 product && productDetail ?
                     <>
                         <div className="product-detail-layout" >
-                            <ProductImage imageUrls={product.details[0].imageUrl.split(',')} />
+                            <ProductImage imageUrls={productDetail.imageUrl.split(',')} />
                             <div className="product-detail" >
                                 <div className="product-basic-info">
                                     <h1>{`${product.name} - ${productDetail.extraName}`}</h1>

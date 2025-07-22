@@ -118,7 +118,7 @@ const getFormData = (data: any) => {
 }
 
 const Upload = {
-    uploads: (params: ImageUploadDTO[]) => requests.postForm('uploads/upload-images', getFormData(params)),
+    uploads: (params: ImageUploadDTO) => requests.postForm('uploads/upload-images', getFormData(params)),
     uploadSingle: (params: SingleImageUploadDTO) => requests.postForm('uploads/upload-image', getFormData(params))
 }
 

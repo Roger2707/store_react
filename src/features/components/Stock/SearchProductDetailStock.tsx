@@ -1,14 +1,11 @@
 import styled from "styled-components"
 import { Input } from "../../ui/Forms/Input"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { InputMoney } from "../../ui/Forms/InputMoney"
-import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown"
-import { useCategories } from "../../Hooks/useCategories"
-import { useBrands } from "../../Hooks/useBrands"
-import { Category } from "../../../app/models/Category"
-import { Brand } from "../../../app/models/Brand"
+import { Dropdown } from "../../ui/Forms/Dropdown"
 import agent from "../../../app/api/agent"
 import { ProductFullDetailDTO, ProductParams } from "../../../app/models/Product"
+import { useAppSelector } from "../../../app/store/configureStore"
 
 interface Props {
     onReceiveProps: (data: ProductFullDetailDTO) => void;
@@ -16,20 +13,8 @@ interface Props {
 
 export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
     const [productSearch, setProductSearch] = useState<ProductParams>({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 0 });
-    const { data: categories } = useCategories();
-    const { data: brands } = useBrands();
-
-    const categoryDropdown: DropdownData[] = useMemo(() => {
-        const defaultCategory: Category = { name: '', id: '' };
-        const categoriesData = categories && [defaultCategory, ...categories];
-        return categoriesData?.map((d: Category) => ({ title: d.name, value: d.id })) || [];
-    }, [categories]);
-
-    const brandDropdown: DropdownData[] = useMemo(() => {
-        const defaultbrand: Brand = { name: '', id: '', country: '' };
-        const brandsData = brands && [defaultbrand, ...brands];
-        return brandsData?.map((d: Brand) => ({ title: d.name, value: d.id })) || [];
-    }, [brands]);
+    const { categoriesDropdown } = useAppSelector(state => state.category)
+    const { brandsDropdown } = useAppSelector(state => state.brand)
 
     const [isSearch, setIsSearch] = useState<boolean>(false);
     const [productSearchData, setProductSearchData] = useState<ProductFullDetailDTO[]>([]);
@@ -108,7 +93,7 @@ export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
                 </div>
                 <div className="dropdowns" >
                     <Dropdown
-                        data={categoryDropdown}
+                        data={categoriesDropdown}
                         width="100%"
                         marginTop="1vh"
                         onGetDataChange={e => handleChangeData(e, 'categoryId')}
@@ -116,7 +101,7 @@ export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
                     />
 
                     <Dropdown
-                        data={brandDropdown}
+                        data={brandsDropdown}
                         width="100%"
                         marginTop="1vh"
                         onGetDataChange={e => handleChangeData(e, 'brandId')}
