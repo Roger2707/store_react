@@ -9,6 +9,7 @@ import { CategoryFilter } from "../../components/Products/CategoryFilter";
 import { BrandsFilter } from "../../components/Products/BrandsFilter";
 import { sortOptions } from "../../../app/utils/helper";
 import { ProductSkeleton } from "../../components/Products/ProductSkeleton";
+import { SortData } from "../../ui/Common/SortData";
 
 export const ProductPage = () => {
     const defaultProductParam: ProductParams = {
@@ -16,12 +17,12 @@ export const ProductPage = () => {
         filterByBrand: '',
         filterByCategory: '',
         searchBy: '',
+        sortBy: '',
         minPrice: 0,
         maxPrice: 0
     }
     const scrolltargetRef = useRef<HTMLDivElement>(null);
     const [productParams, setProductParams] = useState<ProductParams>(defaultProductParam);
-    const [sortBy, setSortBy] = useState<string>(sortOptions[0].value);
     const { data, isLoading, isError } = useProducts(productParams);
 
     useEffect(() => {
@@ -29,20 +30,6 @@ export const ProductPage = () => {
             scrolltargetRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [data]);
-
-    const handleSortProducts = (e: any) => {
-        setSortBy(prev => e.taget.value);
-        switch (e.target.value) {
-            case '':
-                break;
-            case 'nameDesc':
-                break;
-            case 'priceAsc':
-                break;
-            case 'priceDesc':
-                break;
-        }
-    }
 
     return (
         <>
@@ -71,9 +58,8 @@ export const ProductPage = () => {
                             placeholder="Type to search products..."
                         />
 
-                        <select value={sortBy} onChange={handleSortProducts} >
-                            {sortOptions.map((option, index) => <option key={index} value={option.value} >{option.title}</option>)}
-                        </select>
+                        <SortData selectedValue={productParams.sortBy} sortOptions={sortOptions} onSetSelectedValue={setProductParams} />
+
                     </div>
                     {
                         isLoading || !data ? (

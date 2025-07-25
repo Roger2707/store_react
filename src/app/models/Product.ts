@@ -25,6 +25,7 @@ export interface ProductParams {
     searchBy: string
     filterByCategory: string
     filterByBrand: string
+    sortBy: string
     currentPage: number
 }
 

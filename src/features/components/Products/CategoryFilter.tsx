@@ -15,7 +15,7 @@ export const CategoryFilter = ({categoriesFilter, onSetCategoriesFilter}: Props)
 
     const handleSelectedCategory = (id: string) => {
         setCategoriesSelected(prev => {
-            const current = [...prev];        
+            const current = [...prev];
             if(current.filter(c => c === id).length > 0)
                 return [...current.filter(c => c !== id)];
             return [...current, id];

@@ -10,29 +10,29 @@ export const navs = [
     {
         id: 1,
         path: '/about',
-        title : 'About',
-        icon: <CiSquareMore/>
+        title: 'About',
+        icon: <CiSquareMore />
     },
 
     {
         id: 2,
         path: '/products',
-        title : 'Products',
-        icon: <AiFillProduct/>
+        title: 'Products',
+        icon: <AiFillProduct />
     },
 
     {
         id: 3,
         path: '/news',
-        title : 'News',
-        icon: <FaHackerNews/>
+        title: 'News',
+        icon: <FaHackerNews />
     },
 
     {
         id: 4,
         path: '/contact',
-        title : 'Contact',
-        icon: <RiPhoneFindFill/>
+        title: 'Contact',
+        icon: <RiPhoneFindFill />
     },
 ]
 
@@ -77,25 +77,25 @@ export const adminSidebars = [
         id: 2,
         title: 'Products',
         path: '/admin/products',
-        icon: <MdSportsTennis  />
+        icon: <MdSportsTennis />
     },
     {
         id: 3,
         title: 'Categories',
         path: '/admin/categories',
-        icon: <MdCategory  />
+        icon: <MdCategory />
     },
     {
         id: 4,
         title: 'Brands',
         path: '/admin/brands',
-        icon: <MdBrandingWatermark  />
+        icon: <MdBrandingWatermark />
     },
     {
         id: 5,
         title: 'Promotions',
         path: '/admin/promotions',
-        icon: <MdDiscount  />
+        icon: <MdDiscount />
     },
     {
         id: 6,
@@ -128,7 +128,7 @@ export const accountSidebars = [
         id: 1,
         title: 'Profile',
         path: '/profile/update',
-        icon: <MdOutlineAccountCircle  />
+        icon: <MdOutlineAccountCircle />
     },
     {
         id: 2,
@@ -181,10 +181,10 @@ export const transactionType = [
 ]
 
 export const formatDateString = (value: string): string => {
-    const valueStr = value.toString(); 
-    
-    const year = parseInt(valueStr.substring(0, 4));  
-    const month = parseInt(valueStr.substring(4, 6)) - 1; 
+    const valueStr = value.toString();
+
+    const year = parseInt(valueStr.substring(0, 4));
+    const month = parseInt(valueStr.substring(4, 6)) - 1;
     const day = parseInt(valueStr.substring(6, 8));
 
     return `${year}-${month}-${day}}`;
@@ -194,22 +194,26 @@ export const formatDateString = (value: string): string => {
 export function convertKeysToLowerCase(obj: { [key: string]: any }) {
     const newObj: { [key: string]: any } = {};
     for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        newObj[key.charAt(0).toLowerCase() + key.substring(1)] = obj[key];
-      }
+        if (obj.hasOwnProperty(key)) {
+            newObj[key.charAt(0).toLowerCase() + key.substring(1)] = obj[key];
+        }
     }
     return newObj;
-  }
+}
 
 export const icons = {
-    'success': <FaCheck/>,
-    'error': <FaX/>
+    'success': <FaCheck />,
+    'error': <FaX />
 }
 
 export const sortOptions = [
     {
         title: '-- Choose --',
         value: '',
+    },
+    {
+        title: 'Name ASC',
+        value: 'nameAsc',
     },
     {
         title: 'Name DESC',

@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
-    const [productSearch, setProductSearch] = useState<ProductParams>({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 1 });
+    const [productSearch, setProductSearch] = useState<ProductParams>({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 1, sortBy: '' });
     const { categoriesDropdown } = useAppSelector(state => state.category)
     const { brandsDropdown } = useAppSelector(state => state.brand)
 
@@ -53,7 +53,7 @@ export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
     }
 
     const handleClearScreen = () => {
-        setProductSearch(prev => ({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 0 }));
+        setProductSearch(prev => ({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 0, sortBy: '' }));
         setProductSearchData([]);
     }
 

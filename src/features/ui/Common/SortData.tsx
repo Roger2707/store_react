@@ -16,7 +16,7 @@ interface Props {
 export const SortData = ({ selectedValue, onSetSelectedValue, sortOptions }: Props) => {
 
     const handleSubmit = (e: any) => {
-        onSetSelectedValue(prev => ({ ...prev, orderBy: e.target.value }));
+        onSetSelectedValue(prev => ({ ...prev, sortBy: e.target.value }));
     }
 
     return (

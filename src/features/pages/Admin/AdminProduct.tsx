@@ -13,6 +13,8 @@ import { SearchData } from "../../ui/Common/SearchData";
 import { columns } from "./AdminProductsHelper";
 import { useQueryClient } from "@tanstack/react-query";
 import { ButtonCreateAdmin } from "./UI/ButtonCreateAdmin";
+import { SortData } from "../../ui/Common/SortData";
+import { sortOptions } from "../../../app/utils/helper";
 
 export const AdminProduct = () => {
     const [productParams, setProductParams] = useState<ProductParams>({
@@ -21,7 +23,8 @@ export const AdminProduct = () => {
         filterByCategory: '',
         searchBy: '',
         minPrice: 0,
-        maxPrice: 0
+        maxPrice: 0,
+        sortBy: ''
     });
     const { data, isLoading } = useProducts(productParams);
     const queryClient = useQueryClient();
@@ -65,11 +68,7 @@ export const AdminProduct = () => {
                     placeholder="Type to search products..."
                 />
 
-                {/* <SortData
-                    selectedValue={productParams.orderBy}
-                    onSetSelectedValue={setProductParams}
-                    sortOptions={sortOptions}
-                /> */}
+                <SortData selectedValue={productParams.sortBy} sortOptions={sortOptions} onSetSelectedValue={setProductParams} />
             </div>
 
             {

@@ -8,20 +8,18 @@ interface Props {
     onSetSearchKey: Dispatch<SetStateAction<ProductParams>>;
 }
 
-export const SearchData = ({searchKey, onSetSearchKey, placeholder}: Props) => {
+export const SearchData = ({ searchKey, onSetSearchKey, placeholder }: Props) => {
     const [inputValue, setInputValue] = useState(searchKey);
 
-    // debounce
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            onSetSearchKey(prev => ({ ...prev, searchBy: inputValue }));
-        }, 1500);
-        return () => clearTimeout(timeout); // cancelling timeOut if user keep on typing
-    }, [inputValue, onSetSearchKey]);
+        if (searchKey === '') setInputValue('');
+    }, [searchKey]);
 
-    useEffect(() => {
-        if(searchKey === '') setInputValue('');
-    }, [searchKey])
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && inputValue) {
+            onSetSearchKey(prev => ({ ...prev, searchBy: inputValue }));
+        }
+    };
 
     return (
         <Style>
@@ -30,12 +28,13 @@ export const SearchData = ({searchKey, onSetSearchKey, placeholder}: Props) => {
                 placeholder={placeholder}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
             />
         </Style>
     );
 }
 
-const Style = styled.div `
+const Style = styled.div`
     width: 100%;
     input {
         width: 50%;
