@@ -128,7 +128,7 @@ const Product = {
     singleDTO: (id: string) => requests.get(`products/get-product-dto?id=${id}`),
 
     create: (product: ProductUpsertDTO) => requests.post('products/create', product),
-    update: (product: ProductUpsertDTO) => requests.put(`products/update`, product),
+    update: (product: ProductUpsertDTO, updatedProductId: string) => requests.put(`products/update?updatedProductId=${updatedProductId}`, product),
     changeStatus: (id: string) => requests.post(`products/change-status?id=${id}`, {})
 }
 

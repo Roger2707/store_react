@@ -32,8 +32,8 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
         name: '',
         description: '',
         created: new Date().toISOString(),
-        categoryId: crypto.randomUUID(),
-        brandId: crypto.randomUUID(),
+        categoryId: '',
+        brandId: '',
         productDetails: [{ color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1, imageUrl: '', publicId: '' }]
     }
 
@@ -78,7 +78,7 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
                 //////////////////////////////////////////////////////////////////////////
                 setProductUpsert(productUpsert);
 
-                // Set State Origin
+                // Set State Origin - because in edit mode the begin originState is the item updated
                 setProductUpsertOrigin(productUpsert);
             } catch (error: any) {
 
@@ -87,7 +87,7 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
                 setIsLoading(false);
             }
         }
-        // If id !== 0 -> Update -> Fetch Existed Product data
+
         if (!isCreateMode) fetchProductDetailAsync();
 
         // eslint-disable-next-line
@@ -149,7 +149,7 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
                 }
 
                 if (isCreateMode) await agent.Product.create(updatedProduct);
-                else await agent.Product.update(updatedProduct);
+                else await agent.Product.update(updatedProduct, updatedProduct.id);
 
                 queryClient.invalidateQueries({ queryKey: ['products'] });
                 handleCloseForm();
@@ -170,7 +170,7 @@ export const ProductUpsertForm = ({ productId, isCreateMode, onSetOpenForm }: Pr
     }
 
     const handleAddTab = () => {
-        const newTab: ProductUpsertDetailDTO = { color: '', price: 0, id: crypto.randomUUID(), productid: productId, extraName: '', status: 1, imageUrl: '', publicId: '' }
+        const newTab: ProductUpsertDetailDTO = { color: '', price: 0, id: '', productid: productId, extraName: '', status: 1, imageUrl: '', publicId: '' }
         setProductUpsert(prev => {
             return {
                 ...prev,

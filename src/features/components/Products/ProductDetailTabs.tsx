@@ -21,7 +21,6 @@ export type UploadsRef = {
 };
 
 export const ProductDetailTabs = forwardRef<UploadsRef, Props>(({ productName, isClearMode, selectedTabIndex, productDetails, onSetProductUpsert }, ref) => {
-
     const uploadArray: ImageUploadDTO[] = Array.from({ length: productDetails.length }, () => ({
         files: null,
         folderPath: '',
@@ -29,10 +28,17 @@ export const ProductDetailTabs = forwardRef<UploadsRef, Props>(({ productName, i
         imageDisplay: ''
     }));
     const [uploads, setUploads] = useState<ImageUploadDTO[]>(uploadArray);
+    const [uploadsOrigin, setUploadsOrigin] = useState<ImageUploadDTO[]>(uploadArray);
     const [value, setValue] = useState<any>();
 
     useEffect(() => {
-        if (isClearMode) setUploads(uploadArray);
+        if (isClearMode) {
+            console.log(uploadsOrigin);
+            console.log(selectedTabIndex);
+
+            setUploads(uploadsOrigin);
+            setValue(uploadsOrigin[selectedTabIndex].imageDisplay !== '' ? uploadsOrigin[selectedTabIndex].imageDisplay : uploadsOrigin[selectedTabIndex].files);
+        }
         // eslint-disable-next-line
     }, [isClearMode]);
 
@@ -51,6 +57,7 @@ export const ProductDetailTabs = forwardRef<UploadsRef, Props>(({ productName, i
                 imageDisplay: d.imageUrl
             }));
             setUploads(result);
+            setUploadsOrigin(result);
         }
         // eslint-disable-next-line
     }, [productDetails]);

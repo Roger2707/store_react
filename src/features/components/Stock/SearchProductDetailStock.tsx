@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
-    const [productSearch, setProductSearch] = useState<ProductParams>({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 0 });
+    const [productSearch, setProductSearch] = useState<ProductParams>({ minPrice: 0, maxPrice: 0, searchBy: '', filterByBrand: '', filterByCategory: '', currentPage: 1 });
     const { categoriesDropdown } = useAppSelector(state => state.category)
     const { brandsDropdown } = useAppSelector(state => state.brand)
 
@@ -41,8 +41,8 @@ export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
 
         try {
             setIsSearch(true);
-            const data: ProductFullDetailDTO[] = await agent.Product.list(productSearch);
-            setProductSearchData(data);
+            const { dataInCurrentPage } = await agent.Product.list(productSearch);
+            setProductSearchData(dataInCurrentPage);
         }
         catch (error: any) {
             console.log(error);
@@ -112,7 +112,7 @@ export const SearchProductDetailStock = ({ onReceiveProps }: Props) => {
 
             <div className="search-data" >
                 {
-                    productSearchData.map((p: ProductFullDetailDTO) => {
+                    productSearchData.length > 0 && productSearchData.map((p: ProductFullDetailDTO) => {
                         return (
                             <div className="search-row" key={p.productDetailId} onDoubleClick={handlePropProductToParent.bind(null, p)} >
                                 <span>{p.name}</span>

@@ -46,7 +46,7 @@ export const AdminStock = () => {
     const getStockDTO = async (productDetailId: string) => {
         try {
             setIsLoadData(true);
-            const data: StockDTO = await agent.Stocks.getStockOfProduct(productDetailId)
+            const data: StockDTO = await agent.Stocks.getStockOfProduct(productDetailId);
             setStockDTO(data);
         } catch (error) {
             setStockUpsertDTO(prev => ({ ...prev, productDetailId: '' }));
@@ -85,8 +85,6 @@ export const AdminStock = () => {
 
     const handleReceiveProduct = (product: ProductFullDetailDTO) => {
         if (product) {
-            console.log(product);
-
             setIsOpenSearchProduct(false);
             getStockDTO(product.productDetailId);
             setStockUpsertDTO(prev => ({ ...prev, productDetailId: product.productDetailId }));
