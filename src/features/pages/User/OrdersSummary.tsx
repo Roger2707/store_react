@@ -2,32 +2,28 @@ import styled from "styled-components"
 import { OrderTable } from "../../components/Order/OrderTable"
 import { useEffect, useState } from "react";
 import { OrderDetail } from "../../components/Order/OrderDetail";
-import { OrderDTO, OrderItemDTO } from "../../../app/models/Order";
-import agent from "../../../app/api/agent";
+import { OrderItemDTO } from "../../../app/models/Order";
 import { Loading } from "../../ui/Common/Loading";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
+import { fetchAllOrdersAsync } from "../../../app/store/orderSlice";
 
 export const OrdersSummary = () => {  
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [orders, setOrders] = useState<OrderDTO[] | null>(null);
     const [items, setItems] = useState<OrderItemDTO[] | null>(null);
     const [orderIdSelected, setOrderIdSelected] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const dispatch = useAppDispatch();
+    const {orders, isLoadOrders} = useAppSelector(state => state.order);
 
     useEffect(() => {     
         const fetchOrders = async () => {
             try {
-                setIsLoading(true);
-                const data = await agent.Order.getOrdersOwn();
-                setOrders(data);
-                
+                await dispatch(fetchAllOrdersAsync());
             } catch (error) {
                 console.log(error);
-            } finally {
-                setIsLoading(false);
             }
         } 
-        fetchOrders();
-    }, []);
+        if(!orders) fetchOrders();
+    }, [dispatch, orders]);
     
     useEffect(() => {
         if(orderIdSelected !== '') {
@@ -38,14 +34,14 @@ export const OrdersSummary = () => {
 
     return (
         <Style>
-            {isLoading && <Loading message='Loading orders ...' />}
+            {!isLoadOrders && <Loading message='Loading orders ...' />}
             <h1>Orders Summary</h1>
             <div className="order-grid" >
-                <OrderTable orders={orders?.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} isAdmin={false} />
+                <OrderTable orders={orders?.filter(o => o.userId === 1).slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} isAdmin={false} />
                 <OrderDetail items={items} />
             </div>
             <div className="paging" >
-                {   orders && orders.length > 0 &&
+                {   orders?.filter(o => o.userId === 1) &&
                     Array.from({ length: orders.length / 5 }, (_, i) => (
                         <button key={i} className={`${currentPage === i + 1 && 'page-active'}`} onClick={() => {
                             setCurrentPage(i + 1);

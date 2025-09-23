@@ -2,32 +2,29 @@ import styled from "styled-components"
 import { OrderTable } from "../../components/Order/OrderTable";
 import { OrderDetail } from "../../components/Order/OrderDetail";
 import { useEffect, useState } from "react";
-import { OrderDTO, OrderItemDTO } from "../../../app/models/Order";
-import agent from "../../../app/api/agent";
+import { OrderItemDTO } from "../../../app/models/Order";
 import { Loading } from "../../ui/Common/Loading";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
+import { fetchAllOrdersAsync } from "../../../app/store/orderSlice";
 
 export const AdminOrder = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [orders, setOrders] = useState<OrderDTO[] | null>(null);
     const [items, setItems] = useState<OrderItemDTO[] | null>(null);
     const [orderIdSelected, setOrderIdSelected] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const dispatch = useAppDispatch();
+    const {orders, isLoadOrders} = useAppSelector(state => state.order);
 
     useEffect(() => {     
         const fetchOrders = async () => {
             try {
-                setIsLoading(true);
-                const data = await agent.Order.getAllOrders();
-                setOrders(data);
-                
+                await dispatch(fetchAllOrdersAsync());        
             } catch (error) {
                 console.log(error);
-            } finally {
-                setIsLoading(false);
             }
         } 
-        fetchOrders();
-    }, []);
+
+        if(!orders) fetchOrders();
+    }, [dispatch, orders]);
     
     useEffect(() => {
         if(orderIdSelected !== '') {
@@ -38,7 +35,7 @@ export const AdminOrder = () => {
     
     return (
         <Style>
-            {isLoading && <Loading message='Loading orders ...' />}
+            {!isLoadOrders && <Loading message='Loading orders ...' />}
             <h1>Orders Summary:</h1>
             <div className="order-grid" >
                 <OrderTable orders={orders?.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5)!} onSetSelectedOrderId={setOrderIdSelected} isAdmin={true}/>

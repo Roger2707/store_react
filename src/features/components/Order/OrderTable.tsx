@@ -1,8 +1,9 @@
 import styled from "styled-components"
 import { OrderDTO, OrderUpdatStatusRequest } from "../../../app/models/Order"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DropdownData } from "../../ui/Forms/Dropdown";
-import agent from "../../../app/api/agent";
+import { useAppDispatch } from "../../../app/store/configureStore";
+import { updateOrderStatus } from "../../../app/store/orderSlice";
 
 interface Props {
     orders: OrderDTO[] | null;
@@ -35,15 +36,7 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
         }
     ];
     const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
-    const [localOrders, setLocalOrders] = useState<OrderDTO[] | null>(orders);
-
-    useEffect(() => {
-        setLocalOrders(orders);
-    }, [orders]);
-
-    const getStatusTitleByValue = (value: number): string => {
-        return orderStatusData.find(s => s.value === value)?.title ?? 'Unknown';
-    };
+    const dispatch = useAppDispatch();
 
     const handleShowOrderDetail = (orderId: string) => {
         setOrderId(orderId);
@@ -62,16 +55,7 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
                 orderStatus: status
             }
             setSelectedStatus(status);
-            await agent.Order.updateOrderStatus(request);
-
-            setLocalOrders(prev =>
-                prev && prev.map(order =>
-                    order.id === orderId
-                        ? { ...order, status: getStatusTitleByValue(status) }
-                        : order
-                )
-            );
-
+            await dispatch(updateOrderStatus(request));
         } catch (error) {
             console.error(error);
         }
@@ -90,10 +74,10 @@ export const OrderTable = ({orders, onSetSelectedOrderId, isAdmin}: Props) => {
                 </tr>
             </thead>
             {
-                localOrders && localOrders.length > 0 &&
+                orders &&
                 <tbody>
                     {
-                        localOrders.map((order: OrderDTO, index) => {
+                        orders.map((order: OrderDTO, index) => {
                             return (
                                 <tr key={index} className={`${order.id === orderId && 'order-active'}`}>
                                     <td >

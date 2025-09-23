@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { icons } from "../../app/utils/helper";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/store/configureStore";
-import { setActivePaymentUI } from "../../app/store/orderSlice";
+import { setActivePaymentUI, setOrderStatus } from "../../app/store/orderSlice";
 import { PaymentProcessingResponse } from "../../app/models/Payment";
 
 export const useSignalIROrderStatusHub = (token: string | null) => {
@@ -26,7 +26,9 @@ export const useSignalIROrderStatusHub = (token: string | null) => {
 
             conn.on('OrderUpdateStatus', (orderUpdateMessage) => {
                 const { orderId, orderStatus } = orderUpdateMessage
-                toast.success(`Your Order: #${orderId} has been: ${getStatusName(orderStatus)}`, { icon: icons.success });
+                const orderStatusName = getStatusName(orderStatus);
+                toast.success(`Your Order: #${orderId} has been: ${orderStatusName}`, { icon: icons.success });
+                dispatch(setOrderStatus({orderId, orderStatusName}));
             });
 
             conn.on('PaymentProcessingUpdate', (paymentProcessing: PaymentProcessingResponse) => {
