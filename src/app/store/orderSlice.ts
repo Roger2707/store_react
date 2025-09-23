@@ -99,9 +99,7 @@ export const orderSlice = createSlice({
             });
     
             builder.addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
-                state.orders = action.payload;
-                console.log(state.orders);
-                
+                state.orders = action.payload;                
                 state.isLoadOrders = true;
             });
     

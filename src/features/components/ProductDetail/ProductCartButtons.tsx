@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import styled from "styled-components"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
-import { getBasket, upsertBasket } from "../../../app/store/basketSlice";
+import { upsertBasket } from "../../../app/store/basketSlice";
 import { BasketUpsertParam } from "../../../app/models/Basket";
 
 interface Props {
@@ -10,12 +10,9 @@ interface Props {
 }
 
 export const ProductCartButtons = ({productDetailId}: Props) => {
-    const {basket, isLoadBasket} = useAppSelector(state => state.basket);
+    const {basket} = useAppSelector(state => state.basket);
     const [currentQuantity, setCurrentQuantity] = useState<number>(0);
     const dispatch = useAppDispatch();
-    useEffect(() => { 
-        if(!isLoadBasket) dispatch(getBasket());
-    }, [isLoadBasket, dispatch]);
 
     useEffect(() => {
         if (basket?.items) {

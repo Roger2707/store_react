@@ -51,23 +51,23 @@ export const useSignalIROrderStatusHub = (token: string | null) => {
             });
 
             conn.onreconnecting(() => {
-                console.warn("🔄 SignalR reconnecting...");
+                //console.warn("🔄 SignalR reconnecting...");
             });
 
             conn.onreconnected(() => {
-                console.log("✅ SignalR reconnected");
+                //console.log("✅ SignalR reconnected");
             });
 
             conn.onclose((error) => {
-                console.error("❌ SignalR closed", error);
+                //console.error("❌ SignalR closed", error);
             });
 
             try {
                 await conn.start();
-                console.log("✅ SignalR initial connection");
+                //console.log("✅ SignalR initial connection");
                 setConnection(conn);
             } catch (err) {
-                console.error("❌ Initial SignalR connection failed", err);
+                //console.error("❌ Initial SignalR connection failed", err);
             }
         };
 

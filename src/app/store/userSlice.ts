@@ -4,16 +4,32 @@ import agent from "../api/agent";
 import { router } from "../router/Routes";
 
 interface UserState {
+    users: UserDTO[] | null,
     user: UserDTO | null,
     loadingState: boolean,
     message?: string,
+    isLoadedUsers: boolean,
 }
 
 const initialState : UserState = {
+    users: null,
     user: null,
     loadingState: false,
-    message: ''
+    message: '',
+    isLoadedUsers: false,
 }
+
+export const fetchAllUsers = createAsyncThunk<UserDTO[]>(
+    'user/fetchUsers',
+    async (_, thunkAPI) => {
+        try {
+            const users = await agent.User.list();
+            return users;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data});
+        }
+    }
+)
 
 export const signUpAsync = createAsyncThunk<UserDTO, SignUpRequest>(
     'user/signUpAsync',
@@ -233,6 +249,29 @@ export const userSlice = createSlice({
 
         builder.addCase(changePassword.rejected, (state, action) => {
             state.loadingState = false;
+        });
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        builder.addCase(fetchAllUsers.pending, (state, action) => {
+            state.isLoadedUsers = true;
+        });
+
+        builder.addCase(fetchAllUsers.fulfilled, (state, action) => {    
+            for(var user of action.payload) {
+                if(user.token) {
+                    const payloadBase64 = user.token.split('.')[1];
+                    const decodedPayload = atob(payloadBase64);
+                    var role = JSON.parse(decodedPayload)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+                    user = {...user, role};
+                }
+            }
+
+            state.users = action.payload;
+            state.isLoadedUsers = false; 
+        });
+
+        builder.addCase(fetchAllUsers.rejected, (state, action) => {
+            state.isLoadedUsers = false;
         });
     }
 });

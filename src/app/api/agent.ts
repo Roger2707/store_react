@@ -159,6 +159,7 @@ const Promotions = {
 }
 
 const User = {
+    list: () => requests.get('users/get-all'),
     signIn: (request: SignInRequest) => requests.post(`users/log-in`, request),
     signUp: (request: SignUpRequest) => requests.post(`users/sign-up`, request),
     currentUser: () => requests.get(`users/current-user`),
