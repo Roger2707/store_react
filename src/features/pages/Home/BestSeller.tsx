@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import agent from "../../../app/api/agent";
-import { ProductItem } from "../../components/Products/ProductItem";
+import { ProductItem } from "../Products/ProductItem";
 import { ProductFullDetailDTO } from "../../../app/models/Product";
 
 export const BestSeller = () => {

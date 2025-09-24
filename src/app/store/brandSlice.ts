@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Brand } from "../models/Brand";
 import agent from "../api/agent";
-import { DropdownData } from "../../features/ui/Forms/Dropdown";
+import { DropdownData } from "../../features/UI/Forms/Dropdown";
 
 interface BrandState {
     brands: Brand[];

@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { Input } from "../../ui/Forms/Input"
-import { FileImage } from "../../ui/Forms/FileImage"
+import { Input } from "../../UI/Forms/Input"
+import { FileImage } from "../../UI/Forms/FileImage"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"
 import { useEffect, useState } from "react"
 import { UserAddressDTO, UserDTO } from "../../../app/models/User"
@@ -11,6 +11,7 @@ import agent from "../../../app/api/agent"
 import { Link } from "react-router-dom"
 
 const defaultUserDTO : UserDTO = {
+    id: 0,
     userName: '',
     fullName: '',
     email: '',

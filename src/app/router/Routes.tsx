@@ -1,31 +1,31 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../../App";
-import { ProductPage } from "../../features/pages/Product/ProductPage";
-import { ProductDetailPage } from "../../features/pages/Product/ProductDetailPage";
+import { ProductPage } from "../../features/pages/Products/ProductPage";
+import { ProductDetailPage } from "../../features/pages/ProductDetails/ProductDetailPage";
 import { Login } from "../../features/pages/Identity/Login";
 import { SignUp } from "../../features/pages/Identity/SignUp";
 import { NotfoundPage } from "../middleware/NotfoundPage";
-import { AdminPage } from "../../features/pages/Admin/AdminPage";
-import { AdminProduct } from "../../features/pages/Admin/AdminProduct";
-import { AdminAccount } from "../../features/pages/Admin/AdminAccount";
-import { AdminCategory } from "../../features/pages/Admin/AdminCategory";
-import { AdminBrand } from "../../features/pages/Admin/AdminBrand";
-import { AdminPromotion } from "../../features/pages/Admin/AdminPromotion";
-import { AdminOrder } from "../../features/pages/Admin/AdminOrder";
+import { AdminPage } from "../../features/pages/Admin/MainUI/AdminPage";
+import { AdminProduct } from "../../features/pages/Admin/Products/AdminProduct";
+import { AdminAccount } from "../../features/pages/Admin/Accounts/AdminAccount";
+import { AdminCategory } from "../../features/pages/Admin/Categories/AdminCategory";
+import { AdminBrand } from "../../features/pages/Admin/Brands/AdminBrand";
+import { AdminPromotion } from "../../features/pages/Admin/Promotions/AdminPromotion";
+import { AdminOrder } from "../../features/pages/Admin/Orders/AdminOrder";
 import { About } from "../../features/pages/Others/About";
 import { News } from "../../features/pages/Others/News";
 import { Contact } from "../../features/pages/Others/Contact";
 import RequireAuth from "./RequireAuth";
 import { ForgotPassword } from "../../features/pages/Identity/ForgotPassword";
 import { ResetPassword } from "../../features/pages/Identity/ResetPassword";
-import { BasketPage } from "../../features/pages/Cart/BasketPage";
-import { AdminStock } from "../../features/pages/Admin/AdminStock";
+import { BasketPage } from "../../features/pages/Carts/BasketPage";
+import { AdminStock } from "../../features/pages/Admin/StocksTransactions/AdminStock";
 import { UserProfile } from "../../features/pages/User/UserProfile";
-import { OrdersSummary } from "../../features/pages/User/OrdersSummary";
+import { OrdersSummary } from "../../features/pages/Orders/OrdersSummary";
 import { ChangePassword } from "../../features/pages/User/ChangePassword";
-import { AdminWarehouse } from "../../features/pages/Admin/AdminWarehouse";
-import { CheckoutPage } from "../../features/pages/CheckOut/CheckoutPage";
-import { CheckOutSuccess } from "../../features/pages/CheckOut/CheckOutSuccess";
+import { AdminWarehouse } from "../../features/pages/Admin/Warehouses/AdminWarehouse";
+import { CheckoutPage } from "../../features/pages/CheckOuts/CheckoutPage";
+import { CheckOutSuccess } from "../../features/pages/CheckOuts/CheckOutSuccess";
 
 export const router = createBrowserRouter(([
     {

@@ -1,9 +1,9 @@
 import styled from "styled-components"
 import { UserAddressDTO, UserDTO } from "../../../app/models/User"
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Dropdown, DropdownData } from "../../ui/Forms/Dropdown";
+import { Dropdown, DropdownData } from "../../UI/Forms/Dropdown";
 import agent from "../../../app/api/agent";
-import { Input } from "../../ui/Forms/Input";
+import { Input } from "../../UI/Forms/Input";
 
 interface Props {
     userAddress : UserAddressDTO

@@ -3,9 +3,9 @@ import { BrandStore } from "../../components/Header/BrandStore"
 import styled from "styled-components"
 import { Navs } from "../../components/Header/Navs"
 import { NavAuth } from "../../components/Header/NavAuth"
-import { BasketHeader } from "../../components/Basket/BasketHeader"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
+import { BasketHeader } from "../../pages/Carts/BasketHeader"
 
 export const Header = () => {
     const location = useLocation();

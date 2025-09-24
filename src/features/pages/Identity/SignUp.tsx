@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Input } from "../../ui/Forms/Input"
+import { Input } from "../../UI/Forms/Input"
 import { useState } from "react"
 import { Link } from "react-router-dom";
 import { SignUpRequest } from "../../../app/models/User";

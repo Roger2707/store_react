@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Input } from "../../ui/Forms/Input"
+import { Input } from "../../UI/Forms/Input"
 import { useEffect, useState } from "react"
 import { ChangePasswordDTO } from "../../../app/models/User"
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore"

@@ -8,12 +8,13 @@ import { setUser } from "../../../app/store/userSlice";
 import { FcGoogle } from "react-icons/fc";
 
 export const OAuthIdentity = () => {
+    const [isFetchingGoogle, setIsFetchingGoogle] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const dispatch = useAppDispatch();
 
     const login = useGoogleLogin({
         onSuccess: async (response: any) => {
-            console.log(response);
+            setIsFetchingGoogle(true);
             setErrorMessage(null);
             try { 
                 const request: GoogleAuthRequest = {authCode: response.code};
@@ -23,6 +24,9 @@ export const OAuthIdentity = () => {
             } catch (error: any) {
                 console.error("Login Error:", error.response?.data || error.message);
                 setErrorMessage(error.response?.data?.message || "Login failed!");
+            }
+            finally {
+                setIsFetchingGoogle(false);
             }
         },
         onError: (error) => {
@@ -34,7 +38,7 @@ export const OAuthIdentity = () => {
 
     return (
         <Style>
-            <button onClick={() => login()} style={{ padding: "10px", cursor: "pointer" }}>
+            <button disabled={isFetchingGoogle} onClick={() => login()} style={{ padding: "10px", cursor: "pointer" }}>
                 <FcGoogle className="google-icon" />
             </button>
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}

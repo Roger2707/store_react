@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router-dom"
 import styled from "styled-components";
 import { Sidebar } from "../../../components/Dashboard/Sidebar";
 import { useState } from "react";
-import { Dashboard } from "../Dashboard";
+import { Dashboard } from "../Dashboards/Dashboard";
 import { adminSidebars } from "../../../../app/utils/helper";
 
 export const AdminPage = () => {

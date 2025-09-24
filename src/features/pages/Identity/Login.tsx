@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Input } from "../../ui/Forms/Input"
+import { Input } from "../../UI/Forms/Input"
 import { useState } from "react"
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
@@ -19,20 +19,14 @@ export const Login = () => {
         }
     );
 
-
     const handleChangeData = (e: any, key: string) => {
         setLoginRequest(prev => {
             return {...prev, [key]: e.target.value};
         });
     }
 
-    const handleBeforeSubmit = () => {
-        //console.log(loginRequest);
-    }
-
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        handleBeforeSubmit();
 
         try {
             dispatch(signInAsync(loginRequest));

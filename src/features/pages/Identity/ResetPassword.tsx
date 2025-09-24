@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { ResetPasswordDTO } from "../../../app/models/User"
 import { useLocation } from "react-router-dom";
-import { Input } from "../../ui/Forms/Input";
+import { Input } from "../../UI/Forms/Input";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore";
 import { handleResetPassword } from "../../../app/store/userSlice";
 

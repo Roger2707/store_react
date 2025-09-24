@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { OrderDTO, OrderUpdatStatusRequest } from "../models/Order";
 import agent from "../api/agent";
-import { DropdownData } from "../../features/ui/Forms/Dropdown";
+import { DropdownData } from "../../features/UI/Forms/Dropdown";
 
 interface OrderState {
     orders: OrderDTO[] | null;

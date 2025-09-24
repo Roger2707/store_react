@@ -1,7 +1,7 @@
 
 import { homeSlider } from "../../../app/utils/helper"
-import { Slider } from "../../ui/Layout/Slider"
-import { Container } from "../../ui/Layout/Container"
+import { Slider } from "../../UI/Layout/Slider"
+import { Container } from "../../UI/Layout/Container"
 import { BestSeller } from "./BestSeller"
 import { Banner } from "./Banner"
 import { AboutUs } from "./AboutUs"
