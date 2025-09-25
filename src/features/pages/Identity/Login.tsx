@@ -10,6 +10,7 @@ import { OAuthIdentity } from "./OAuthIdentity";
 const logo = require('../../assets/images/mainLogo.jpg');
 
 export const Login = () => {
+    const [isFetchingGoogle, setIsFetchingGoogle] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const {loadingState} = useAppSelector(state => state.user);
     const [loginRequest, setLoginRequest] = useState<SignInRequest>(
@@ -36,7 +37,7 @@ export const Login = () => {
     }
 
     return (
-        <Style disabled={loadingState} >
+        <Style disabled={loadingState || isFetchingGoogle} >
             <form onSubmit={handleSubmit} >
                 <div className="identity_container" >
                     <div className="form_heading" >
@@ -62,7 +63,7 @@ export const Login = () => {
 
             </form>
 
-            <OAuthIdentity />
+            <OAuthIdentity isFetchingGoogle={isFetchingGoogle} onSetIsFetchingGoogle={setIsFetchingGoogle} />
 
             <div className="redirect" >
                 <p>Don't have account ? <Link to='/signup'>Go to Sign up</Link></p>

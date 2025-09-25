@@ -139,7 +139,7 @@ export const userSlice = createSlice({
             state.user = {...action.payload, role};
 
             localStorage.setItem('user', JSON.stringify(action.payload));
-            //router.navigate('/');
+            router.navigate('/');
         },
 
         ssignOut: (state, action) => {
@@ -275,6 +275,5 @@ export const userSlice = createSlice({
         });
     }
 });
-
 
 export const {ssignOut, setUser} = userSlice.actions;

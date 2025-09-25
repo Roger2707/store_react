@@ -7,14 +7,18 @@ import { useAppDispatch } from "../../../app/store/configureStore";
 import { setUser } from "../../../app/store/userSlice";
 import { FcGoogle } from "react-icons/fc";
 
-export const OAuthIdentity = () => {
-    const [isFetchingGoogle, setIsFetchingGoogle] = useState<boolean>(false);
+interface Props {
+    isFetchingGoogle: boolean;
+    onSetIsFetchingGoogle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const OAuthIdentity = ({isFetchingGoogle, onSetIsFetchingGoogle} : Props) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const dispatch = useAppDispatch();
 
     const login = useGoogleLogin({
         onSuccess: async (response: any) => {
-            setIsFetchingGoogle(true);
+            onSetIsFetchingGoogle(true);
             setErrorMessage(null);
             try { 
                 const request: GoogleAuthRequest = {authCode: response.code};
@@ -26,7 +30,7 @@ export const OAuthIdentity = () => {
                 setErrorMessage(error.response?.data?.message || "Login failed!");
             }
             finally {
-                setIsFetchingGoogle(false);
+                onSetIsFetchingGoogle(false);
             }
         },
         onError: (error) => {
